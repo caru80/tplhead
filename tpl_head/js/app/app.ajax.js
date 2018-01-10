@@ -1,8 +1,3 @@
-/**
-	2018-01-10
-	- options.html entfernt weil Obsolet.
-	
-*/
 (function($){
 
 	$app.ajax = {
@@ -11,9 +6,7 @@
 			tmplComponent 	: 'ajax_loadcomponent',
 			tmplModules		: 'ajax_loadmodule',
 			useIndicator	: true,
-			css 			: 	{
-									targetShow : 'show'
-								}
+			css 			: { targetShow : 'show'	}
 		},
 
 
