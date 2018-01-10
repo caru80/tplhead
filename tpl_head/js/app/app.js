@@ -15,7 +15,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 /**
 	$app
-	CRu.: 2017-06-12
+	CRu.: 2018-01-10
 */
 (function($) {
 
@@ -40,8 +40,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 			list : {}, // Dummy Liste
 
-			init : function()
-			{
+			init : function() {
 				this.map  		= Object.keys(this.list);
 				this.listIndex 	= 0;
 
@@ -67,7 +66,6 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				}
 			},
 
-
 			request : function(ext, name) {
 
 				$.ajax({
@@ -84,7 +82,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 						$($app.extensions).trigger('afterLoad');
 					},
 					success		: function() {
-						ext.available = true
+						ext.available = true;
 
 						if (typeof ext.success === 'function')
 						{
@@ -131,7 +129,8 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 				ext = this.list[name];
 
-				if (! ext.enable && ! force)
+				// Begrifflichkeit „enable” ist verwirrend – zu „autoload” geändert.
+				if (! ext.autoload && ! force)
 				{
 					$(this).triggerHandler('afterLoad');
 					return;
@@ -144,98 +143,95 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				}
 
 				this.request(ext, name);
+			},
+
+			/** Gib etwas in der Konsole aus: */
+			log : function(type, file) {
+				let msg = '';
+
+				switch(type) {
+					case 'err'
+						msg = 'Fehler: ' + file + ' konnte nicht geladen werden.';
+					break;
+				}
+
+				if(console) console.log(msg);
 			}
 		},
 
 		/*
 			Stylesheet laden
-
-			@param sheet 	– String : Pfad zur Datei
-			@param media 	– String : Media Attribut f. Stylesheet
-			@param replace 	– String : Dieses Stylesheet ersetzen ( z.B. 'main.css' )
+			params {
+				url			// String - Pfad
+				media		// String - Wert für Attribut media
+				replace		// String – Ersetze ein anderes Stylesheet, dessen Name diesen String enthält.
+				attribs		// String – Eigene Attribute in den link-Tag einfügen, z.B.: {attribs : 'foo="bar" bar="foo"' ... }
+			}
 		*/
-		loadStylesheet : function(sheet, media, replace)
-		{
-			if (sheet.indexOf('http') == -1)
-			{
-				sheet = $app.protocol + '//' + $app.hostname + '/' + $app.pathname + '/' + sheet;
+		loadStylesheet : function(params) {
+			let href 	= params.url,
+				media 	= params.media === undefined ? 'screen' : params.media,
+				attribs = params.attribs ? ' ' + params.attribs : '';
+
+			// !!! Anm.: Es könnte ungünstig sein, dass auch ein Stylesheet von einer anderen Quelle geladen werden kann.
+			if (href.indexOf('http') == -1) {
+				let href = $app.protocol + '//' + $app.hostname + $app.pathname + '/' + params.url;
 			}
 
-			media = media === undefined ? 'screen' : media;
-
-			if (replace)
-			{
-				let $styles = $('link[type="text/css"]');
-				if ($styles.length)
-				{
-					for (let i = 0, len = $styles.length; i < len; i++)
-					{
-						let $this = $styles.eq(i);
-						if ($this.attr('href').indexOf(replace) > -1)
-						{
-							$this.remove();
+			if (params.replace) {
+				let styles = $('link[type="text/css"]');
+				if (styles.length) {
+					for (let i = 0, len = styles.length; i < len; i++) {
+						let s = styles.eq(i);
+						if (s.attr('href').indexOf(params.replace) > -1) {
+							s.remove();
 						}
 					}
 				}
 			}
-
-			let $sheet = $('<link rel="stylesheet" type="text/css" media="' + media + '" href="' + sheet + '" />');
-
-			$('head').append($sheet);
+			$('head').append('<link rel="stylesheet" type="text/css" media="' + media + '" href="' + href + '"' + attribs + '/>');
 		},
 
-
-		// Generiert eine zufällige x-Stellige (Standard = 5 Zeichen) Id für den Gebrauch in HTML Elementen etc.
-		getRandomId : function()
-		{
+		/**
+			Generiert eine zufällige x-Stellige (Standard = 5 Zeichen) Id für den Gebrauch in HTML Elementen etc.
+		*/
+		getRandomId : function() {
 		    let len 	= arguments[0] && typeof(arguments[0]) === 'integer' ? arguments[0] : 5,
 				id 		= '',
 				chars	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-		    for (let i = 0; i < len; i++)
-		    {
+		    for (let i = 0; i < len; i++) {
 		        id += chars.charAt(Math.floor(Math.random() * chars.length));
 			}
-
 		    return id;
 		},
 
-		/*
+		/**
 			Zeige Ladeanzeige
 
 			params{
 				t 		: target; dort einhängen, jQuery Selektor,
 				html 	: HTML Ladeanzeige (optional) – Siehe $app.defaults.html ...
 			}
-
 		*/
-		showLoadingIndicator : function( params )
-		{
-			if (params.t)
-			{
-				var	id = 'loading-' + $app.getRandomId(),
-					el = params.html ? $(params.html) : $(this.defaults.html.loadingIndicator),
-					$t = $(params.t);
+		showLoadingIndicator : function(params) {
+			if (params.t) {
+				let	id 	= 'loading-' + $app.getRandomId(),
+					el 	= params.html ? $(params.html) : $(this.defaults.html.loadingIndicator),
+					t 	= $(params.t);
 
-				el.attr("id", id);
-				$t.append(el);
+				el.attr('id', id);
+				t.append(el);
 				return id;
 			}
 			return false;
 		},
 
-		/*
+		/**
 			Verberge Ladeindikator
-
-			params{
-				id : String – Id der zu verbergenden Ladeanzeige
-			}
-
 		*/
-		hideLoadingIndicator : function (id)
-		{
-			if (id)
-			{
+		hideLoadingIndicator : function (id) {
+			if (id)	{
 				$((id.indexOf('#') == 0 ? id : '#' + id)).remove();
 				return true;
 			}
@@ -244,27 +240,26 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 		/*	Viewport-Größe abfragen.
 		*/
-		getVps : function(){
+		getVps : function() {
 			let w = window,
 			    e = document.documentElement,
 			    b = document.getElementsByTagName('body')[0],
 			    x = w.innerWidth || e.clientWidth || b.clientWidth,
 			    y = w.innerHeight|| e.clientHeight|| b.clientHeight;
+
 			return {w : x, h : y};
 		},
 
 		/* Abfragen ob "el" im Viewport zu sehen ist.
 			@param el – String jQuery-Selektor oder jQuery Objekt
 		*/
-		isInViewport : function( el )
-		{
-			let $el 	= typeof el === 'object' ? el : $(el),
+		isInViewport : function(el) {
+			let el 	= $(el),
 				scroll 	= $(document).scrollTop(),
-				vIn 	= $el.offset().top,
-				vOut 	= $el.offset().top + $el.outerHeight();
+				vIn 	= el.offset().top,
+				vOut 	= el.offset().top + el.outerHeight();
 
-			if( scroll + $app.getVps().h >= vIn && scroll < vOut )
-			{
+			if( scroll + $app.getVps().h >= vIn && scroll < vOut ) {
 				return true;
 			}
 			return false;
@@ -272,8 +267,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 
 
-		init : function()
-		{
+		init : function() {
 			$app.extensions.init();	// Erweiterungen laden
 			$($app.$window).trigger('appReady');
 			$($app).trigger('ready');
@@ -287,191 +281,78 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 }(jQuery));
 
 
-
-
-
-
 (function($){
-	/*
-		Erweiterungen
+	/**
+		Script-Erweiterungen
 
-		Diese Scripts werden nachgeladen.
+		- Diese Scripts werden nachgeladen, wenn autoload auf true gesetzt ist.
 	*/
 	$app.extensions.list = {
-		/*
-			foo : {
-				enable		: true,					Ein/Aus – Bzw. die Richtige Bezeichnung wäre "autoload".
-				(available : false,) 				Wird nach dem Laden gesetzt und sagt aus, ob das Script verfügbar ist.
-				file 	: 'templates/js/foo.js',	Der Pfad zur Datei
-				options : {}, 						Optionen, auf die man zugreifen könnte via: $app.extebnsions.list.foo.options.meineOption
-				condition : function()
+		/**
+			foo : { 									Beliebiger Objektname
+				autoload	: true						Automatisch laden (Ein/Aus).
+				(,available 	: false) 				Wird nach dem Laden gesetzt und sagt aus ob das Script verfügbar ist.
+				,file 		: 'templates/js/foo.js'		Der Pfad zur Datei. Grundsätzlich werden nur Dateien vom selben Ursprung (vom selben Server) geladen.
+				[,options 	: {}] 						Optionen auf die man zugreifen könnte via: $app.extebnsions.list.foo.options.meineOption
+				,condition 	: function()				Eine weitere Kontrollstruktur, die das laden von "foo" erlaubt, oder auch nicht.
 				{
-					return false; = Dieses Script wird nicht geladen, weil die Bedingung nicht erfüllt wurde!
-					return true; = Dieses Script wird geladen, weil die Bedingung erfüllt wurde!
-				},
-				error	: function()
+					return false; 	= Dieses Script darf nicht geladen werden, weil die Bedingung nicht erfüllt wurde!
+					return true; 	= Dieses Script darf geladen werden, weil die Bedingung erfüllt wurde!
+				}
+				,error		: function()
 				{
-					Laden hat nicht geklappt!
-				},
-				success : function()
+					// Script konnte nicht geladen werden.
+				}
+				,success 	: function()
 				{
-					Laden hat geklappt!
+					// Script wurde geladen und steht zur Verfügung.
 				}
 			}
 
-			Das erfolgreiche laden von "foo" löst an $app den Event "fooReady" aus, den man wie folgt nutzen könnte:
+			// Das erfolgreiche laden von "foo" löst an $app den Event "fooReady" aus, den man wie folgt nutzen könnte:
 
-			$($app).one('fooReady', function(){...});
+			$(window).one('appReady', function() { // $app muss Verfügbar sein.
+				$($app).one('fooReady', function() {...}); // "foo" wurde geladen.
+			});
 		*/
 
 
-
-		/*
+		/**
 			Systemnachrichten
-			$app.systemMessage
 		*/
 		messages : {
-			enable		: true
+			autoload	: true
 			,file		: 'templates/head/js/app/app.messages.js'
 			,options	: {}
-			,error		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function()
-			{
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
 				$app.messages.init();
 			}
 		},
 
-		/*
+		/**
 			Animiertes Scrollen
-			$app.scroll
 		*/
 		scroll : {
-			enable		: true
+			autoload	: true
 			,file 		: 'templates/head/js/app/app.scroll.js'
-			,options	: {bla : 'blub'}
-			,error 		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success 	: function()
-			{
-				$app.scroll.init(this.options);
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success 	: function() {
+				$app.scroll.init();
 			}
 		},
 
-		/*
-			AJAX
-			$app.ajax
+		/**
+			Google Analytics
+
+			Der Autoload kann immer an bleiben, solange kein Key eingegeben wurde macht das gar nichts (siehe: condition).
 		*/
-		ajax : {
-			enable		: true
-			,file 		: 'templates/head/js/app/app.ajax.js'
-			,error		: function(){ if( console ) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function()
-			{
-				/* $app.ajax initialsieren
-				*/
-				$app.ajax.init();
-			}
-		},
-
-		/*
-			$app.equalColumns
-		*/
-		equalColumns : {
-			enable		: true
-			,file 		: 'templates/head/js/app/app.equalcols.js'
-			,options	: {}
-			,error		: function(){ if(console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function()
-			{
-				// Das Ding kann jederzeit neu abgefeuert werden. Wenn z.B. neue Dinge per AJAX geladen wurden, oder so.
-				$app.equalColumns.init(this.options)
-			}
-		},
-
-
-		/*
-			Sticky
-		*/
-		sticky : {
-			enable		: false
-			,file 		: 'templates/head/js/sticky.js'
-			,options	: {}
-			,error		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function()
-			{
-				let $elems = $('[data-sticky]');
-
-				for (let i = $elems.length; i--;)
-				{
-					$elems.eq(i).sticky(this.options);
-				}
-			}
-		},
-
-		/*
-			Joomla! Suchindex
-
-			$app.finder
-		*/
-		finder: {
-			enable		: false
-			,file 		: 'templates/head/js/app/app.finder.js'
-			,options	: { form : '#mod-finder-searchform', queryinput : '#mod-finder-searchword', results : '#job-search-results' }
-			,condition	: function()
-			{
-				if( $(this.options.form).length === 0 ) return false; // Suchmaske ist nicht da
-				return true;
-			}
-			,error 		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success 	: function()
-			{
-				$app.finder.init( this.options );
-			}
-		},
-		/*
-			Joomla! Suchindex Autocompleter
-			Wird bei Bedarf (wenn im Modul eingeschaltet) von $app.finder nachgeladen
-		*/
-		finderAutocompleter : {
-			enable 	: false // Das soll NICHT(!) eingeschaltet werden, weil es bei Bedarf nachgeladen wird.
-			,file	: 'media/jui/js/jquery.autocomplete.min.js'
-			,error	: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisiert werden.') }
-		},
-
-
-		/*
-			Wegpunkte
-			$app.waypoints
-		*/
-		jqueryNav : {
-			enable		: false
-			,file 		: 'templates/head/js/jquery.nav.js'
-			,error		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function(){}
-		},
-		waypoints : {
-			enable		: false
-			,file 		: 'templates/head/js/app/app.waypoints.js'
-			,options	: 	{
-								node	 		: '#waypoints',
-								targets			: 'section',
-								ignore 			: '',
-								offsetElement 	: '',
-								topId			: 'top'
-							}
-			,error		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function()
-			{
-				let opts = $.extend({makeNew : true}, this.options);
-				$app.waypoints.init(opts);
-			}
-		},
-
 		ganalytics : {
-			enable		: true
+			autoload	: true
 			,file 		: 'templates/head/js/app/app.ganalytics.js'
-			,options	: 	{
-								key 		: '', // Hier den Key eingeben
-								cookiename 	: 'gaoptout'
+			,options	:   {
+								key 		: '', 			// Seitenschlüssel / Key
+								cookiename 	: 'gaoptout' 	// Name des Cookies, der das Opt-Out des Users speichert.
 							}
 			,condition	: function()
 			{
@@ -481,9 +362,106 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				}
 				return true;
 			}
-			,error		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function(){
-				console.log('$app notice: Google Analytics loaded.');
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				if(console) console.log('$app notice: Google Analytics loaded.');
+			}
+		},
+
+		/**
+			AJAX
+		*/
+		ajax : {
+			autoload	: false
+			,file 		: 'templates/head/js/app/app.ajax.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				$app.ajax.init();
+			}
+		},
+
+		/**
+			$app.equalColumns
+		*/
+		equalColumns : {
+			autoload	: false
+			,file 		: 'templates/head/js/app/app.equalcols.js'
+			,options	: {}
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				// Das Ding kann jederzeit neu abgefeuert werden. Wenn z.B. neue Dinge per AJAX geladen wurden.
+				$app.equalColumns.init(this.options)
+			}
+		},
+
+		/**
+			Sticky
+		*/
+		sticky : {
+			autoload	: false
+			,file 		: 'templates/head/js/sticky.js'
+			,options	: {}
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				$('[data-sticky]').each(function() {
+					$(this).sticky($app.extensions.list.sticky.options);
+				});
+			}
+		},
+
+		/*
+			Joomla! Suchindex
+		*/
+		finder: {
+			autoload	: false
+			,file 		: 'templates/head/js/app/app.finder.js'
+			,options	: { form : '#mod-finder-searchform', queryinput : '#mod-finder-searchword', results : '#search-results' }
+			,condition	: function()
+			{
+				if( $(this.options.form).length === 0 ) return false; // Es ist keine Suchmaske vorhanden.
+				return true;
+			}
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success 	: function() {
+				$app.finder.init( this.options );
+			}
+		},
+		/*
+			Joomla! Suchindex Autocompleter
+			Wird bei Bedarf (wenn im Modul eingeschaltet) von $app.finder nachgeladen
+		*/
+		finderAutocompleter : {
+			enable 	: false // Das soll nicht eingeschaltet werden, weil es bei Bedarf nachgeladen wird.
+			,file	: 'media/jui/js/jquery.autocomplete.min.js'
+			,error	: function() { $app.extensions.log('err', this.file); }
+		},
+
+		/*
+			Wegpunkte (One-Page-Navigation)
+		*/
+		jqueryNav : {
+			autoload	: false
+			,file 		: 'templates/head/js/jquery.nav.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
+		},
+		waypoints : {
+			autoload	: false
+			,file 		: 'templates/head/js/app/app.waypoints.js'
+			,options	: {node : '#waypoints', targets : 'section', ignore : '', offsetElement : '', topId : 'top'}
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				let initNav = function() {
+					$app.waypoints.init($.extend({makeNew : true}, this.options));
+				}
+				if(!$app.extensions.list.jqueryNav.available) { // Wir brauchen jquery.nav.js, aber es ist noch nicht geladen
+					$($app).one('jqueryNavReady', function() {
+						initNav();
+					});
+					$app.extensions.load('jqueryNav', true);
+				}
+				else {
+					initNav();
+				}
 			}
 		},
 
@@ -491,17 +469,15 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			Protoslider
 		*/
 		protoslider : {
-			enable		: false
+			autoload	: false
 			,file 		: 'templates/head/js/protoslider.min.js'
-			,options	: {autoplay : true, timeout : 3000}
 			,condition	: function()
 			{
 				if ($('.ptslider').length) return true; // Nur laden, wenn ein Element mit Klasse ptslider da ist
 				return false;
 			}
-			,error		: function(){ if (console) console.log('$app: ' + this.file + ' konnte nicht initialisert werden.') }
-			,success	: function()
-			{
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
 				/*
 					Beispiel Heroslider
 				let heroslider = $('.ptslider.heroslider').protoslider({
@@ -551,6 +527,6 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			}
 		}
 	}
-	// Ende Liste
+	/*********** Ende Liste */
 
 })(jQuery);
