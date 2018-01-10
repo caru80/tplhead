@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params" >
+		<fieldset name="custom">
+
+			<field
+				name="note1"
+				type="note"
+				class=""
+				label="PLG_XFIELDS_NOTE1"
+				description="PLG_XFIELDS_NOTE1_DESC"
+			/>
+			<field
+				name="xfields_attributes"
+				type="text"
+				class="input-xlarge"
+				label="PLG_XFIELDS_ITEM_ATTRIBUTES"
+				description="PLG_XFIELDS_ITEM_ATTRIBUTES_DESC"
+				default=""
+			/>
+			<field
+				name="xfields_hashvalue"
+				type="text"
+				class="input-xlarge"
+				label="PLG_XFIELDS_ITEM_HASH"
+				description="PLG_XFIELDS_ITEM_HASH_DESC"
+				default=""
+			/>
+			<field
+				name="xfields_hide_href"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				label="PLG_XFIELDS_ITEM_HIDE_HREF"
+				description="PLG_XFIELDS_ITEM_HIDE_HREF_DESC"
+				default="0"
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+
+			<field
+				name="xfield_override_link"
+				type="menuitem"
+				label="PLG_XFIELDS_ITEM_OVERRIDE_LINK"
+				description="PLG_XFIELDS_ITEM_OVERRIDE_LINK_DESC"
+			>
+				<option value="">JDEFAULT</option>
+			</field>
+
+		</fieldset>
+	</fields>
+</form>

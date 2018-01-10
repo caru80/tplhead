@@ -1,0 +1,1 @@
+Template Override für mod_custom ohne überflüssiges HTML.

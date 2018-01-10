@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<extension type="package" version="3.7" method="upgrade">
+<name>Template HEAD Package</name>
+<author>Carsten Ruppert</author>
+<creationDate>2017-06-13</creationDate>
+<packagename>tplhead</packagename>
+<version>4.2.0</version>
+<url>http://www.headmarketing.de/</url>
+<packager>Carsten Ruppert</packager>
+<packagerurl>http://www.headmarketing.de/</packagerurl>
+<description>Template HEAD. 4.2 Installationspaket</description>
+<files folder="packages">
+	<file type="plugin" id="overrides" group="system">plg_system_overrides.zip</file>
+	<file type="plugin" id="lesscompiler" group="system">plg_system_lesscompiler.zip</file>
+	<file type="plugin" id="remover" group="system">plg_system_remover.zip</file>
+	<file type="plugin" id="xfields" group="content">plg_content_xfields.zip</file>
+	<file type="template" id="head" client="site">tpl_head.zip</file>
+</files>
+</extension>

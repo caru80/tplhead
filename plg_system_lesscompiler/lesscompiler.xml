@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>System - LESS Compiler</name>
+	<author>Carsten Ruppert</author>
+	<creationDate>2014-07-08</creationDate>
+	<copyright>(C) 2014 Carsten Ruppert, (C) 2012-2013 Andreas Tasch</copyright>
+	<license>GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html</license>
+	<authorEmail>webmaster@headmarketing.de</authorEmail>
+	<authorUrl>www.headmarketing.de</authorUrl>
+	<version>2014.1</version>
+	<description>PLG_LESSC_DESCRIPTION</description>
+	<scriptfile>install.script.php</scriptfile>
+	<files>
+		<file plugin="lesscompiler">lesscompiler.php</file>
+		<folder>less.php</folder>
+    	<filename>index.html</filename>
+		<filename>install.script.php</filename>
+	</files>
+	<media destination="lesscompiler" folder="media">
+		<folder>js</folder>
+		<filename>index.html</filename>
+	</media>
+	<languages folder="languages">
+		<language tag="de-DE">de-DE.plg_system_lesscompiler.ini</language>
+		<language tag="de-DE">de-DE.plg_system_lesscompiler.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+
+				<field
+					name="mode"
+					type="radio"
+					class="btn-group"
+					label="PLG_LESSC_MODE_LABEL"
+					description="PLG_LESSC_MODE_DESC"
+					default="0"
+				>
+					<option value="0">PLG_LESSC_MODE_FRONTEND</option>
+					<option value="1">PLG_LESSC_MODE_BACKEND</option>
+					<option value="2">PLG_LESSC_MODE_ALL</option>
+				</field>
+
+				<field
+					type="spacer"
+				/>
+
+				<field
+					name="site-less"
+					type="text"
+					class="input-medium"
+					label="PLG_LESSC_LESSFILE_LABEL"
+					description="PLG_LESSC_LESSFILE_DESC"
+					default="less/template.less"
+				/>
+
+				<field
+					name="site-css"
+					type="text"
+					class="input-medium"
+					description="PLG_LESSC_CSSFILE_DESC"
+					label="PLG_LESSC_CSSFILE_LABEL"
+					default="css/main.css"
+				/>
+
+				<field
+					name="admin-less"
+					type="text"
+					class="input-medium"
+					label="PLG_LESSC_ADMINLESSFILE_LABEL"
+					description="PLG_LESSC_ADMINLESSFILE_DESC"
+					default="less/template.less"
+				/>
+
+				<field
+					name="admin-css"
+					type="text"
+					class="input-medium"
+					label="PLG_LESSC_ADMINCSSFILE_LABEL"
+					description="PLG_LESSC_ADMINCSSFILE_DESC"
+					default="css/template.css"
+				/>
+
+
+				<field
+					name="note-compiler"
+					type="note"
+					class="text"
+					label="PLG_LESSC_NOTE_COMPILER"
+				/>
+
+				<field
+					name="compiler-type"
+					type="radio"
+					class="btn-group"
+					label="PLG_LESSC_COMPILERTYPE_LABEL"
+					description="PLG_LESSC_COMPILERTYPE_DESC"
+					default="SERVER"
+				>
+					<option value="CLIENT">PLG_LESSC_COMPILERTYPE_CLIENT</option>
+					<option value="SERVER">PLG_LESSC_COMPILERTYPE_SERVER</option>
+				</field>
+
+				<field
+					name="compiler-compress"
+					type="radio"
+					class="btn-group"
+					label="PLG_LESSC_COMPRESSION_LABEL"
+					description="PLG_LESSC_COMPRESSION_DESC"
+					default="1"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+
+				<field
+					name="note-clientcompiler"
+					type="note"
+					class="text"
+					label="PLG_LESSC_NOTE_CLIENTCOMPILER"
+				/>
+
+				<field
+					name="compiler-clientsrc"
+					type="radio"
+					class="btn-group"
+					label="PLG_LESSC_COMPILERCLIENT_LABEL"
+					description="PLG_LESSC_COMPILERCLIENT_DESC"
+					default="CDN"
+				>
+					<option value="LOCAL">PLG_LESSC_COMPILERCLIENT_SRCLOCAL</option>
+					<option value="CDN">PLG_LESSC_COMPILERCLIENT_SRCCDN</option>
+				</field>
+
+				<field
+					name="compiler-clientcdnurl"
+					type="text"
+					class="input-xxlarge"
+					label="PLG_LESSC_CLIENTCOMPILER_CDNURL_LABEL"
+					description="PLG_LESSC_CLIENTCOMPILER_CDNURL_DESC"
+					default="http://cdnjs.cloudflare.com/ajax/libs/less.js/1.7.3/less.min.js"
+				/>
+
+
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

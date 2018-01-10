@@ -1,0 +1,379 @@
+
+TODO:
+------------
+
+
+
+CHANGELOG:
+------------
+
+4.3
+- Template Overrides Bootstrap 3 wieder entfernt, weil tlws. veraltet. Kann bei Bedarf selbst hinzugefügt werden.
+- Ordner assets entfernt
+- video.js entfernt
+- /js/app/app.video.js entfernt
+- /js/app.js $.prepareTransition entfernt
+- /less/components/app.transitionevents.less entfernt
++ /js/app/app.messages.js + LESS /less/components/app.messages.less aktualisiert
++ /js/app/app.equalcols.js aktualisiert: Vereinheitlicht nun die Höhe von Spalten (o.ä.) mit dem gleichen Offset auf der y-Achse.
++ protoslider.js aktualisiert zu 1.0.5
++ protoslider.html5video.js hinzugefügt (Plugin HTML5 Video)
++ jQuery zu 3.2 aktualisiert
++ overlay.js entfernt, weil nicht mehr weiterentwickelt und buggy, und weil es genug Alternativen gibt.
++ Bootstrap aktualisiert zu 3.7 (von 3.5):
+	+ @font-size-base zu 16px geändert (von 14px)
+	+ payload.less hinzugefügt:
+		+ @screen-xl-min hinzugefügt
+		+ .container-xl() hinzugefügt (Mixin)
+		+ .make-xl-column[-push/-pull] hinzugefügt (Mixin)
+		+ .mk-grid-cols hinzugefügt (Mixin)
+		+ .mk-grid-cols-push/-pull hinzugefügt (Mixin)
+		+ .mk-responsive-font-size hinzugefügt (Mixin)
+
+
+
+
+4.2
++ Kompatibilität mit Bootstrap 3
+	+ Overrides für alle relevanten Templates und Layouts (https://github.com/readybytes/joomla-bootstrap3-template)
+	+ Glyphicons komplett durch FontAwesome ersetzt (https://github.com/readybytes/joomla-bootstrap3-template)
++ Pflichtplugin plg_system_overrides hinzugefügt (https://github.com/readybytes/joomla-bootstrap3-template)
+	+ Joomla lädt jQuery v2 standardmäßig aus /js/jquery.min.js
+	+ Joomla lädt Bootstrap v3 JS standardmäßig aus /js/bootstrap.min.js
+	+ Joomla benutzt FontAwesome anstelle von Glyphions
+	+ jQuery Migrate wird nicht geladen !!! (siehe Methode "framework" in /site/libraries/cms/html/jquery.php falls nötig)
+	+ jQuery noConflict wird nicht geladen !!! (siehe Methode "framework" in /site/libraries/cms/html/jquery.php falls nötig)
++ error.php "Entschlackt".
++ FontAwesome aktualisiert
++ sticky.js aktualisiert, berücksichtigt optionales offsetElement
++ app.scroll.js aktualisiert, berücksichtigt optionales offsetElement
++ app.waypoints.js aktualisiert, berücksichtigt optionales offsetElement
++ app.js aktualisiert
+	+ Globale Ladeanzeige (showLoadingIndicator und hideLoadingIndicator)
+	+ getRandomId generiert zufällige Id für HTML Elemente (z.B. globale Ladeanzeige)
+	+ js.cookies aktualisiert
++ app.finder.js aktualisiert (nur mit mod_finder_head)
+	+ Benutzt globale Ladeanzeige
+	+ Berücksichtigt Suchfilter
+	+ Berücksichtigt Taxonomie-/Bereichsfilter (mit Modul: mod_finder_head)
++ app.ajax.js aktualisiert
+	+ Benutzt globale Ladeanzeige
++ Ladeindikator auf "cube-grid" geändert (/less/components/app.loading.less)
++ app.equalcols.js hinzugefügt (Bootstrap-Columns in einer Row mit gleicher Höhe)
++ Joomla Pagination Override aktualisiert zu FontAwesome. Siehe /html/pagination.php und /less/components/jom.pagination.less
++ Bugfix in ajax_loadmodule.php; Die Chrome-Methode (der Modul-Stil) wird nun beim laden eines Moduls anhand der Id korrekt angewendet.
++ plg_system_lesscompiler:
+	+ main.css als Standard eingestellt!
+	+ Plugin wird nach der Installation automatisch aktiviert
++ plg_system_remover wird nach der Installation automatisch aktiviert
++ plg_content_xfields wird nach der Installation automatisch aktiviert
+- Optionen für jQuery aus Template-Parametern entfernt
+- Eigenen Code zum Laden von jQuery aus index.php, component.php und error.php entfernt.
+- app.protoslider.js entfernt
+
+
+
+4.1
+- Viel!
+
+
+
+4.0
+- Nicht kompatibel mit Template Version 3.x
+- Wegen jQuery 2 nicht mehr kompatibel mit Internet Explorer 8.0
+- Polyfill für Media Queries in Internet Explorer <= 8 entfernt (respond.js)
+- $helper ist jetzt TemplateHelper (z.B. TemplateHelper::getMenuItem( 25 ); oder TemplateHelper::getDefaultMenuItem( TemplateHelper::getLangShortcode() ) )
+- helper.php nach /helper/ verschoben
+- logic.inc.php entfernt
+- Ordner inc entfernt
+- /images/icons/ Beispiele hinzugefügt (App- und Favoriten-Icons) – Können online generiert werden: http://www.lmdfdg.com/?q=favoriten+icon+generator
+- app_manifest.json hinzugefügt (Android-Konfiguration für Webapp) – verschieben ins Joomla-root (/), wenn benutzt werden soll: http://www.lmdfdg.com/?q=Android+JSON+Manifest
+- FontAwesome und IcoMoon (OptIn) stehen zur Verfügung
+- Asynchrones nachladen von JavaScript eingebaut
+- $app Helferlein hinzugefügt:
+	- app.messages.js
+	- app.overlay.js
+	- app.video.js
+	- app.protosliders.js – KAPUTT!
+	- app.ajax.js
+	- app.finder.js
+	- app.scroll.js
+	- app.waypoints.js
+- sticky.js hinzugefügt
+- overlay.js hinzugefügt
+- overlay.less hinzugefügt
+- jquery.nav.js hinzugefägt (für app.waypoints.js)
+- /less/components/app.waypoints.less hinzugefügt
+- /assets/ wieder eingefügt mit 3rd-Party Kram
+- Template Ladebildschirm und Code entfernt
+- Template Override für com_users
+- Template Override für mod_login
+- Template Override für mod_menu im Zusammenhang mit plg_xfields (Eigene Attribute in Menüeintrag etc.)
+- Layout Override von /joomla/content/readmore.php hinzugefügt (.btn entfernt, <span> für Icon durch <i> ersetzt, <span> für Linkbeschriftung eingefügt).
+- jQuery Chosen hinzugefügt (OptIn)
+- video.js hinzugefügt (OptIn)
+- JQuery UI hinzugefügt (OptIn) – Muss auf jQuery UI Website an eigene Bedürfnisse angepasst und runtergeladen werden!
+- Neue – funktionierende – Fehlerseite. Noch nicht mobile-ready.
+- Neue component.php hinzugefügt
+- Der Text im Cookiehinweis wird jetzt entweder per Sprachoverride angegeben (Administrator: Erweiterungen > Sprachen > Overrides), oder in den Template-Sprachdateien (wegen Mehrsprachigkeit).
+- icons.less hinzugefügt
+
+
+
+
+
+v3.5.2	2016-03-11
+- Logoauswahl aus Template-Einstellungen entfernt.
+- Icons: Glyphicons abgeschaltet. Font und Styles werden nicht mehr geladen (siehe bootstrap/bootstrap.less)
+- Icons: Font Awesome hinzugefügt: https://fortawesome.github.io/Font-Awesome/icons/
+- Cookie-Hinweis hinzugefügt:
+	- less/components/app.cookienotice.less
+	- html/cookienotice.php
+- app.js:
+	- Cookie Handling hinzugefügt: https://github.com/js-cookie/js-cookie
+	- Methode CookieNotize hinzugefügt
+- HEAD. Logo aktualisiert (!)
+
+
+
+v3.5.1	2016-03-01
+- Methode stripBBCode in helper hinzugefügt.
+
+
+
+v3.5	2016-03-01
+- Fix: error.php hinzugefügt
+- Fix: "Ladebildschirm nur einmal anzeigen" funktioniert wieder
+- Joomla! 3.5 Kompatibilität geprüft
+- Bootstrap auf 3.3.6 aktualisiert
+- jQuery auf 1.12.1 aktualisiert (standard)
+- jQuery 2.2.1 hinzugefügt (optional)
+- jQuery noConflict direkt in jquery-xx.min.js eingetragen (spart 1 http request)
+- jQuery Migartion Plugin ausgeschaltet (Option in Template-Parametern)
+- Bootstrap 2 entfernt
+- Modernizr entfernt
+
+
+v3.0.5	2016-02-16
+- /html/pagination.php hinzugefügt
+
+
+v3.0.4	2015-08-03
+- Bootstrap zu 3.3.5 aktualisiert
+- jQuery zu 1.11.3 aktualisiert
+- Helper aktualisiert
+- app.js aktualisiert
+- error.php repariert
+- component.php repariert
+
+
+v3.0.3	2015-05-22
+- Noch einen Bug in helper korrigiert (verirrtes HTML entfernt).
+
+
+v3.0.2	2015-05-22
+- Bug in helper korrigiert, wenn Template-Parameter nicht verfügbar sind.
+
+
+v3.0.1  2015-04-22
+- Meta-Tags korrigiert
+
+
+
+v3.0 2015-04-02
+- Modernizr aktualisiert
+- html5shiv.js für kleiner IE9 entfernt, weil das in Modernizr integriert ist
+- Der Helper entfernt nun keine Scripts mehr im Document-Header. Bitte Plugin "remover" benutzen. Mit dem Plugin kann man tiefer eingreifen = funktioniert besser.
+- Im Template Code (/inc/logic.inc.php) muss nun gar nichts mehr eingestellt werden
+
+
+
+2015-03-31
+- Anweisung für Chrome Frame in X-UA-Compatible entfernt, weil Chrome Frame eingestellt wurde: <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+- Metadaten aus /inc/logic.inc.php in den Header von index.php verschoben, und Logik aus /inc/helper.inc.php entfernt.
+- Optionalen Meta "robots" geändert von "index, follow" nach "all, noodp":
+	- https://support.google.com/webmasters/answer/79812?hl=de
+	- http://www.bing.com/webmaster/help/which-robots-metatags-does-bing-support-5198d240
+- Systemnachrichten können – auf mehrfachen Wunsch – zum schließen angeklickt werden.
+	- HTML Template ist zu finden in: /html/layouts/joomla/system/message.php
+- Anzeigedauer von Systemnachrichten erhöht von 5 auf 6 Sekunden (in app.js -> options -> hideSysMessageAfter)
+- 3D beschleunigte Animation für Systemnachrichten eingebaut in /less/components/app.sysmessages.less – benötigt Modernizr!
+	- LESS: /less/components/app.sysmessages.less
+- Tote LESS Dateien entfernt
+- Mixin Bug in app.loading.less korrigiert
+- Reihenfolge in require.less geändert – Erst Bootstrap, dann der Rest
+- <meta name="title"> entfernt, weil überflüssig (spätestens wenn das selbe drin steht wie in <title>)
+	- Siehe: https://support.google.com/webmasters/answer/79812?hl=de
+- Diverse Erläuterungen ergänzt
+- jQuery wird jetzt Standartmäßig von lokal geladen.
+
+
+
+2015-02:
+- Bootstrap 3 eingebaut
+- Bootstrap 2 als Option hinzugefügt:
+	- Ordner "less.boostrap2" umbenennen in "less"
+	- in index.php ganz unten anstatt bootstrap3.min.js das Script bootstrap2.min.js laden
+	- Ladebildschirm funktioniert dann NICHT
+- index.php aufgeräumt
+- JavaScripts werden jetzt in index.php ganz unten hinzugefügt
+- StyleSheets werden jetzt wieder im <head> eingetragen
+- Die Template-Konfiguration ist ausgelagert nach /inc/logic.inc.php – Hier muss in der Regel nichts mehr angepasst werden.
+- Ladebildschirm Option eingebaut
+	- LESS: /less/components/app.loading.less
+	- HTML: /html/loadscreen.php
+- app.js aufgeräumt und aktualisiert
+- Neue Struktur im Ordner less
+	- bootstrap3 = Bootstrap 3 LESS Dateien
+	- components = Kram für $app etc.
+	- require.less = wird von template.less importiert, und enthält alle weiteren LESS Dateien zum import
+- Neue LESS Prefixes für Bootstrap Erweiterungen: "extend.XXX.less"
+- Neue LESS Prefixes für Styles, die mit $app zusammenhängen: "app.XXX.less"
+- Ordner "fonts" aktualisiert für Bootstrap 3
+- Ordner "fonts" in Ordner "css" verschoben (wegen LESS Compiler Bug)
+- Neue Struktur im Ordner js
+	- app = Vom Template benötigte Scripts
+	- toolset = Anderes Zeug
+- Ordner images aufgeräumt
+- Beispiele für Apple Touch Icons hinzugefügt
+- Bootstrap Template-Beispiele hinzugefügt im Ordner html (bootstrap.xxx.php)
+- Ordner html aufgeräumt
+
+
+
+
+
+2015.1 - 2015-01-08
+- jQuery aktualisiert (1.11.2)
+- Option zum abschalten von jQuery.noConflict() in den Template-Paramatern hinzugefügt.
+
+
+2014.1.1.e - 2014-10-28
+- Helper aktualisiert: Der Helper berücksichtigt jetzt u.a. beim einbinden von jQuery vom CDN auch das Protokoll, mit dem die Seite aufgerufen wird (HTTP oder HTTPS)
+- app.js aus Karnevalshop24 übernommen
+- template.less aktuallisiert (Hinweis zu SSL)
+
+
+
+2014.1.1.d - 2014-08-06
+- CarouFredSel aktualisiert und dokumentiert
+
+
+
+
+Version 2014.1.1c - 2014-08-04
+- Doppelte LESS imports korrigiert
+- Glyphicons auskommentiert/entfernt
+- Menü Tooltips hinzugefügt in $app
+
+
+
+Version 2014.1.1b - 2014-07-??
+- Include Fehler in Bootstrap korrigiert (Pfade korrigiert, variables.less wurde 2x hinzugefügt etc.)
+- Alten Code in /inc/helper.php, der beim Aufruf von "error.php" einen Error 500 ausgegeben hat :-), korrigiert.
+
+
+Version 2014.1.1 - 2014-07-09
+- Pfade in font.icomoon.less korriegiert
+- Ordner "fonts" ins Hauptverzeichnis Verschoben
+- Bootstrap Bilder (z.B. glyphicons) verschoben nach /images/assets/
+- Ordner /less/jui entfernt
+- Ordner /less/bootstrap hinzugefügt
+- /less/template.less aufgeräumt
+- jquery.fade aktualisiert, z.B.:
+	<div data-behavior="fade" data-fade-speed="1000" data-fade-timeout="5000" ...>
+		<img />
+		<div />
+		...
+	</div>
+
+	app.js macht den Rest. Für alle data-Attribute siehe app.js/setupFades
+
+
+
+
+
+
+
+
+
+Version 2014.1 – ?
+- Bootstrap
+- $app eingebaut (/js/app.js)
+- Template Helper eingebaut
+- Ein paar neue LESS Dateien mit Kram
+- Dropmenu LESS überarbeitet, und Script bugfixes
+- JCE LESS eingebaut (für bearbeiten im JCE)
+- etc...
+
+
+
+
+Version 2013.5 - 2013-10-08
+- Versionierung geändert...
+- Scrollable durch carouFredSel ersetzt
+- error.css korrigiert
+- jquery.easing zu Template-Optionen hinzugefügt
+- Sprachdateien angepasst; Englische Sprachdatei aktualisiert
+- Dropmenu (alt): assets/dropmenu/dropmenu.css – Klassennamen korrigiert
+- Dropmenu (alt): kurze liesmich.txt eingefügt
+
+
+
+Version 2013.2.4 - ?
+- Verschachtelungen in LESS Stylesheets korrigiert
+- Modernizr geändert (Nur noch Tests auf CSS3 Features + html5shiv + Modernizr.load)
+- Verschiedene Versionen von jQuery in Template-Einstellungen übernommen, und CDNs hinzugefügt.
+- Responsive Helper in responsive.less hinzugefügt
+- Dropmenu2 hinzugefügt
+- Kurze LIESMICH.txt hinzugefügt
+
+
+
+Version 2013.2.3 – 2013-07-18
+- Template Parameter: "Eigene Webfont" kann jetzt eine durch Komma getrennte Liste enthalten (meinfont1, meinfont2, ...)
+- /less/styles/common.less: a:hover und a:active haben keine Outline mehr
+- /less/styles/articles.less: Pagination überarbeitet; Rahmen und Padding sind jetzt dem <li> zugewiesen, nicht dem <a> bzw. <span>
+- /less/styles/articles.less: Pagination für Artikel mit Pagebreak hinzugefügt (suche nach: 'pagebreak')
+- editmode.css entfernt weil überflüssig
+
+***
+
+Version 2013.2.2
+- <ul> in Joomla! Systemnachrichten; margin korrigiert
+- forms.less überarbeitet
+- Pagination überarbeitet (ASCII Pfeile)
+- radiobuttons und checkboxen gefixt
+
+***
+
+Version 2013.2.1 – 2013-05-28
+- LESS fixes für IE 7 - 10
+- index.php vereinfachtes einbinden von CSS und JS
+- Template Override "Scrollable" für mod_articles_news hinzugefügt
+- scrollable.less korrigiert
+- Script in component.php hinzugefügt. Drucken-Dialog öffnet jetzt automatisch.
+- Sprachdateien aktualisiert
+- Beispiel für Link "nach oben" in index.php hinzugefügt.
+
+***
+
+Version 2013.2 – 2013-05-24
+- Jede Menge ;-)
+
+***
+
+Version 1.0.0 2013-03-01
+
+- Diverse Stylesheetklassen angelegt.
+- Template in "head" umbenannt.
+- Module Chrome "navblock" hinzugefügt (HTML 5 <nav> Element für Menüs).
+- Module Chrome "navdrophorizontal" hinzugefügt (<nav> mit Dropdown horizontal).
+- Module Chrome "navdropvertical" hinzugefügt (<nav> mit Dropdown vertical).
+- error.php hinzugefügt und Basisstruktur angelegt.
+- component.php hinzugefügt
+- lessCSS Compiler Plugin hinzugefügt
+- Ordner less und template.less hinzugefügt
+- Basis-Struktur in index.php angelegt
+- Sprachdateien für Front- und Backend in Deutsch und Englisch hinzugefügt
+- Keys in Sprachdateien von TPL_BLANK_ in TPL_HEAD_ geändert

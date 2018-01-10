@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5" type="plugin" group="system" method="upgrade">
+	<name>System - Remover</name>
+	<author>Carsten Ruppert</author>
+	<creationDate>2017-05-16</creationDate>
+	<copyright></copyright>
+	<license></license>
+	<authorEmail></authorEmail>
+	<authorUrl></authorUrl>
+	<version>2.0.1</version>
+	<scriptfile>install.script.php</scriptfile>
+	<description>PLG_REMOVER_DESCRIPTION</description>
+	<files>
+		<filename plugin="remover">remover.php</filename>
+		<filename>index.html</filename>
+		<filename>install.script.php</filename>
+	</files>
+	<languages folder="languages">
+		<language tag="de-DE">de-DE.plg_system_remover.ini</language>
+		<language tag="de-DE">de-DE.plg_system_remover.sys.ini</language>
+	</languages>
+
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field
+					name="queries"
+					type="textarea"
+					class="input-xxlarge"
+					rows="10"
+					default="media\/jui\/js\/jquery\.min\.js&#13;&#10;media\/jui\/js\/jquery-noconflict\.js&#13;&#10;media\/jui\/js\/jquery-migrate\.min\.js&#13;&#10;media\/jui\/js\/bootstrap\.min\.js&#13;&#10;media\/jui\/js\/jquery\.ui\.core\.min\.js&#13;&#10;media\/system\/js\/mootools-core\.js&#13;&#10;media\/system\/js\/mootools-more\.js&#13;&#10;media\/system\/js\/combobox\.js&#13;&#10;media\/system\/js\/switcher\.js&#13;&#10;media\/system\/js\/multiselect\.js&#13;&#10;media\/system\/js\/punycode\.js&#13;&#10;media\/system\/js\/mootree\.js&#13;&#10;media\/system\/css\/mootree\.css&#13;&#10;media\/system\/js\/caption\.js&#13;&#10;media\/jui\/css\/bootstrap\.css&#13;&#10;libraries\/cegcore\/assets\/bootstrap&#13;&#10;libraries\/cegcore\/assets\/jquery\/jquery\.js&#13;&#10;\s*jQuery\(window\)\.on\(\'load\'\,\s*function\(\)\s*\{\s*new\s*JCaption\(\'img.caption\'\);\s*}\s*\);\s*&#13;&#10;\s*jQuery\(function\(\$\)\{\s*\$\(\&#34;\.hasTooltip\&#34;\)\.tooltip\(\{\&#34;html\&#34;:\s*true,\&#34;container\&#34;:\s*\&#34;body\&#34;\}\);\s*\}\);\s*"
+					label="PLG_REMOVER_QUERIES"
+					description="PLG_REMOVER_QUERIES_DESC"
+					/>
+
+				<field
+					name="removein"
+					type="textarea"
+					class="input-xlarge"
+					rows="10"
+					default="scripts&#13;&#10;script&#13;&#10;styleSheets&#13;&#10;style&#13;&#10;custom"
+					label="PLG_REMOVER_REMOVE_IN_HEADDATA"
+					description="PLG_REMOVER_REMOVE_IN_HEADDATA_DESC"
+				/>
+			</fieldset>
+		</fields>
+	</config>
+</extension>

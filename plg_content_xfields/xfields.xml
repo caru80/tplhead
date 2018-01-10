@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.0" type="plugin" group="content" method="upgrade">
+	<name>X-Fields</name>
+	<author>Carsten Ruppert</author>
+	<creationDate>2016-12-20</creationDate>
+	<copyright>Copyright (C) 2016 HEAD. MARKETING GmbH</copyright>
+	<license></license>
+	<authorEmail>webmaster@headmarketing.de</authorEmail>
+	<authorUrl>www.headmarketing.de</authorUrl>
+	<version>1.0</version>
+	<scriptfile>install.script.php</scriptfile>
+	<description>Plugin für Custom-Felder</description>
+	<files>
+		<filename plugin="xfields">xfields.php</filename>
+		<filename>index.html</filename>
+		<folder>forms</folder>
+		<folder>language</folder>
+	</files>
+	<languages>
+		<language tag="de-DE">language/de-DE/de-DE.plg_content_xfields.ini</language>
+		<language tag="de-DE">language/de-DE/de-DE.plg_content_xfields.sys.ini</language>
+	</languages>
+</extension>

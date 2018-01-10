@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
+<extension version="3.8" type="template" client="site" method="upgrade">
+	<name>head</name>
+	<creationDate>2017-11-03</creationDate>
+	<author>Carsten Ruppert</author>
+	<authorEmail>webmaster@headmarketing.de</authorEmail>
+	<authorUrl>http://www.headmarketing.de</authorUrl>
+	<copyright>Copyright (c)2017 HEAD. MARKETING-PARTNER</copyright>
+	<license></license>
+	<version>4.3</version>
+	<description>TPL_HEAD_DESCRIPTION</description>
+	<files>
+		<folder>css</folder>
+		<folder>fonts</folder>
+		<folder>helper</folder>
+		<folder>html</folder>
+		<folder>images</folder>
+		<folder>js</folder>
+		<folder>language</folder>
+		<folder>less</folder>
+		<folder>site</folder>
+		<filename>ajax_loadcomponent.php</filename>
+		<filename>ajax_loadmodule.php</filename>
+		<filename>ajax_plain.php</filename>
+		<filename>app_manifest.json</filename>
+		<filename>CHANGELOG.txt</filename>
+		<filename>component.php</filename>
+		<filename>error.php</filename>
+		<filename>index.php</filename>
+		<filename>index.html</filename>
+		<filename>template_thumbnail.png</filename>
+		<filename>templateDetails.xml</filename>
+	</files>
+	<languages folder="language">
+		<language tag="de-DE">de-DE.tpl_head.ini</language>
+		<language tag="de-DE">de-DE.tpl_head.sys.ini</language>
+	</languages>
+	<positions>
+		<position>debug</position>
+		<position>position-0</position>
+		<position>position-1</position>
+		<position>position-2</position>
+		<position>position-3</position>
+		<position>position-4</position>
+		<position>position-5</position>
+		<position>position-6</position>
+		<position>position-7</position>
+		<position>position-8</position>
+		<position>position-9</position>
+		<position>position-10</position>
+		<position>position-11</position>
+		<position>position-12</position>
+		<position>position-13</position>
+		<position>position-14</position>
+		<position>user-1</position>
+		<position>user-2</position>
+		<position>user-3</position>
+		<position>user-4</position>
+	</positions>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+
+				<field
+					name="notecookies"
+					type="note"
+					label="TPL_HEAD_BACK_COOKIESNOTICE_NOTICE"
+					description="TPL_HEAD_BACK_COOKIESNOTICE_NOTICE_DESC"
+				/>
+
+				<field
+					name="cookienotice"
+					type="radio"
+					label="TPL_HEAD_BACK_COOKIENOTICE_LABEL"
+					description="TPL_HEAD_BACK_COOKIENOTICE_DESC"
+					class="btn-group btn-group-yesno"
+
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+
+
+				<field
+					name="item-cookieinfo"
+					type="menuitem"
+					label="TPL_HEAD_COOKIENOTICE_BACK_MENUITEM"
+					description="TPL_HEAD_COOKIENOTICE_BACK_MENUITEM_DESC"
+					published="1"
+
+					default=""
+				>
+					<option	value="">JDEFAULT</option>
+				</field>
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

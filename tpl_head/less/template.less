@@ -1,0 +1,27 @@
+// -- Bootstrap
+@import "variables.less";
+@import "bootstrap/bootstrap.less"; 	// Die zu ladenden Bootstrap-Komponenten können hier angepasst werden.
+@import "payload.less";
+
+// -- Fonts
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i");
+@import "font-awesome/font-awesome.less";
+
+
+// -- Bausteine
+//@import "components/app.finder.less";				// Suchindex NUR MOD_FINDER_HEAD !!! UND app.finder.js !!!
+//@import "components/app.waypoints.less";			// One page Navigation
+@import "components/app.loading.less"; 		 		// verschiedene Ladeanzeigen
+@import "components/app.messages.less";				// Systemnachrichten
+@import "components/app.pagination.less";			// Joomla! Paginierung
+
+//@import "buttons.less";
+//@import "overlay.less";
+//@import "protoslider.less";
+
+
+.row.row-equal > div{
+	.mk-grid-cols(12,6,4,3,@reset: true);
+	margin-bottom: @grid-gutter-width;
+	background-color: blue;
+}

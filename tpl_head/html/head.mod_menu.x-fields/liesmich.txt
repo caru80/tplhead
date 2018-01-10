@@ -1,0 +1,6 @@
+Template Override um Kompatibilität mit xfields-Plugin herzustellen.
+
+- Benutzerdefinierte Attribute im Hyperlink
+- Eigene Hash-Werte in der URL
+- Link überschreiben
+- href-Attribut gegen tabindex="0" ersetzen.

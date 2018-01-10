@@ -1,0 +1,20 @@
+
+.pagination{
+	i{
+		&:before{
+			.fa();
+		}
+		&.start:before{
+			content: @fa-var-fast-backward;
+		}
+		&.backward:before{
+			content: @fa-var-step-backward;
+		}
+		&.forward:before{
+			content: @fa-var-step-forward;
+		}
+		&.end:before{
+			content: @fa-var-fast-forward;
+		}
+	}
+}

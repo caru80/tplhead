@@ -1,0 +1,116 @@
+
+
+a{
+	color: #aaaaaa;
+}
+a:hover{
+	color: #ffffff;
+	text-decoration: none;
+}
+a:focus{
+	outline: none;
+	color: #ff0000;
+	text-decoration: none;
+}
+
+html, body{
+	width: 100%;
+	height: 100%;
+}
+
+body{
+	background: linear-gradient(144deg, #001445, #ce6786, #8a07e3, #00b950, #f7c600);
+	background-size: 1000% 1000%;
+	background-attachment: fixed;
+
+	-webkit-animation: AnimationName 80s ease infinite;
+	-moz-animation: AnimationName 80s ease infinite;
+	animation: AnimationName 80s ease infinite;
+	
+	font: normal 14px/1 "Open Sans", "Helvetica Neue", Helvetia, Arial, Sans, Sans-Serif;
+	
+}
+
+@-webkit-keyframes AnimationName {
+    0%{background-position:10% 0%}
+    50%{background-position:91% 100%}
+    100%{background-position:10% 0%}
+}
+@-moz-keyframes AnimationName {
+    0%{background-position:10% 0%}
+    50%{background-position:91% 100%}
+    100%{background-position:10% 0%}
+}
+@keyframes AnimationName {
+    0%{background-position:10% 0%}
+    50%{background-position:91% 100%}
+    100%{background-position:10% 0%}
+}
+
+
+
+
+#error-page{
+	display: table;
+	height: 100%;
+	width: 100%;
+	
+	text-align: center;
+}
+#error-page > div{
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.error-num,
+.error-text,
+.error-text-internal,
+#error-outro{
+	text-shadow: 2px 2px 2px #333333;
+	color: #ffffff;
+}
+
+.error-num{
+	font-size: 12em;
+	font-weight: 700;
+	line-height: 1;
+}
+
+.error-text-internal{
+	font-size: 1.2em;
+	font-weight: 300;	
+}
+
+.error-text{
+	font-size: 2.5em;
+	margin-top: 1em;
+	font-weight: 300;
+
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+}
+.error-text small{
+	font-size: 0.4em;
+	font-weight: 300;
+}
+
+#error-outro{
+	font-size: 2em;
+	margin-top: 4em;
+	font-weight: 300;
+}
+
+#error-search{
+	/*display: inline-block;*/
+	padding: 3em 0;
+	margin-top: 2em;
+	background-color: rgba(255,255,255,0.4);
+}
+#search-results{
+	padding: 0;
+	margin: 0;
+}

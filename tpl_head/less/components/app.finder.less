@@ -1,0 +1,453 @@
+/*
+	Modul Finder HEAD.
+
+	2016-05-18
+	- Hintergrund ist jetzt immer bei 90% Deckkraft (Lesbarkeit), und wird nicht mehr animiert (Performance).
+
+*/
+
+.finder{
+	font-size: @font-size-base;
+}
+
+.finder .search-tools{
+	text-align: center;
+
+	font-size: 1em; // Die Angabe dieser Schriftgröße definiert die Größe der Eingabefelder. Eine Änderung an diesem Wert vergrößert oder verkleinert die Suchmaske.
+	@media(min-width: @screen-lg-min){ font-size: 1.2em; }
+}
+
+.finder .search-tools > div{
+	display: inline-block;
+	margin-top: 0.75em;
+}
+@media(max-width: @screen-xs-max){
+	.finder .search-tools > div{
+		width: 100%;
+	}
+}
+@media(min-width: @screen-sm-min){
+	.finder .search-tools > div{
+		padding: 0 8px;
+	}
+}
+
+// Felder + Chosen Container + Button
+.finder .search-tools #mod-finder-searchword,
+.finder .search-tools #mod-finder-filterid,
+.finder .search-tools #mod-finder-taxonomyid,
+.finder .search-tools .finder-start{
+	display: inline-block;
+	height: 2.25em;
+	font-size: 1.75em;
+	padding: 0 1em 0 1em;
+	border: none;
+	outline: none !important;
+}
+@media( max-width: @screen-xs-max ){
+	.finder .search-tools #mod-finder-searchword,
+	.finder .search-tools #mod-finder-filterid,
+	.finder .search-tools #mod-finder-taxonomyid,
+	.finder .chosen-container{
+		width: 100% !important;
+	}
+}
+// Vor der Transformation zu chosen-container eine max-width für das filterField
+@media( min-width: @screen-sm-min ){
+	.finder .search-tools #mod-finder-filterid{
+		max-width: 10em;
+	}
+}
+
+
+// Query Eingabe + Filter-Select
+.finder .search-tools #mod-finder-searchword,
+.finder .search-tools #mod-finder-filterid,
+.finder .search-tools #mod-finder-taxonomyid{
+	background-color: @gray-lighter;
+	color: @gray;
+}
+
+// Submit
+.finder .search-tools .finder-start{
+
+	border: none;
+	color: #ffffff;
+	background-color: @brand-primary;
+
+	&:hover{ background-color: lighten(@brand-primary, 7%); }
+	&:focus{ outline: none; }
+
+	span,
+	i{
+		display: inline-block;
+	}
+
+	i + span,
+	span + i{
+		padding-left: 0.35em;
+	}
+
+	i{
+		font-style: normal;
+		font-family: FontAwesome;
+		&:before{
+			line-height: 1em;
+			content: @fa-var-search; // Dein Icon hier
+			}
+	}
+
+}
+
+
+// Chosens CSS suckt!
+// Das hier überschreibt den Standard Chosen Container so weit, dass es so aussieht wie das Feld "Suchbegriff"
+.finder .chosen-container{
+	font-size: inherit !important;
+	margin-top: -0.855em; // Die Scheisse produziert einen Leeraum über dem Feld!
+
+	@media(min-width: @screen-sm-min){
+		width: auto !important;
+		min-width: 16em !important;
+	}
+	@media(max-width: @screen-xs-max){
+		width: 100% !important;
+	}
+	max-width: 100% !important;
+
+	.chosen-single,
+	&.chosen-container-active .chosen-single,
+	&.chosen-container-active.chosen-with-drop .chosen-single{
+		background: @gray-lighter;
+		border: none;
+		box-shadow: none;
+	}
+	.chosen-single{
+		font-size: 1.75em;
+		height: 2.25em;
+		padding: 0 1em 0 1em;
+
+		span, // Label
+		div{  // Pfeil
+			height: inherit;
+			line-height: 2.25em;
+		}
+		div{
+			right: 1em;
+			transition: color 0.15s linear;
+		}
+	}
+	&:hover .chosen-single div{
+		color: @brand-primary;
+	}
+
+	// Auswahl von optionen
+	.chosen-results li.highlighted{
+		background: @brand-primary;
+	}
+}
+
+// Das ist das Dropdown eines Chosen Containers.
+.finder .chosen-container .chosen-drop{
+
+	opacity: 0;
+	transition: opacity 0.3s ease;
+
+	font-size: inherit !important;
+	width: auto !important;
+	max-width: auto !important;
+	height: auto !important;
+	max-height: auto !important;
+	@media(min-width: @screen-sm-min){
+		min-width: 16em !important;
+	}
+
+	left: 50%;
+	transform: translate3d(-50%, 0, 0);
+
+	border: none;
+	margin-top: 0.5em;
+	background-color: darken(@gray-lighter, 7%);
+	overflow: hidden;
+
+	ul{
+		font-size: inherit !important;
+		padding: 0;
+		margin: 0;
+		li{
+			font-size: 1.25em;
+			padding: 0.5em 1em;
+			line-height: 1.25em;
+
+			white-space: nowrap;
+		}
+	}
+
+}
+.finder .chosen-container.chosen-with-drop .chosen-drop{
+	opacity: 1;
+}
+
+
+
+
+
+/*
+	-----------	Auto Completer ------------------------------------------------------------------
+*/
+
+.autocomplete-suggestions{
+	font-size: @font-size-base;
+	// background-color: rgba(255,255,255,0.65);
+	background-color: #dddddd;
+	overflow: auto;
+	margin-top: 1em;
+}
+
+.autocomplete-suggestions .autocomplete-suggestion{
+	white-space: nowrap;
+	overflow: hidden;
+
+	font-size: 1.3em;
+	padding: 0.5em 1em;
+	color: @gray-dark;
+	cursor: pointer;
+
+	&.autocomplete-selected{
+		background-color: desaturate(lighten(@brand-primary, 25%), 45%);
+		color: #ffffff;
+	}
+
+	strong{
+		font-weight: 700;
+		color: @brand-primary;
+	}
+}
+
+.autocomplete-no-suggestion {
+	padding: 2px 5px;
+}
+
+.autocomplete-suggestions strong {
+	font-weight: 600;
+}
+
+.autocomplete-group {
+	padding: 2px 5px;
+}
+
+.autocomplete-group strong {
+	font-weight: bold;
+	font-size: 16px;
+	color: #000;
+	display: block;
+	border-bottom: 1px solid #000;
+}
+
+
+
+/*
+	-----------	Ende Suchfeld ------------------------------------------------------------------
+*/
+
+
+@media( min-width: @screen-sm-min ) and ( max-width: @screen-md-max ){
+	#search-results .search-results-list > span:nth-of-type(2n){ // Spalten Resets
+		.clearfix();
+	}
+}
+@media( min-width: @screen-lg-min ){
+	#search-results .search-results-list > span:nth-of-type(3n){ // Spalten Resets
+		.clearfix();
+	}
+}
+
+#search-results .search-pages-counter{
+	text-align: center;
+	font-size: 1.2em;
+	strong{ font-weight: normal; }
+}
+
+
+
+/*
+	Suchergebnisse Jobs
+*/
+.search-results{
+	font-size: @font-size-base;
+	margin: 2em 0 0 0;
+}
+body.deeper .search-results{
+	min-height: 70px;
+	margin-bottom: 4em;
+}
+
+.search-results .search-results-header{
+	display: none;
+}
+.search-results .search-results-items .item-row{ // <a> !
+	display: block;
+
+	background-color: #ffffff;
+	transition: background-color 0.15s linear;
+
+	&:hover{
+		background-color: @brand-primary;
+	}
+}
+
+.search-results .search-results-items .item-column{
+	color: @text-color;
+}
+
+
+
+
+
+@media( max-width: @screen-xs-max ){
+
+	.search-results .search-results-list{
+		margin-top: 2em;
+	}
+
+	.search-results .search-results-items .item-row{
+		+ .item-row{ margin-top: @grid-gutter-width; }
+
+		border: 1px solid @gray-lighter;
+		background-color: @gray-lighter;
+
+		text-align: left;
+		overflow: hidden;
+	}
+
+	.search-results .item-row .item-column{
+		padding: 1.5em 2em;
+	}
+
+	.search-results .item-row .item-column + .item-column{
+		// margin-top: 1.5em;
+	}
+
+	.search-results .item-row .logo{
+		display: none;
+
+		text-align: center;
+		background-color: #ffffff;
+		img{max-width: 100%;}
+	}
+
+	.search-results .item-row .title{
+		h3, h4{color: @brand-primary;}
+		.item-created{font-size: 0.85em;}
+
+		.company-info{
+			margin-top: 0.75em;
+			> span{display: block};
+		}
+	}
+
+	.search-results .item-row .location,
+	.search-results .item-row .entrydate{
+		display: none;
+	}
+}
+
+
+
+@media( min-width: @screen-sm-min ){
+
+	//.search-results #search-results{}
+
+	.search-results .search-results-list{
+		font-size: @font-size-base;
+		text-align: left;
+		margin-top: 3em;
+		overflow: hidden;
+	}
+
+	// Grid / Tabelle
+	.search-results .search-results-list .item-row{ // <a>
+		.make-row(0px);
+		display: table;
+		width: 100%;
+
+		.item-column{
+			&.logo { .make-sm-column(2, 0px); }
+			&.title{ .make-sm-column(6, 0px); }
+			.make-sm-column(2, 0px);
+			.make-md-column(2, 0px);
+
+			display: table-cell;
+			float: none !important;
+			height: 100%;
+			vertical-align: top;
+
+			img{max-width: 100%; width: 100%; }
+			@media( min-width: @screen-lg-min ){
+				img{max-width: 65%; width: 65%; }
+			}
+		}
+	}
+
+
+	.search-results .search-results-header{
+		display: block;
+		font-weight: 400;
+		position: relative;
+		z-index: 5;
+		padding-top: 1.5em;
+		background-color: #ffffff;
+		box-shadow: 0px 0px 3px 0px #000000;
+
+		.item-row{
+			padding: 1.35em 0;
+			}
+		.item-column{
+			@media(min-width: @screen-md-min){font-size: 1.25em;}
+			color: #ffffff;
+			}
+	}
+
+
+	.search-results .search-results-items{
+
+		padding-bottom: 0.3em;
+
+		.item-row{ // <a> !
+			border: solid @gray-lighter;
+			border-width: 0 1px 0 1px;
+			+ .item-row{
+				border-top: 1px solid @gray-lighter;
+				}
+			}
+
+		.item-column{
+			padding: 1.5em 1em 1em 1em;
+			+ .item-column{ border-left: 1px solid @gray-lighter; }
+			}
+
+		.item-row .item-column + .item-column{ // Selektor separat weil oben in Grid-definition - etwas fummelig - padding auf 0 gesetzt, und das sonst nicht klappt.
+			padding: 1.5em 1em;
+			}
+	}
+
+
+	.search-results .search-results-items .item-column{
+
+		&.logo{text-align: center; vertical-align: middle;}
+
+		&.title{
+			h3, h4{ line-height: 1.3em; font-size: 1.3em; font-weight: 600; color: @brand-primary; margin: 0 0 0.5em 0; }
+		}
+		&.title .item-created{
+			font-size: 0.9em;
+		}
+		&.title .company-info{
+			margin-top: 1.3em;
+			color: @gray-light;
+			> span + span:before{ content: '•'; padding: 0 0.25em; }
+		}
+
+
+	}
+}

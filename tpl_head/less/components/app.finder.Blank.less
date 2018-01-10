@@ -1,0 +1,386 @@
+/*
+	Modul Finder, alternative
+	
+	2016-05-18
+	- Hintergrund ist jetzt immer bei 90% Deckkraft (Lesbarkeit), und wird nicht mehr animiert (Performance).
+	
+*/
+
+
+.finder{
+	font-size: @font-size-base;
+	text-align: center;
+}
+
+
+
+
+/*
+	-- Suchfeld -------------------------------------------------------
+*/
+
+
+
+
+.finder .search-tools{	
+    font-size: 3em; // Hier die Gesamtgröße einstellen, sonst muss hier nichts zur Größenänderung angepasst werden.
+	
+	@media(min-width: @screen-md-min){ font-size: 5.5em; }
+
+    position: relative;
+    text-align: center;
+}
+
+.finder .search-tools input{
+	
+	display: inline-block;
+	
+	background-color: transparent;
+	padding: 0;
+	margin: 0;
+	border: none;
+	width: 100%;
+	padding: 0 0.5em;
+	
+	text-transform: uppercase;
+	font-weight: 700;
+	
+	&,	
+	&:placeholder-shown,
+	&::placeholder{
+		opacity: 1;
+		color: @gray-dark;
+	}
+	&:focus{
+		outline: none !important;
+	//	border: none !important;
+	}
+
+
+	@media( min-width: @screen-sm-min )
+	{
+		width: 10em;
+		padding: 0;
+	}
+	
+	
+	border: 1px solid red !important;
+	
+}
+
+
+
+
+
+.finder .search-tools .finder-start{
+	display: inline-block;
+	
+	display: none !important;
+	
+	position: absolute;
+	top: 0;
+	right: 0;
+	
+	font-size: 0.5em;
+	width: 2em;
+	height: 2em;
+	line-height: 0;
+	border-radius: 2em;	
+	padding: 0;
+	
+	text-align: center;
+	overflow: hidden;
+	border: none;
+	
+	background-color: @brand-primary;
+
+	&:hover{
+		background-color: lighten(@brand-primary, 10%);
+	}
+	&:focus{
+		outline: none;
+	}
+	
+	i{
+		display: inline-block;
+		font-style: normal;
+		color: #ffffff;
+		font-family: FontAwesome;
+		&:before{
+			line-height: 1em;
+			content: @fa-var-search; // Dein Icon hier
+		}
+	}
+	
+}
+
+
+.finder .search-tools label{
+	display: none;
+}
+
+
+
+/*
+	-----------	Auto Completer ------------------------------------------------------------------
+*/
+
+.autocomplete-suggestions{
+	
+	font-size: @font-size-base;
+	
+	
+	background-color: rgba(0,0,0,0.65);
+	overflow: auto;
+	padding: 1em 0;
+
+	//border-radius: 0 0 1em 1em;
+	
+}
+
+.autocomplete-suggestions .autocomplete-suggestion{
+	white-space: nowrap;
+	overflow: hidden;
+	
+	font-size: 1.3em;
+	padding: 0.5em 1em;
+	color: #ffffff;
+	cursor: pointer;	
+	
+	&.autocomplete-selected{
+		background-color: @brand-primary;
+	}
+	
+	strong{
+		font-weight: 700;
+	}
+}
+
+.autocomplete-no-suggestion {
+	padding: 2px 5px;
+}
+
+.autocomplete-suggestions strong {
+	font-weight: 600;
+}
+
+.autocomplete-group {
+	padding: 2px 5px;
+}
+
+.autocomplete-group strong {
+	font-weight: bold;
+	font-size: 16px;
+	color: #000;
+	display: block;
+	border-bottom: 1px solid #000;
+}
+
+
+
+
+/*
+	-----------	Suchergebnisse ------------------------------------------------------------------
+*/
+
+#search-results{
+	
+	margin-top: 4em;
+	
+	.search-results-list{
+		
+		.make-row();
+		
+	}
+	
+	.search-results-list .item-column{
+		.make-xs-column(12);
+		.make-sm-column(6);
+		.make-md-column(6);
+		.make-lg-column(4);
+		padding-bottom: @grid-gutter-width;
+	}
+	
+	
+	.tile .tile-header{
+		font-size: 1.3em;
+	}
+	
+		
+}
+/*
+@media( min-width: @screen-sm-min ) and ( max-width: @screen-sm-max ){
+	#search-results .search-results-list > span:nth-of-type(2n){ // Spalten Resets
+		.clearfix();
+	}		
+}
+*/
+@media( min-width: @screen-sm-min ) and ( max-width: @screen-md-max ){
+	#search-results .search-results-list > span:nth-of-type(2n){ // Spalten Resets
+		.clearfix();
+	}
+}
+@media( min-width: @screen-lg-min ){
+	#search-results .search-results-list > span:nth-of-type(3n){ // Spalten Resets
+		.clearfix();
+	}
+}
+
+#search-results .search-pages-counter{
+	
+	text-align: center;
+	font-size: 1.2em;
+	
+	strong{
+		font-weight: normal;
+	}
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+#search-query-explained {
+
+}
+
+
+#search-query-explained span.term,
+#search-query-explained span.date,
+#search-query-explained span.when,
+#search-query-explained span.branch,
+#search-query-explained span.node,
+#search-query-explained span.op {
+
+}
+
+#search-query-explained span.op {
+
+}
+
+
+
+#search-results li.search-result .mime-pdf {
+	padding-left:20px;
+	background:url(../../system/images/pdf_button.png) no-repeat;
+}
+
+#search-results .search-pagination,
+#search-results .pagination,
+#search-results .search-pages-counter {
+	clear:both;
+	margin:0 auto;
+}
+
+#highlighter-start, #highlighter-end {
+	display:none;
+	height:0;
+	opacity:0;
+}
+
+span.highlight {
+	background-color: lighten(@brand-primary, 55%);
+	font-weight: 600;
+}
+
+// -- Modul
+ul.autocompleter-choices {
+	position:absolute;
+	margin:0;
+	padding: 12px 0 0 0;
+	list-style:none;
+
+	text-align:left;
+	font-size: 22px;
+	z-index:50;
+}
+
+ul.autocompleter-choices li {
+	background:none;
+	position:relative;
+	padding: 0;
+	cursor:pointer;
+	font-weight: 400;
+	font-size:1em;
+	line-height: 52px;
+	border-radius: 26px;
+	padding: 0 22px;
+}
+
+ul.autocompleter-choices li.autocompleter-selected,
+ul.autocompleter-choices li.autocompleter-selected:focus,
+ul.autocompleter-choices li.autocompleter-selected:hover {
+	background-color: rgba(0,0,0,.5);
+	color:#fff;
+}
+
+ul.autocompleter-choices span.autocompleter-queried {
+	font-weight: 600;
+}
+
+ul.autocompleter-choices li.autocompleter-selected span.autocompleter-queried {
+	color: lighten(@brand-primary, 15%);
+}
+
+// -- Komponente
+.autocomplete-suggestions {
+
+	background: #FFF; 
+	cursor: default;
+	
+	background-color: rgba(0,0,0,.65);
+	border-radius: 16px;
+	
+	overflow: auto;
+	-webkit-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64);
+	-moz-box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64);
+	box-shadow: 1px 4px 3px rgba(50, 50, 50, 0.64);
+}
+
+.autocomplete-suggestion {
+	white-space: nowrap;
+	overflow: hidden;
+	padding: 5px 22px;
+	line-height: 150%;
+	color: #ffffff;
+}
+
+.autocomplete-no-suggestion {
+	padding: 2px 5px;
+}
+
+.autocomplete-selected {
+	background: #000000;
+}
+
+.autocomplete-suggestions strong {
+	font-weight: 600;
+}
+
+.autocomplete-group {
+	padding: 2px 5px;
+}
+
+.autocomplete-group strong {
+	font-weight: bold;
+	font-size: 16px;
+	color: #000;
+	display: block;
+	border-bottom: 1px solid #000;
+}
+
+ul#finder-filter-select-list {
+	top: 4em !important;
+}
+
+*/

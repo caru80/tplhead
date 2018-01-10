@@ -1,0 +1,256 @@
+/*
+	Menüknopf...: <a class="btn-nav btn-stripes"><i></i></a>
+	
+	Schließen-Knopf: <a class="btn-nav btn-stripes cross"><i></i></a>
+	
+	Suchen-Knopf: <a class="btn-nav btn-search"><i></i></a>
+*/
+
+
+
+// Menüknopf Farbe
+@btn-stripes-color: @brand-primary;
+@btn-stripes-hover-color: lighten(saturate(@btn-stripes-color, 30%), 5%);
+
+// Schließen-Knopf Farbe
+@btn-x-color: @brand-primary;
+@btn-x-hover-color: lighten(saturate(@btn-x-color, 30%), 5%);
+
+// Suchknopf
+@btn-search-color: @btn-stripes-color;
+@btn-search-hover-color: @btn-stripes-hover-color;
+
+
+
+/*
+	
+	Button Basis
+		
+*/
+.btn-nav{
+	
+	font-size: @font-size-base;
+	
+	width: 2.65em;
+	height: 2.65em;	
+	
+	display: inline-block;
+	position: relative;
+	cursor: pointer;
+
+	line-height: 1;
+	&:focus, &:hover{
+		outline: none;
+		text-decoration: none;
+	}
+}
+
+
+// -- Lupe
+.btn-nav.btn-search i{
+
+	/*
+		ToDo: Auf em umbauen.	
+	*/
+	
+	@line-strength: 4px;
+	
+	position: relative;
+	display: block;
+	.square(100%);
+	
+	&:before, &:after{
+		position: absolute;
+				
+		content: '';
+		display: inline-block;
+		
+		box-shadow: 0px 0px 0px 0px rgba(red(@btn-search-hover-color),green(@btn-search-hover-color),blue(@btn-search-hover-color),0.5);
+	}
+	&:before{ // Lupe Stiel
+		width: 1.45em;
+		height: @line-strength;
+		
+		background-color: @btn-search-color;
+		border-radius: 0 @line-strength @line-strength 0;
+		
+		bottom: 0;
+		right: 0;
+		
+		-webkit-transform-origin: 100% 100%;
+				transform-origin: 100% 100%;
+		
+		-webkit-transform: rotate3d(0,0,1,45deg) translate3d(-(@line-strength / 2), @line-strength / 2, 0);
+				transform: rotate3d(0,0,1,45deg) translate3d(-(@line-strength / 2), @line-strength / 2, 0);
+		
+		-webkit-transition: background-color 0.2s linear, box-shadow 0s ease-out;
+				transition: background-color 0.2s linear, box-shadow 0s ease-out;
+	}
+	
+	&:after{ // Lupe Kreis
+		width: 1.86em;
+		height: 1.86em;
+		border-radius: 100%;
+		
+		top: 0;
+		left: 0;
+
+		border: @line-strength solid @btn-search-color;
+		
+		-webkit-transition: border-color 0.2s linear, box-shadow 0s ease-out;
+				transition: border-color 0.2s linear, box-shadow 0s ease-out;
+	}
+
+	&:hover{
+		&:before, &:after{
+			box-shadow: 0px 0px 0px 5px rgba(red(@btn-search-hover-color),green(@btn-search-hover-color),blue(@btn-search-hover-color),0.0);
+		}
+		&:before{
+			-webkit-transition: background-color 0.2s linear, box-shadow 0.4s ease-out;
+					transition: background-color 0.2s linear, box-shadow 0.4s ease-out;
+			background-color: @btn-search-hover-color;
+		}
+		&:after{
+			-webkit-transition: border-color 0.2s linear, box-shadow 0.4s ease-out;
+					transition: border-color 0.2s linear, box-shadow 0.4s ease-out;
+			border-color: @btn-search-hover-color;
+		}
+	}
+}
+
+
+
+
+
+
+
+/*
+	
+	Menüknopf einfärben:
+	
+	<header>
+		
+		<a class="btn-nav btn-stripes"><i></i></a>
+		
+	</header>
+	
+
+	
+	LESS CSS:
+	
+	header .btn-nav.btn-stripes{
+	   .btn-stripes-colourize(#000000, #000000, #000000, #000000);
+	}
+	
+	@media( max-width: @screen-xs-max ){
+		
+		// Andere Farbe auf kleinen Bildschirmen:
+		
+		header .btn-nav.btn-stripes{
+			.btn-stripes-colourize( #ffffff, #ffffff, #ffffff, #ffffff );
+		}
+	}	
+*/
+.btn-stripes-colourize( @color: @btn-stripes-color, @hover-color: @btn-stripes-hover-color, @active-color: @btn-x-color, @active-hover-color: @btn-x-hover-color ){
+	i, &:before, &:after{
+		background-color: @color;
+		box-shadow: 0px 0px 0px 0px rgba(red(@hover-color),green(@hover-color),blue(@hover-color),0.5);
+	}
+	&:hover{
+		i, &:before, &:after{
+			background-color: @hover-color;
+			box-shadow: 0px 0px 0px 5px rgba(red(@hover-color),green(@hover-color),blue(@hover-color),0.0);
+			}
+	}
+
+	&.active,
+	&.cross{
+		i, &:before, &:after{
+			background-color: @active-color;
+			box-shadow: 0px 0px 0px 0px rgba(red(@active-hover-color),green(@active-hover-color),blue(@active-hover-color),0.5);
+			}
+		&:hover{
+			&:before, &:after{
+				background-color: @active-hover-color;
+				box-shadow: 0px 0px 0px 5px rgba(red(@active-hover-color),green(@active-hover-color),blue(@active-hover-color),0.0);
+				}
+			}
+	}
+}
+
+
+/*
+	Menüknopf	
+	
+	
+*/
+
+.btn-nav.btn-stripes{
+	/*
+		ToDo: Auf em umbauen.	
+	*/
+	
+	
+	@line-strength: 4px;
+	
+	
+	.btn-stripes-colourize();
+
+	
+	i, &:before, &:after{
+		content: '';
+		position: absolute;
+		left: 0;
+		
+		display: block;
+		
+		height: @line-strength;
+		width: 100%;
+		border-radius: @line-strength;
+		
+		-webkit-transition: background-color 0.2s linear, opacity 0.25s ease-out, -webkit-transform 0.25s ease-in-out, margin 0.25s ease-in-out, top 0.25s ease-in-out, box-shadow 0s ease-out;
+				transition: background-color 0.2s linear, opacity 0.25s ease-out, transform 0.25s ease-in-out, margin 0.25s ease-in-out, top 0.25s ease-in-out, box-shadow 0s ease-out;
+	}
+	&:hover{
+		i, &:before, &:after{
+			-webkit-transition: background-color 0.2s linear, opacity 0.25s ease-out, -webkit-transform 0.25s ease-in-out, margin 0.25s ease-in-out, top 0.25s ease-in-out, box-shadow 0.4s ease-out;
+					transition: background-color 0.2s linear, opacity 0.25s ease-out, transform 0.25s ease-in-out, margin 0.25s ease-in-out, top 0.25s ease-in-out, box-shadow 0.4s ease-out;
+			}
+	}
+	
+	
+	i{
+		top: 50%;
+		-webkit-transform: translate3d(0, -50%, 0);
+				transform: translate3d(0, -50%, 0);
+	}
+	
+	&:before{
+		top: 0;
+	}
+	&:after{
+		top: 100%;
+		margin-top: -@line-strength;
+	}
+	
+	// X
+	&.active,
+	&.cross{
+		i{
+			opacity: 0;
+			}
+		&:before{
+			top: 50%;
+			-webkit-transform: rotate3d(0,0,1,-45deg);
+					transform: rotate3d(0,0,1,-45deg);
+			margin-top: -(@line-strength / 2);
+			}
+		&:after{
+			top: 50%;
+			-webkit-transform: rotate3d(0,0,1,45deg);
+					transform: rotate3d(0,0,1,45deg);
+			margin-top: -(@line-strength / 2);
+			}
+	}
+	
+}
