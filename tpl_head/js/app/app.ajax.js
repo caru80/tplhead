@@ -9,7 +9,6 @@
 			css 			: { targetShow : 'show'	}
 		},
 
-
 		init : function()
 		{
 			if( arguments[0] )
