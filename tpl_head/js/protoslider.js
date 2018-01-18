@@ -14,14 +14,14 @@
 
 
 	1.0.3 – 2017-04-20
-	+ delay für Spaltenwechsel kann nun für jeden Auslöser separat eingestellt werden (in options.animations."trigger".delay)
+	+ delay für Spaltenwechsel kann nun für jeden Auslöser separat eingestellt werden (in options.animations.[Auslöser].delay)
 	+ Fix: Korrektur einer Bedingung, die zum Abbruch von Protoslider führt.
-	+ Fix: Korrektur einer Bedingung, die das erneuter Ausführen von _setup (was niemals passieren sollte) verhindert.
+	+ Fix: Korrektur einer Bedingung, die das erneute Ausführen von _setup (was niemals passieren sollte) verhindert.
 	+ 2. Deklaration einer bereits existierenden Variable in _setup entfernt (bei Startverzögerung).
 
 
 	1.0.2 – 2017-04-11
-	- Fix: Fehler in observeViewport wenn autoplay an. Es wird jetzt pausiert.
+	- Fix: Fehler in observeViewport wenn autoplay an. Es wird jetzt pausiert während der Viewport verändert wird.
 
 
 	1.0.1 – 2017-03-24
@@ -30,7 +30,7 @@
 
 
 	v 0.25 – 2017-03-23
-	- Plugins eingebaut
+	- Plugin-Schnittstelle eingebaut
 	- VideoJs Plugin gebaut
 
 
@@ -245,7 +245,7 @@
 				animationIteration 	: 'animationiteration',
 				transitionEnd		: 'transitionend'
 			},
-			'webkitAnimation' : { // Apple/Google/MS-Edge
+			'webkitAnimation' : { // Google (Apple, MS-Edge)
 				animationEnd 		: 'webkitAnimationEnd',
 				animationIteration 	: 'webkitAnimationIteration',
 				transitionEnd		: 'webkitTransitionEnd'
@@ -264,8 +264,8 @@
 		onBeforeAnimation 		: false,	// Wird ausgeführt, bevor eine Animation startet
 		onBeginAnimation 		: false,	// Wird ausgeführt, wenn eine Animation startet
 		onAfterAnimation 		: false,	// nachdem eine Animation beendet wurde
-		onBeginSlideAnimation 	: false,	// ?
-		onAfterSlideAnimation 	: false,	// ?
+		onBeginSlideAnimation 	: false,	// Bevor die Animation eines Slides startet
+		onAfterSlideAnimation 	: false,	// Nachdem die Animation eines Slides beendet wurde
 		onPause 				: false,	// wenn Pause gefeuert wurde
 		onPlay 					: false,	// wenn Play gefeuert wurde
 		onInit					: false,	// Während der INitialisierung, der frühstmögliche Punkt um einzugreifen
@@ -1164,7 +1164,6 @@
 				}
 
 				this.$pagination.find('.current').removeClass('current');
-
 				this.$pagination.children().eq(index).addClass('current');
 			}
 		},
@@ -1185,8 +1184,6 @@
 				{
 					this.pause();
 				}
-
-
 			});
 
 			this.on('touchmove' + this.options.eventNamespace, function(ev)
