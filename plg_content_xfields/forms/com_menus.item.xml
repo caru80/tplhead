@@ -37,7 +37,6 @@
 				<option value="0">JNO</option>
 				<option value="1">JYES</option>
 			</field>
-
 			<field
 				name="xfield_override_link"
 				type="menuitem"
@@ -46,7 +45,15 @@
 			>
 				<option value="">JDEFAULT</option>
 			</field>
-
+			<field
+				name="xfields_customhtml"
+				type="text"
+				class="input-xlarge"
+				label="PLG_XFIELDS_ITEM_CUSTOMHTML"
+				description="PLG_XFIELDS_ITEM_CUSTOMHTML_DESC"
+				filter="safehtml"
+				default=""
+			/>
 		</fieldset>
 	</fields>
 </form>
