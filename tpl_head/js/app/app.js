@@ -1,17 +1,15 @@
 'use strict';
+/*
+ JavaScript Cookie v2.2.0
+ https://github.com/js-cookie/js-cookie
 
-/**
-	JavaScript Cookie v2.2.0
-	https://github.com/js-cookie/js-cookie
-
-	Copyright 2006, 2015 Klaus Hartl & Fagner Brack
-	Released under the MIT license
+ Copyright 2006, 2015 Klaus Hartl & Fagner Brack
+ Released under the MIT license
 */
 (function(m){var h=!1;"function"===typeof define&&define.amd&&(define(m),h=!0);"object"===typeof exports&&(module.exports=m(),h=!0);if(!h){var e=window.Cookies,a=window.Cookies=m();a.noConflict=function(){window.Cookies=e;return a}}})(function(){function m(){for(var e=0,a={};e<arguments.length;e++){var b=arguments[e],c;for(c in b)a[c]=b[c]}return a}function h(e){function a(b,c,d){if("undefined"!==typeof document){if(1<arguments.length){d=m({path:"/"},a.defaults,d);if("number"===typeof d.expires){var k=
 new Date;k.setMilliseconds(k.getMilliseconds()+864E5*d.expires);d.expires=k}d.expires=d.expires?d.expires.toUTCString():"";try{var g=JSON.stringify(c);/^[\{\[]/.test(g)&&(c=g)}catch(p){}c=e.write?e.write(c,b):encodeURIComponent(String(c)).replace(/%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g,decodeURIComponent);b=encodeURIComponent(String(b));b=b.replace(/%(23|24|26|2B|5E|60|7C)/g,decodeURIComponent);b=b.replace(/[\(\)]/g,escape);g="";for(var l in d)d[l]&&(g+="; "+l,!0!==d[l]&&(g+="="+
 d[l]));return document.cookie=b+"="+c+g}b||(g={});l=document.cookie?document.cookie.split("; "):[];for(var h=/(%[0-9A-Z]{2})+/g,n=0;n<l.length;n++){var q=l[n].split("="),f=q.slice(1).join("=");this.json||'"'!==f.charAt(0)||(f=f.slice(1,-1));try{k=q[0].replace(h,decodeURIComponent);f=e.read?e.read(f,k):e(f,k)||f.replace(h,decodeURIComponent);if(this.json)try{f=JSON.parse(f)}catch(p){}if(b===k){g=f;break}b||(g[k]=f)}catch(p){}}return g}}a.set=a;a.get=function(b){return a.call(a,b)};a.getJSON=function(){return a.apply({json:!0},
-[].slice.call(arguments))};a.defaults={};a.remove=function(b,c){a(b,"",m(c,{expires:-1}))};a.withConverter=h;return a}return h(function(){})});d,d.get=function(a){return d.call(d,a)},d.getJSON=function(){return d.apply({json:!0},[].slice.call(arguments))},d.defaults={},d.remove=function(b,c){d(b,"",a(c,{expires:-1}))},d.withConverter=b,d}return b(function(){})});
-
+[].slice.call(arguments))};a.defaults={};a.remove=function(b,c){a(b,"",m(c,{expires:-1}))};a.withConverter=h;return a}return h(function(){})});
 /**
 	Polyfill für Object.keys()
 	From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
@@ -35,7 +33,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 		$window  	: $(window),
 		$document 	: $(document),
-		protocol 	: window.location.protocol,	// URL Schema (http, https)
+		protocol 	: window.location.protocol,	// URL Schema (http:, https:)
 		hostname 	: window.location.hostname,	// Hostname (z.B. www.headmarketing.de)
 
 		/*
@@ -152,10 +150,10 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 			/** Gibt etwas in der Konsole aus: */
 			log : function(msg, type) {
-				let msg = '';
+				msg = '';
 
 				switch(type) {
-					case 'err'
+					case 'err' :
 						msg = 'Fehler: ' + msg + ' konnte nicht geladen werden.';
 					break;
 					default :
@@ -261,8 +259,9 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			@param el – String jQuery-Selektor oder jQuery Objekt
 		*/
 		isInViewport : function(el) {
-			let el 	= $(el),
-				scroll 	= $(document).scrollTop(),
+			el = $(el);
+
+			let scroll 	= $(document).scrollTop(),
 				vIn 	= el.offset().top,
 				vOut 	= el.offset().top + el.outerHeight();
 
@@ -344,38 +343,32 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				$app.ajax.init();
 			}
 		},
-
-		/**
-			Google Analytics
-			Der Autoload kann immer an bleiben, solange kein Key eingegeben wurde macht das gar nichts (siehe: condition).
-		*/
-		ganalytics : {
-			autoload	: true
-			,file 		: 'templates/head/js/app/app.ganalytics.js'
-			,options	:   {
-								key 			: '', 			// Seitenschlüssel / „Property-Key”
-								cookieName 		: 'gaoptout', 	// Name des Cookies, der das Opt-Out des Users speichert.
-								cookieParams 	: { expires : 365, secure : false }
-							}
-			,condition	: function()
-			{
-				let gacookie = Cookies.get(this.options.cookiename);
-				if(gacookie || this.options.key == '') {
-					return false;
-				}
-				return true;
-			}
-			,error		: function() { $app.extensions.log('err', this.file); }
-			,success	: function() {
-				(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-				(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-				m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-				})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-				ga('create', $app.extensions.list.ganalytics.options.key, 'auto');
-				ga('set', 'anonymizeIp', true);
-				ga('send', 'pageview');
-				$app.extensions.log('Google Analytics wurde gestartet.');
-			}
-		},
 	}/*********** Ende Liste */
 })(jQuery);
+
+
+/**
+	Google Analytics
+
+	<a tabindex="0" data-gaoptout>Klick mich für Opt-Out</a>
+*/
+(function() {
+	$app.gaConfig = {
+		gaProperty 		: 'UA-XXXX-Y',	// Property Id
+		optOutCookie 	: 'gaoptout',	// Opt Out Cookie Name
+		expires 		: 3650,			// Tage
+		showMessage 	: true 			// Zeige eine Nachricht, wenn der User den Link klickt.
+	};
+
+	if(Cookies.get($app.gaConfig.optOutCookie)) {
+		window['ga-disable-' + $app.gaConfig.gaProperty] = true;
+	}
+
+	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+	(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+	m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+	})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+	ga('create', $app.gaConfig.gaProperty, 'auto');
+	ga('set', 'anonymizeIp', true);
+	ga('send', 'pageview');
+})();
