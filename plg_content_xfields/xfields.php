@@ -3,7 +3,7 @@ defined ( '_JEXEC' ) or die ( 'Restricted access' );
 
 /**
 	X-Fields 0.2.0
-	CRu.: 2018-01-17
+	CRu.: 2018-02-02
 
 	To do:
 	- Neben dem Kontext auch Anhand des Formularsnamens (siehe API JForm und Ausgabe von $this->form) die zu ladenden Dateien ermitteln.
@@ -23,7 +23,7 @@ class plgContentXfields extends JPlugin {
 */
 	protected 	$autoloadLanguage = true;
 
-	private 	$xmlPath;	// string Interner Pfad zu den XML Dateien mit den Felddefinitionen.
+	private 	$xmlPath;	// string interner Pfad zu den XML Dateien mit den Felddefinitionen.
 	private 	$form; 		// object Das Formular, dessen Ausgabe bevorsteht.
 	private 	$option; 	// string Die aktuell aufgerufene Komponente (der Kontext, z.B. com_content)
 
