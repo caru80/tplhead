@@ -353,8 +353,9 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			autoload	: true
 			,file 		: 'templates/head/js/app/app.ganalytics.js'
 			,options	:   {
-								key 		: '', 			// Seitenschlüssel / „Property-Key”
-								cookiename 	: 'gaoptout' 	// Name des Cookies, der das Opt-Out des Users speichert.
+								key 			: '', 			// Seitenschlüssel / „Property-Key”
+								cookieName 		: 'gaoptout', 	// Name des Cookies, der das Opt-Out des Users speichert.
+								cookieParams 	: { expires : 365, secure : false }
 							}
 			,condition	: function()
 			{

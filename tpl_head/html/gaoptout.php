@@ -11,9 +11,9 @@
 <script type="text/javascript">
 	(function($) {
 		$('[data-gaoptout]').on('click.app.gaoptout', function() {
-			let gac = Cookies.get($app.extensions.list.ganalytics.options.cookiename);
+			let gac = Cookies.get($app.extensions.list.ganalytics.options.cookieName);
 			if(!gac) {
-				Cookies.set($app.extensions.list.ganalytics.options.cookiename, '1', { expires: 31 });
+				Cookies.set($app.extensions.list.ganalytics.options.cookieName, '1', $app.extensions.list.ganalytics.options.cookieParams);
 				$app.messages.show({
 					type : 'html',
 					text : '<div id="gaoptout-msg" class="system-message anayltics message">' +
