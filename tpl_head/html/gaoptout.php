@@ -4,8 +4,6 @@
 		Google Analytics Opt-Out
 
 		Bsp.: <a tabindex="0" data-gaoptout>Klick mich für Opt-Out</a>
-
-		Siehe auch: app.js  ->  $app.extensions.list  ->  ganalytics
 	*/
 ?>
 <script type="text/javascript">
