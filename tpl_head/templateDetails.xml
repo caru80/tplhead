@@ -2,14 +2,14 @@
 <!DOCTYPE install PUBLIC "-//Joomla! 2.5//DTD template 1.0//EN" "http://www.joomla.org/xml/dtd/1.6/template-install.dtd">
 <extension version="3.8" type="template" client="site" method="upgrade">
 	<name>head</name>
-	<creationDate>2017-11-03</creationDate>
+	<creationDate>2018-02-28</creationDate>
 	<author>Carsten Ruppert</author>
 	<authorEmail>webmaster@headmarketing.de</authorEmail>
 	<authorUrl>http://www.headmarketing.de</authorUrl>
-	<copyright>Copyright (c)2017 HEAD. MARKETING-PARTNER</copyright>
+	<copyright>Copyright (c)2018 HEAD. MARKETING GmbH</copyright>
 	<license></license>
-	<version>4.3</version>
-	<description>TPL_HEAD_DESCRIPTION</description>
+	<version>1.0.0</version>
+	<description>Template HEAD.</description>
 	<files>
 		<folder>css</folder>
 		<folder>fonts</folder>
@@ -58,44 +58,10 @@
 		<position>user-3</position>
 		<position>user-4</position>
 	</positions>
-	<config>
+	<!--config>
 		<fields name="params">
 			<fieldset name="basic">
-
-				<field
-					name="notecookies"
-					type="note"
-					label="TPL_HEAD_BACK_COOKIESNOTICE_NOTICE"
-					description="TPL_HEAD_BACK_COOKIESNOTICE_NOTICE_DESC"
-				/>
-
-				<field
-					name="cookienotice"
-					type="radio"
-					label="TPL_HEAD_BACK_COOKIENOTICE_LABEL"
-					description="TPL_HEAD_BACK_COOKIENOTICE_DESC"
-					class="btn-group btn-group-yesno"
-
-					default="0"
-				>
-					<option value="0">JNO</option>
-					<option value="1">JYES</option>
-				</field>
-
-
-				<field
-					name="item-cookieinfo"
-					type="menuitem"
-					label="TPL_HEAD_COOKIENOTICE_BACK_MENUITEM"
-					description="TPL_HEAD_COOKIENOTICE_BACK_MENUITEM_DESC"
-					published="1"
-
-					default=""
-				>
-					<option	value="">JDEFAULT</option>
-				</field>
-
 			</fieldset>
 		</fields>
-	</config>
+	</config-->
 </extension>

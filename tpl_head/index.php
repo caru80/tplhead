@@ -10,9 +10,9 @@
 	$app = JFactory::getApplication();
 	$doc = JFactory::getDocument();
 
-	$Input 	= $app->input;
-	$Cookie = $Input->cookie;
-	$Env	= (object)$Input->getArray(array(
+	$_Input 	= $app->input;
+	$_Cookie 	= $Input->cookie;
+	$_Env		= (object)$Input->getArray(array(
 					'option' 	=> 'STRING',
 					'ctrl'		=> 'STRING',
 					'task'		=> 'STRING',
@@ -78,7 +78,7 @@
 	<link rel="stylesheet" type="text/css" media="screen, handheld" href="<?php echo TemplateHelper::getUri(); ?>/css/main.css" />
   <jdoc:include type="head" />
 </head>
-<body>
+<body<?php echo count($pageclass) ? 'class="'.implode(" ", $pageclass).'"' : '';?>>
 
 	<div class="container">
 		<div class="row row-equal">
@@ -126,36 +126,6 @@
 		<a href="#top" data-scroll>Nach oben</a>
 
 	-->
-
-
-	<!--
-	Wegpunkte/One-Page-Navigation
-
-		<div id="waypoints" style="position: fixed; right: 20px; top: 100px;"></div>
-
-	LESS:
-		/less/components/app.waypoints.less
-
-	JS:
-		/js/jquery.nav.js
-		/js/app/app.waypoints.js
-
-	$app Extension:
-		$app.extensions.list.jqueryNav
-		$app.extensions.list.waypoints
-
-
-	z.B. Einen Wegpunkt (Anker...) für jede <section> in div#waypoints anlegen
-
-	<script type="text/javascript">
-		$(function(){
-			$($app).one('waypointsReady', function(){
-				$app.waypoints.init({ makeNew : true, node : '#waypoints', targets : 'section' });
-			});
-		});
-	</script>
-	-->
-
 
 
 
@@ -255,215 +225,6 @@
 
 	<!--
 
-		Overlay
-
-
-		Bsp.: Standart-Overlay, das für alles benutzt wird, wenn nicht anders angegeben.
-
-		Die Id des Standart-Overlay (ist = overlay) ist definiert in $app.extensions.list.appOverlays.options.defaultOverlay oder auch in den "defaults" von /js/app/app.overlay.js
-
-		data-options='{"trigger":"jQuery Selektor"}' – Der "Trigger" bekommt die Klasse "active", wenn das Overlay geöffnet wird.
-
-		Das Aussehen und die Animationen des Overlays, können komplett in /less/overlay.less geändert werden. Aber überall wo transitions drin sind, müssen auch transitions drin bleiben!
-
-		Die Ladeanzeige kann in den "defaults" von /js/overlay.js überschrieben werden und in /less/components/app.loading.less stehen ein paar zur Auswahl
-
-
-		<div id="overlay" class="overlay" data-options='{"trigger":".btn-nav.btn-stripes"}'>
-			<div class="overlay-header"><div>Ich bin eine optionale Kopfleiste!</div></div>
-			<div class="overlay-wrapper">
-				<div class="overlay-outer">
-					<div class="overlay-inner">
-						<div class="overlay-static">
-
-							Hier statischer Inhalt.
-
-						</div>
-						<div class="overlay-dynamic">
-
-							Hier hineien lädt die Methode load des Overlay den Kram.
-
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-
-
-		Der Trigger für #overlay:
-
-		<a class="btn-nav btn-stripes" tabindex="0" data-overlay><i></i></a>
-
-	-->
-
-	<!--
-		Bsp.: Overlay Suche
-
-
-		data-options='{"hideStaticOnLoad":false}' – Das Element <div class="overlay-static"> (wo das Suchfeld drin ist) soll NICHT ausgeblendet werden, wenn Inhalt nach <div class="overlay-dynamic"> geladen wird.
-
-
-	Der Trigger für #overlay-search:
-
-	<a class="btn-nav btn-search" tabindex="0" data-overlay="#overlay-search"><i></i></a>
-
-	Das Overlay:
-
-	<div id="overlay-search" class="overlay search" data-options='{"trigger":".btn-nav.btn-search","hideStaticOnLoad":false}'>
-		<div class="overlay-wrapper">
-			<div class="overlay-outer">
-				<div class="overlay-inner">
-					<div class="overlay-static">
-						<jdoc:include type="modules" name="position-search" />
-						<script type="text/javascript">
-							/*
-								Die Methode "load" von $app.finder, welche die Suchergebnisse lädt und in $app.finder.options.results anzeigt, überschreiben, und durch den Overlay mit der id "#search-overlay"
-								laden und anzeigen lassen – wie auf headmarketing.dem oder im HEAD.WEB
-
-								siehe auch: $app.extensions.list.finder
-							*/
-							(function($){
-								/*
-									Wir müssen darauf warten, dass das DOM geladen wurde, weil $app erst danach zur Verfügung steht. Alternativ müsste app.js im <head> verlinkt werden
-								*/
-								$(document).ready(function(){
-									/*
-										Dann müssen wir warten, bis $app.finder geladen wurde.
-
-										Jedes erfolreiche laden einer "Erweiterung" löst an $app einen Event aus mit dem Namen: erweiterungReady
-									*/
-									$($app).one('finderReady.app', function(){
-										$app.finder.load = function( url )
-										{
-											$('#overlay-search').overlay().load( url );
-										};
-									});
-								});
-							})(jQuery);
-						</script>
-					</div>
-					<div class="overlay-dynamic"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-
-		Weil das Overlay #overlay-search jetzt die Suchergebnisse lädt und anzeigt, funktioniert nun auch folgendes:
-
-		<a tabindex="0" data-overlay="#overlay-search" data-findquery="Testartikel">Suche nach Testartikel im Overlay</a>
-
-		Der Klick auf den <a> öffnet #overlay-search und löst die Suche nach Testartikel aus.
-
-
-
-		Und eine sinnfreie Nachricht lassen wir anzeigen, wenn #overlay-search geöffnet wird.
-
-	<script type="text/javascript">
-		(function($){
-			$(document).ready(function(){
-				$($app).one('overlayReady.app', function(){
-					$('#overlay-search').overlay().on('afterOpen', function(){
-						$app.messages.show({
-							text : 'Du hast das Such-Overlay aufgemacht, und das hast du toll gemacht!',
-							btn  : 'Danke!',
-							//,btn : false – Kein Button
-							type : 'warning'
-							//,hide : 5000 – Nach 5 Sek. ausblenden
-							//,hide : false – Nicht automatisch ausblenden
-						});
-
-					});
-				});
-			});
-		})(jQuery);
-	</script>
-	-->
-
-
-
-
-	<!--
-
-		VIDEOJS
-
-		Wenn in $app.extensions.list eingeschaltet reicht es einfach den video-Tag – inklusive video.js CSS Klassen (16:9 etc.) – irgendwo zu plazieren...
-
-			<video id="meinvideo" autoplay controls class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered vjs-skin-colors-green">
-				<source src="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4" type="video/mp4">
-			</video>
-
-
-
-		Wenn es nicht eingeschaltet ist:
-
-		video.js Script + Stylesheet nachträglich laden, und Big Buck Bunny von archive.org streamen:
-
-
-		<div id="video-container"></div>
-
-		<a tabindex="0" data-video="https://ia800201.us.archive.org/12/items/BigBuckBunny_328/BigBuckBunny_512kb.mp4"><strong>Film gucken, jetzt!</strong></a>
-
-		<script type="text/javascript">
-			(function($){
-
-				// Das macht nur einen Player...
-
-				var machPlayer = function(datei)
-				{
-
-					$vid = $('<video id="meinvideo" autoplay controls class="video-js vjs-default-skin vjs-16-9 vjs-big-play-centered vjs-skin-colors-green">');
-
-					$datei = $('<source src="' + datei + '" type="video/mp4">');
-
-					$vid.append($datei);
-
-					$('#video-container').append($vid);
-
-					videojs('#meinvideo');
-				}
-
-
-
-				// Das macht den Spaß
-
-				$(document).ready(function(){
-
-					$('[data-video]').on('click.app', function(){
-
-						var $self = $(this);
-
-						if( !$app.extensions.list.videojs.available ) // Video JS ist nicht verfügbar, und muss noch geladen werden.
-						{
-							$app.loadStylesheet( $app.protocol + $app.pathname + '/templates/head/assets/video-js-5.19.0/video-js.css', 'screen');
-
-							$($app).one('videojsReady.app', function(){
-
-								$app.messages.show({ text : 'Gleich geht es los!' }); 			// Noch eine Nachricht, damit der User auch Bescheid weiß!
-
-								machPlayer($self.data('video'));
-							});
-
-							$app.extensions.load('videojs', true); // load( Name Erweiterung, force (weil abgeschaltet) )
-						}
-						else
-						{
-							machPlayer($self.data('video'));
-						}
-
-						$self.off('click.app'); // Weil ein Video mir der gleichen id (und in Chrome sogar die gleiche Datei) nur einmal in die Seite eingefügt werden kann, wird hier onclick entfernt.
-					});
-				});
-			})(jQuery);
-		</script>
-	-->
-
-
-
-
-
-	<!--
-
 	Systemnachrichten
 
 	Template:
@@ -543,15 +304,6 @@
 		})(jQuery);
 	</script>
 	-->
-
-	<?php
-		/**
-			Cookiehinweis (/html/cookienotice.php) von $app.messages anzeigen lassen. siehe auch /html/cookienotice.php */
-		if((bool)$this->params->get('cookienotice', false) && (bool)$Cookie->get('acceptcookies',false) === false ) include JPATH_THEMES . DIRECTORY_SEPARATOR . $this->template . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'cookienotice.php';
-		/**
-			Google Analytics Opt-Out (/html/gaoptout.php) */
-		include JPATH_THEMES . DIRECTORY_SEPARATOR . $this->template . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'gaoptout.php';
-	?>
 	<jdoc:include type="message" />
 	<script type="text/javascript" src="<?php echo TemplateHelper::getUri(); ?>/js/app/app.js"></script>
 	<script type="text/javascript">
