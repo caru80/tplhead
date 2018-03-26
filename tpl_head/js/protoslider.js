@@ -1741,7 +1741,7 @@
 
 		if( self === undefined )
 		{
-			self = new $.protoSlider(options, this);
+			self = new $.Protoslider(options, this);
 		}
 		return self;
 	}
