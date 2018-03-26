@@ -92,7 +92,7 @@
 
 (function($){
 
-	$.protoSlider = function( options, node ){
+	$.Protoslider = function( options, node ){
 		this.$node = $(node);
 
 		if( ! this.$node.length ){
@@ -110,10 +110,10 @@
 	};
 
 
-	$.protoSlider.Plugins = [],
+	$.Protoslider.Plugins = [],
 
 
-	$.protoSlider.defaults = {
+	$.Protoslider.defaults = {
 		autoheight	 				: true,				// Automatische Höhe – Das wird Sinnlos wenn keine Höhe ermittelt werden kann
 
 		/*
@@ -150,6 +150,8 @@
 		swipeThreshold 				: 80,				// Schwelle in Pixeln, die gewischt werden müssen, bevor irgendwas passiert.
 		pauseonswipe				: true,				// Protoslider stoppt, wenn gewischt wurde.
 		swipepause					: 20000,			// Nach pauseonswipe Zeit in Millisekunden nach dem der Autoplay wieder anläuft. 0 = niemals.
+
+		plugins 					: [],
 
 		/* Z-Achsen für Pagninierung und Navigation (wird zu Z-Achsen von slides addiert */
 		zAxis : {
@@ -260,6 +262,7 @@
 
 		/*
 			Public Callback-Funktionen
+			$('.xyz').protoslider({ onXYZ : function(){...} });
 		*/
 		onBeforeAnimation 		: false,	// Wird ausgeführt, bevor eine Animation startet
 		onBeginAnimation 		: false,	// Wird ausgeführt, wenn eine Animation startet
@@ -273,11 +276,11 @@
 		onAfterImagePreload		: false		// Nachdem der Bilder-Preload beendet wurde (wenn er denn lief)
 	};
 
-	$.protoSlider.prototype = {
+	$.Protoslider.prototype = {
 		_init : function( options )
 		{
 			/* Optionen und Defaults zusammenführen zu this.options */
-			this.options = $.extend( true, {}, $.protoSlider.defaults, options );
+			this.options = $.extend( true, {}, $.Protoslider.defaults, options );
 
 			/* Optionen und inline-Optionen aus Attribut "data-ptoptions" zusammenführen */
 			if( this.$node.data('ptoptions') )
@@ -335,20 +338,21 @@
 				this.options.onInit.apply(this);
 			}
 
-			// Plugins initialisieren
-			if( $.protoSlider.Plugins.length > 0 )
+			// Plugins instanzieren:
+			this.options.plugins = this.options.plugins.concat($.Protoslider.Plugins);
+			this.options.plugins = this.options.plugins.filter(function(value, index, self){return self.indexOf(value) === index;}); // https://stackoverflow.com/questions/1960473/get-all-unique-values-in-an-array-remove-duplicates
+			if( this.options.plugins.length > 0 )
 			{
-				for( var i = 0, len = $.protoSlider.Plugins.length; i < len; i++ )
+				for( var i = 0, len = this.options.plugins.length; i < len; i++ )
 				{
-					this[$.protoSlider.Plugins[i]].parent = this;
-					this[$.protoSlider.Plugins[i]]._init();
+					this[this.options.plugins[i]] = new $[this.options.plugins[i]](this);
 				}
 
 				if( typeof this.options.onAfterInitPlugins === 'function' )
 				{
 					this.options.onAfterInitPlugins.apply(this);
 				}
-			}
+			} // ende Plugins
 
 			if(this.options.preload)
 			{
@@ -358,9 +362,6 @@
 			{
 				this._setup();
 			}
-
-
-
 		},
 
 		/*
