@@ -4,11 +4,11 @@
 <author>Carsten Ruppert</author>
 <creationDate>2017-06-13</creationDate>
 <packagename>tplhead</packagename>
-<version>4.2.0</version>
+<version>1.0.1</version>
 <url>http://www.headmarketing.de/</url>
 <packager>Carsten Ruppert</packager>
 <packagerurl>http://www.headmarketing.de/</packagerurl>
-<description>Template HEAD. 4.2 Installationspaket</description>
+<description>Template HEAD. 1.0.1 Installationspaket</description>
 <files folder="packages">
 	<file type="plugin" id="overrides" group="system">plg_system_overrides.zip</file>
 	<file type="plugin" id="lesscompiler" group="system">plg_system_lesscompiler.zip</file>
