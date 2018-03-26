@@ -8,7 +8,7 @@
 <url>http://www.headmarketing.de/</url>
 <packager>Carsten Ruppert</packager>
 <packagerurl>http://www.headmarketing.de/</packagerurl>
-<description>Template HEAD. 1.0.1 Installationspaket</description>
+<description>Template HEAD. 1.0.1h Installationspaket</description>
 <files folder="packages">
 	<file type="plugin" id="overrides" group="system">plg_system_overrides.zip</file>
 	<file type="plugin" id="lesscompiler" group="system">plg_system_lesscompiler.zip</file>
