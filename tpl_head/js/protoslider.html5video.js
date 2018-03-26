@@ -13,29 +13,28 @@
 
 (function($) {
 
-	$.protoSlider.Plugins.push('html5video');
+	$.Protoslider.Plugins.push('ProtosliderHtml5video');
 
-	$.protoSlider.defaults.html5video = {
+	$.Protoslider.defaults.html5video = {
 		pauseOnPlay 		: true,		// Protoslider beim Abspielen eines Videos anhalten, wenn autoplay an ist. Nach dem Ende des Videos läuft Protoslider weiter.
 		autoplay 			: false,		// Videos automatisch abspielen (erzwungen, ansonsten mit: <video data-ptoptions='{"autoplay":true}'  ... >) – !!! <video autoplay ...> würde das Video starten, selbst wenn es noch gar nicht zu sehen ist !!!
 		timeoutAfterPlayback : 100
 	};
 
-	$.protoSlider.prototype.html5video = {
+
+	$.ProtosliderHtml5video = function(parent)
+	{
+		this.parent = parent;
+		this._init();
+	}
+
+	$.ProtosliderHtml5video.prototype = {
 
 		// this.parent ist in diesem Kontext eine protoslider Instanz
 
 		_init : function()
 		{
 			var self = this;
-			/*
-			this.parent.on('beforeSlideOut.ptslider.html5video', function(ev, data)
-			{
-				var video = self.getVideoObject(data.slide);
-				if(video) video.pause();
-			});
-			*/
-
 			this.parent.on('afterSlideIn.ptslider.html5video afterRender.ptslider.html5video', function(ev)
 			{
 				// afterRender wird ausgelöst wenn Protoslider instanziert wird, oder sich die Anzahl der sichtbaren Spalten ändert.

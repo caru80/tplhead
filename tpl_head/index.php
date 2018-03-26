@@ -12,7 +12,7 @@
 
 	$_Input 	= $app->input;
 	$_Cookie 	= $Input->cookie;
-	$_Env		= (object)$Input->getArray(array(
+	$_Env		= (object)$_Input->getArray(array(
 					'option' 	=> 'STRING',
 					'ctrl'		=> 'STRING',
 					'task'		=> 'STRING',
