@@ -194,7 +194,6 @@
   }
 }
 
-
 /**
 	CRu.: Custom – Grid Spalten erzeugen:
 
@@ -229,8 +228,8 @@
 		clear: both;
 	}
 }
-.grid-reset-div(@nth){
-	&:nth-of-type(@{nth}n+1) when(@nth > 1){
+.grid-reset-tagname(@nth, @begin){
+	&:nth-of-type(@{nth}n+@{begin}) when(@nth > 1){
 		display: block;
 		clear: both;
 	}
@@ -343,17 +342,6 @@
 		}
 	}
 }
-
-
-
-.mk-responsive-font-size(@xs: @font-size-base, @sm: @xs, @md: @sm, @lg: @md, @xl: @lg){
-	font-size: @xs;
-	@media(min-width: @screen-sm-min){font-size: @sm}
-	@media(min-width: @screen-md-min){font-size: @md}
-	@media(min-width: @screen-lg-min){font-size: @lg}
-	@media(min-width: @screen-xl-min){font-size: @xl}
-}
-
 
 .mk-grid-cols-pull(@xs: 12, @sm: 6, @md: 4, @lg: 3, @xl: @lg){
 	& when(@xs > 0){.make-xs-column-pull(@xs)};
