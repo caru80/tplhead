@@ -27,11 +27,8 @@
 
 	/**
 		Seitenklassen – CSS Suffixe*/
-		$pageclass = array(
-							($_MenuItem === $app->getMenu()->getDefault(JFactory::getLanguage()->getTag()) ? 'home' : 'deeper' )
-						);
-
 	$_MenuItem = $app->getMenu()->getActive();
+	$pageclass = array(($_MenuItem === $app->getMenu()->getDefault(JFactory::getLanguage()->getTag()) ? 'home' : 'deeper'));
 	if(!empty($_MenuItem))
 	{
 		$pageclass[] = $_MenuItem->params->get('pageclass_sfx','');
