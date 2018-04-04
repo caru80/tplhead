@@ -19,7 +19,6 @@
 		<folder>js</folder>
 		<folder>language</folder>
 		<folder>less</folder>
-		<folder>site</folder>
 		<filename>ajax_loadcomponent.php</filename>
 		<filename>ajax_loadmodule.php</filename>
 		<filename>ajax_plain.php</filename>
