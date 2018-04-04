@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 /*
  JavaScript Cookie v2.2.0
  https://github.com/js-cookie/js-cookie
@@ -296,14 +296,12 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 	$app.extensions.list = {
 		/**
 			emptyTemplate : {
-				autoload	: true
-				file		: 'templates/head/js/',
+				autoload	: true|false
+				file		: 'templates/head/js/...',
 				options		: {},
-				//condition 	: function() {},
-				error		: function() { $app.extensions.log('err', this.file); },
-				success		: function() {
-
-				}
+				//condition : function() {return true|false},
+				error		: function() {$app.extensions.log('err', this.file);},
+				success		: function() {}
 			},
 		*/
 

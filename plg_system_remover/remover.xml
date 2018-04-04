@@ -28,7 +28,7 @@
 					type="textarea"
 					class="input-xxlarge"
 					rows="10"
-					default="media\/jui\/js\/jquery\.min\.js&#13;&#10;media\/jui\/js\/jquery-noconflict\.js&#13;&#10;media\/jui\/js\/jquery-migrate\.min\.js&#13;&#10;media\/jui\/js\/bootstrap\.min\.js&#13;&#10;media\/jui\/js\/jquery\.ui\.core\.min\.js&#13;&#10;media\/system\/js\/mootools-core\.js&#13;&#10;media\/system\/js\/mootools-more\.js&#13;&#10;media\/system\/js\/combobox\.js&#13;&#10;media\/system\/js\/switcher\.js&#13;&#10;media\/system\/js\/multiselect\.js&#13;&#10;media\/system\/js\/punycode\.js&#13;&#10;media\/system\/js\/mootree\.js&#13;&#10;media\/system\/css\/mootree\.css&#13;&#10;media\/system\/js\/caption\.js&#13;&#10;media\/jui\/css\/bootstrap\.css&#13;&#10;libraries\/cegcore\/assets\/bootstrap&#13;&#10;libraries\/cegcore\/assets\/jquery\/jquery\.js&#13;&#10;\s*jQuery\(window\)\.on\(\'load\'\,\s*function\(\)\s*\{\s*new\s*JCaption\(\'img.caption\'\);\s*}\s*\);\s*&#13;&#10;\s*jQuery\(function\(\$\)\{\s*\$\(\&#34;\.hasTooltip\&#34;\)\.tooltip\(\{\&#34;html\&#34;:\s*true,\&#34;container\&#34;:\s*\&#34;body\&#34;\}\);\s*\}\);\s*"
+					default="media\/jui\/js\/bootstrap\.min\.js&#13;&#10;media\/system\/js\/caption\.js&#13;&#10;media\/jui\/css\/bootstrap\.css&#13;&#10;libraries\/cegcore\/assets\/bootstrap&#13;&#10;libraries\/cegcore\/assets\/jquery\/jquery\.js&#13;&#10;\s*jQuery\(window\)\.on\(\'load\'\,\s*function\(\)\s*\{\s*new\s*JCaption\(\'img.caption\'\);\s*}\s*\);\s*&#13;&#10;\s*jQuery\(function\(\$\)\{\s*\$\(\&#34;\.hasTooltip\&#34;\)\.tooltip\(\{\&#34;html\&#34;:\s*true,\&#34;container\&#34;:\s*\&#34;body\&#34;\}\);\s*\}\);\s*"
 					label="PLG_REMOVER_QUERIES"
 					description="PLG_REMOVER_QUERIES_DESC"
 					/>

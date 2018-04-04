@@ -1,7 +1,7 @@
 <?php
 	defined('_JEXEC') or die();
 	/*
-		Dieses Template wird von $app.ajax benutzt, und rendert ein Modul
+		Dieses Template wird von $app.ajax benutzt und rendert ein Modul.
 
 		CRu.: 2017-05-18
 
