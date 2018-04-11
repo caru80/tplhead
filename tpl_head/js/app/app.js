@@ -179,8 +179,8 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				attribs = params.attribs ? ' ' + params.attribs : '';
 
 			// !!! Anm.: Es könnte ungünstig sein, dass auch ein Stylesheet von einer anderen Quelle geladen werden kann.
-			if (href.indexOf('http') == -1) {
-				let href = $app.protocol + '//' + $app.hostname + $app.pathname + '/' + params.url;
+			if (href.indexOf('http:') == -1 || href.indexOf('https:') == -1) {
+				href = $app.protocol + '//' + $app.hostname + $app.pathname + '/' + params.url;
 			}
 
 			if (params.replace) {
