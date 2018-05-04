@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="params">
+		<fieldset name="custom" addfieldpath="/administrator/components/com_content/models/fields">
+			<field
+				name="note-protoslider"
+				type="note"
+				label="Protoslider"
+				description="Für Blog, Blog-Beiträge und Beiträge "
+			/>
+			<field name="protoslider" type="subform"
+			    formsource="/plugins/content/xfields/forms/subform.protoslider.xml"
+				multiple="true"
+			    label="Protoslider"
+				description=""
+				max="10"
+				layout="joomla.form.field.subform.repeatable"
+			/>
+		</fieldset>
+	</fields>
+</form>

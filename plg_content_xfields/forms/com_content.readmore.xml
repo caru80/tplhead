@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fields name="attribs">
+		<fieldset name="custom" addfieldpath="/administrator/components/com_content/models/fields">
+			<field
+				name="note-override"
+				type="note"
+				label="Weiterlesen überschreiben"
+				description=""
+			/>
+			<field
+				name="readmore-override-item"
+				type="menuitem"
+				published="true"
+				label="Link zu Menüeintrag"
+				description="In Kacheldarstellung die Verlinkung von Weiterlesen mit einem Menüeintrag überschreiben."
+			>
+				<option	value="">Keiner</option>
+			</field>
+			<field
+				name="readmore-override-article"
+				type="modal_article"
+				class="input-xlarge"
+				edit="true"
+				clear="true"
+				label="Link zu Beitrag"
+				description="In Kacheldarstellung die Verlinkung von Weiterlesen mit einem Beitrag überschreiben."
+			/>
+			<field
+				name="readmore-override-url"
+				type="text"
+				label="Link zu URL"
+				description="In Kacheldarstellung die Verlinkung von Weiterlesen mit einer URL überschreiben."
+				hint="http://www.domain.tld"
+			/>
+			<field
+				name="readmore-blank"
+				type="radio"
+				class="btn-group btn-group-yesno"
+				default="0"
+				label="In neuem Fenster öffnen"
+				description=""
+			>
+				<option value="0">JNO</option>
+				<option value="1">JYES</option>
+			</field>
+		</fieldset>
+	</fields>
+</form>

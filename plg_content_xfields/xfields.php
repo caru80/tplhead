@@ -2,12 +2,9 @@
 defined ( '_JEXEC' ) or die ( 'Restricted access' );
 
 /**
-	X-Fields 0.2.0
-	CRu.: 2018-02-02
-
-	To do:
-	- Neben dem Kontext auch Anhand des Formularsnamens (siehe API JForm und Ausgabe von $this->form) die zu ladenden Dateien ermitteln.
-
+*	X-Fields 0.3.0
+*	CRu.: 2018-04-30
+*
 */
 
 
@@ -23,9 +20,17 @@ class plgContentXfields extends JPlugin {
 */
 	protected 	$autoloadLanguage = true;
 
-	private 	$xmlPath;	// string interner Pfad zu den XML Dateien mit den Felddefinitionen.
+	private 	$xmlPath;	
 	private 	$form; 		// object Das Formular, dessen Ausgabe bevorsteht.
 	private 	$option; 	// string Die aktuell aufgerufene Komponente (der Kontext, z.B. com_content)
+	private		$view; 		// string Der aktuelle View (z.B. article)
+
+	/**
+		Suche in folgenden Verzeichnissen nach weiteren Felddefinitionen:
+	*/
+	private static $additonalPath = array(
+										JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_articles_head' . DIRECTORY_SEPARATOR . 'xfields'
+									);
 
 	/**
 		Parameters (https://docs.joomla.org/Plugin/Events/Content#onContentPrepareForm)
@@ -37,59 +42,57 @@ class plgContentXfields extends JPlugin {
 	{
 		$app = JFactory::getApplication();
 
-		if( $app->isAdmin() )
-		{
-			$this->form 	= $form;
-			$this->xmlPath 	= __DIR__ . '/forms';
-			$this->option 	= $app->input->get('option');
+		if(!$app->isAdmin()) return true;
+		
+		$this->form 	= $form;
+		$this->option 	= $app->input->get('option','STRING','');
+		$this->view 	= $app->input->get('view','STRING','');
 
-			$this->inject( $this->getFormDefinitions() );
-		}
-
+		$this->xmlPath = array(__DIR__ . '/forms');
+		$this->getAdditionalPath();
+		$this->loadFormDefinitions();
+		
 		return true;
 	}
 
 	/**
-		Fügt die Felddefinitionen ein.
+		Prüfe, ob die Ordner aus $additonalPath existieren, und füge Sie in $this->xmlPath ein.
 	*/
-	private function inject($forms = array())
+	private function getAdditionalPath()
 	{
-		JForm::addFormPath($this->xmlPath);
-		/**
-			loadFile Arguments:
-			$file 			- string The filesystem path of an XML file.
-			$reset (true) 	- string Flag to toggle whether form fields should be replaced if a field already exists with the same group/name.
-			$xpath (false) 	- string An optional xpath to search for the fields.
-		*/
-		foreach($forms as $file)
-		{
-			$this->form->loadFile($this->xmlPath . DIRECTORY_SEPARATOR . $file, false);
+		foreach(self::$additonalPath as $path) {
+			if(JFolder::exists($path)) $this->xmlPath[] = $path;
 		}
 	}
 
-
 	/**
-		Gibt ein Array mit den je nach Kontext zu ladenden Felddefinitionen zurück, oder ein leeres Array.
+		Fügt die Felddefinitionen ein, und lädt ggf. Sprachdateien.
 	*/
-	private function getFormDefinitions()
+	private function loadFormDefinitions()
 	{
-		jimport('joomla.filesystem.folder');
+		JForm::addFormPath($this->xmlPath);
+		$forms = array();
 
-		$forms 		= JFolder::files($this->xmlPath, '.xml');
-		$contextual	= array();
-
-		if(count($forms))
+		foreach($this->xmlPath as $path)
 		{
-			foreach($forms as $i => $filename)
+			$files = JFolder::files($path, '.xml');
+
+			if(count($files))
 			{
-				$contextPrefix = substr($filename, 0, strpos($filename,'.'));
-				if($contextPrefix === $this->option)
+				foreach($files as $i => $filename)
 				{
-					$contextual[] = $filename;
+					$fileContext = explode('.', $filename);
+
+					if($fileContext[0] === $this->option) {
+						// Lade die Felddefinitionen
+						$this->form->loadFile($path . DIRECTORY_SEPARATOR . $filename, false);
+						// Lade die Sprachdatei, wenn vorhanden
+						JFactory::getLanguage()->load(implode('.', array_slice($fileContext, 0, count($fileContext) -1)), $path, JFactory::getLanguage()->getTag());
+					}
 				}
 			}
 		}
-		return $contextual;
+		return;
 	}
 }
 ?>

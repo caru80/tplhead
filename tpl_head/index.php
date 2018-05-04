@@ -2,7 +2,7 @@
 	defined('_JEXEC') or die;
 
 	/**
-		Template Head 1.1.0
+		Template Head 1.2.0
 	*/
 
 	$tpl_use_app_icons = false; // true = App-Icons, Android Manifest und "Apple Mobile Web App" anwenden. false = nur /templates/head/images/icons/favicon.png benutzen
@@ -61,19 +61,15 @@
 </head>
 <body<?php echo isset($pageclass) ? ' class="'.implode(" ", $pageclass).'"' : '';?>>
 
-	<div class="container">
-		<div class="row">
-			<div>
-				Das ist...
-			</div>
-			<div>
-				...nur...
-			</div>
-			<div>
-				...ein Test
-			</div>
-		</div>
-	</div>
+	<?php
+		/**
+			Protoslider für com_content (Kategorien und Beiträge)*/
+		if($_Env->option === 'com_content') 
+		{
+			echo JLayoutHelper::render('head.protoslider');
+		}
+	?>
+
 
 	<!--
 
