@@ -11,6 +11,50 @@
 	overflow: hidden;
 }
 
+// -- Hero-Slider
+// Ein optionaler Style für einen Protoslider, der als Banner angezeigt wird. – So wie auf ALLEN Wesbites, die wir bauen.
+.ptslider.heroslider {
+	height: 400px; // -- Auf Smartphones, wenn die Addressleiste vom Browser ausgeblendet wird, verändert sich der Viewport und wenn Protoslider eine vh Angabe als Höhe hat, „zuckt” es.
+	@media(min-width: @screen-sm-min){height: 75vh;}
+	
+	.ptslider-wrapper,
+	.ptslider-item {
+		height: 100%;
+	}
+
+	.ptslider-item{
+		background-size: cover;
+		background-position: center;
+	}
+}
+// -- Hero-Slider auf Unterseiten
+// In <body> wird vom Template auf Unterseiten automatisch die Klasse .deeper eingetragen.
+.deeper .ptslider.heroslider {
+	height: 400px; // -- Auf Smartphones, wenn die Addressleiste vom Browser ausgeblendet wird, verändert sich der Viewport und wenn Protoslider eine vh Angabe als Höhe hat, „zuckt” es.
+	@media(min-width: @screen-sm-min){height: 50vh;}
+}
+
+
+/*
+	Protoslider mit Videos
+*/
+.ptslider .ptslider-item video { // Videos werden auf Handys nicht angezeigt.
+	.hide();
+}
+@media(min-width: @screen-md-min) {
+	.ptslider .ptslider-item video {
+		.show();
+	}
+	// -- Video als Cover (wie „background-size: cover; background-position: center;” für Hintergrundbilder)
+	.ptslider .ptslider-item video.cover{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate3d(-50%,-50%,0);
+		min-width: 100%;
+		min-height: 100%;
+	}
+}
 
 
 /* -- Slides */
@@ -23,15 +67,16 @@
 
 	-webkit-transform: translate3d(0,0,0);
 			transform: translate3d(0,0,0);
+
+	img{
+		max-width: 100%;
+	}
 }
 
-.ptslider .ptslider-item img{
-	max-width: 100%;
-}
 
 /* Aktive Slides */
-.ptslider .ptslider-item.ptin{
-}
+//.ptslider .ptslider-item.ptin{
+//}
 
 /* -- Folgende - sehr wichtige - Zeilen erzwingen die Sichtbarkeit eines Slide während eine Animation läuft (Animates.css und Magic.css) */
 .ptslider .ptslider-item.animated,
@@ -52,11 +97,9 @@
 	
 	padding: 1em 2em 3em 2em;
 	background-color: rgba(0,0,0,0.8);
-	font-weight: 300;
+	font-weight: 400;
 }
 */
-
-
 
 
 /* -- Pagination */
@@ -66,11 +109,11 @@
 	right: 0;
 	bottom: 10px;
 	text-align: center;
-}
-.ptslider.white .ptslider-pagination{
-	position: relative;
-	margin-top: 1em;
-	bottom: auto;
+	@media(min-width: @screen-sm-min) { 
+		text-align: right; 
+		bottom: 20px;
+	}
+	margin-right: 20px;
 }
 
 /* -- Ein Umschalter in der Pagination */
@@ -80,10 +123,9 @@
 	height: 18px;
 	
 	background-color: rgba(red(@brand-primary),green(@brand-primary),blue(@brand-primary),0.2);
-	border-radius: 100%;
 	border: 2px solid @brand-primary;
 	cursor: pointer;
-	
+
 	& + .ptslider-pager{
 		margin-left: 5px;
 	}
@@ -92,7 +134,7 @@
 			transition: background-color 0.15s ease-in-out;
 
 	&:hover{
-		background-color: lighten(@brand-primary, 10%);
+		background-color: lighten(@brand-primary, 25%);
 	}
 	
 	// Aktiv
@@ -100,8 +142,6 @@
 		background-color: @brand-primary;		
 	}
 }
-
-
 
 
 /* -- Vor- und Zurück-Buttons */
@@ -195,6 +235,10 @@
 }
 
 
+/*
+	Die Ladeanzeige
+*/
+// -- Der Wrapper für die Ladeanzeige
 .ptslider .ptslider-preload{
 
 	position: relative;
@@ -207,10 +251,8 @@
 	&.visible{
 		display: block;
 	}
-
 }
-
-
+// -- Die Ladeanzeige
 .ptslider .ptslider-indicator{
 	position: absolute;
 	top: 50%;
@@ -250,8 +292,7 @@
 				animation-delay: -1.0s;
 	}
 }
-
-
+// -- Die Animation der Ladeanzeige
 @-webkit-keyframes sk-bounce {
 	0%, 100% {
 		-webkit-transform: scale(0.0)
@@ -260,7 +301,6 @@
 		-webkit-transform: scale(1.0)
 	}
 }
-
 @keyframes sk-bounce {
 	0%, 100% { 
 		-webkit-transform: scale(0.0);

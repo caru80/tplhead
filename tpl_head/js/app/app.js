@@ -113,7 +113,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 				$app.extensions.load('meinScript')
 			*/
-			load : function(index, force = false)
+			load : function(index, force)
 			{
 				let name, ext;
 
@@ -236,6 +236,9 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			Verberge Ladeindikator
 		*/
 		hideLoadingIndicator : function (id) {
+
+			id = typeof id === 'object' ? id.id : id;
+
 			if (id)	{
 				$((id.indexOf('#') == 0 ? id : '#' + id)).remove();
 				return true;
@@ -340,6 +343,20 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			,success	: function() {
 				$app.ajax.init();
 			}
+		},
+		
+		/**
+			Protoslider + HTML5 Video Plugin
+		*/
+		protoslider : {
+			autoload	: false
+			,file 		: 'templates/head/js/protoslider.js'
+			,condition 	: function(){
+				if($('.ptslider').length) return true;
+				return true;
+			}
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {}
 		},
 	}/*********** Ende Liste */
 })(jQuery);

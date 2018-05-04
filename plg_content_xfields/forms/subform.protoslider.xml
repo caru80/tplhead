@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset name="section1" label="Section1">
+        <field
+			name="image_url"
+			type="media"
+			class="input-xlarge"
+			label="Bild"
+			description="Ein Bild anzeigen. Oder ein Posterbild für ein Video anzeigen."
+		/>
+		<field
+			name="video_url"
+			type="filelist"
+			directory="videos"
+			hide_default="true"
+			default=""
+			filter="(.\.mp4)"
+			label="Video"
+			description="Wenn gewählt, wird diese Video abgespielt."
+		/>
+		<field
+			name="video_cover"
+			type="radio"
+			class="btn-group"
+			default="0"
+			label="Cover"
+			description="Video als Cover – wie background-size: cover"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="video_autoplay"
+			type="radio"
+			class="btn-group"
+			default="0"
+			label="Autoplay"
+			description="Autoplay wird automatisch mit Cover kombiniert."
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="video_controls"
+			type="radio"
+			class="btn-group"
+			default="0"
+			label="Steuerelemente"
+			description="Videoplayer Steuerelemente anzeigen?"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="video_loop"
+			type="radio"
+			class="btn-group"
+			default="0"
+			label="Schleife"
+			description="Video in Schleife laufen lassen."
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="video_mute"
+			type="radio"
+			class="btn-group"
+			default="0"
+			label="Stumm"
+			description="Video in Schleife laufen lassen."
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+        <field
+			name="image_caption"
+			type="textarea"
+			label="Bildunterschrift"
+			description="Einen Text über dem Bild oder Video anzeigen. &lt;b&gt;HTML ist erlaubt&lt;/b&gt;."
+			cols="40"
+			rows="8"
+			filter="raw"
+		/>
+    </fieldset>
+</form>

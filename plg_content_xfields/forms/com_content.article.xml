@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<form>
-	<fields name="attribs">
-		<fieldset name="custom" addfieldpath="/administrator/components/com_content/models/fields">
-			<!-- Nix -->
-		</fieldset>
-	</fields>
-</form>
