@@ -116,14 +116,16 @@ if(isset($params))
 		}
 
 		$(function() {
-			$($app).one('protosliderReady', function() {
-				initProtoslider();
+			$($app).one('extensionsReady', function() {
+				$($app).one('protosliderReady', function() {
+					initProtoslider();
+				});
+				<?php /* Wir laden Protoslider manuell, falls er abgeschaltet ist */?>
+				if(!$app.extensions.list.protoslider.available) { 
+					if(console) console.log('Protoslider layout is requesting protoslider.js...');
+					$app.extensions.load('protoslider', true);
+				}
 			});
-			<?php /* Wir laden Protoslider manuell, falls er abgeschaltet ist */?>
-			if(!$app.extensions.list.protoslider.available) { 
-				if(console) console.log('Protoslider layout is requesting protoslider.js...');
-				$app.extensions.load('protoslider', true);
-			}
 		});
 
 		<?php /* Hier setzen wir einen Event Listener auf jedes mod_articles_head */?>
