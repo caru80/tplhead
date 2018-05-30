@@ -1,6 +1,9 @@
 /*
-	Protoslider 1.0.5
+	Protoslider 1.0.6
 	Carsten Ruppert
+
+	1.0.6 - 2018-05-30
+	+ Fix: Einen Bug in play() korrigiert, weil Internet Explorer (alle Versionen) kein Number.isInteger kann, und einen Fehler in die Konsole geschrieben hat: https://docs.microsoft.com/en-us/scripting/javascript/reference/number-isinteger-function-number-javascript
 
 	1.0.5 – 2017-10-16
 	+ Fix in changeRow: Animation-Delay Timeout nur wenn this.State.cols > 1
@@ -1656,15 +1659,13 @@
 
 			@param delay – Optionale Zeit in Millisekunden – anstelle von options.timeout
 		*/
-		play : function()
+		play : function(delay)
 		{
 			this.clearAutoplayTimeout();
 
+			// if( this.$slides.length < 2 ) return;
 
-			if( this.$slides.length < 2 ) return;
-
-
-			if( !this.options.loop && (this.State.row + 1) == this.State.rows )
+			if( !this.options.loop && (this.State.row + 1) == this.State.rows || this.$slides.length < 2 )
 			{
 				this.pause();
 				return;
@@ -1672,8 +1673,9 @@
 
 			this.State.paused = false;
 
-			var self 	= this,
-				delay 	= arguments.length > 0 && Number.isInteger( arguments[0] ) ? arguments[0] : this.options.timeout;
+			var self 	= this;
+			
+			delay = !isNaN(parseInt(delay)) ? delay : this.options.timeout;
 
 			this.State.playtimer = window.setTimeout( function()
 			{
