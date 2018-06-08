@@ -6,7 +6,45 @@
 				name="note-protoslider"
 				type="note"
 				label="Protoslider"
+				description="Für Blog, Blog-Beiträge und Beiträge.&lt;br&gt; Siehe Layout: /templates/head/html/layouts/head/protoslider.php"
+			/>
+
+			<field 
+				name="preview_protoslider_options"
+				label="Vorschau Protoslider Optionen"
+				description="Protoslider Optionen in JSON Syntax"
+				type="textarea"
+				cols="80"
+				rows="4"
+				default="{&quot;autoheight&quot;:true,&quot;navigation&quot;:false}"
+				hint="JSON: {&quot;option&quot;:&quot;wert&quot;,...}"
+			/>
+			
+			<field 
+				name="preview_protoslider" 
+				type="subform"
+			    formsource="/plugins/content/xfields/forms/subform.protoslider.xml"
+				multiple="true"
+			    label="Vorschau Protoslider (Blog Beiträge, mod_articles_head)"
+				description=""
+				max="10"
+				layout="joomla.form.field.subform.repeatable"
+			/>
+			<field
+				name="note-protoslider"
+				type="note"
+				label="Protoslider"
 				description="Für Blog, Blog-Beiträge und Beiträge "
+			/>
+			<field 
+				name="protoslider_options"
+				label="Protoslider Optionen"
+				description="Protoslider Optionen in JSON Syntax"
+				type="textarea"
+				cols="80"
+				rows="4"
+				default="{&quot;autoheight&quot;:false}"
+				hint="JSON: {&quot;option&quot;:&quot;wert&quot;,...}"
 			/>
 			<field name="protoslider" type="subform"
 			    formsource="/plugins/content/xfields/forms/subform.protoslider.xml"
