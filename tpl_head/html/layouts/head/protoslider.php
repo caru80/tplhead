@@ -10,17 +10,22 @@ $contentId = 0;
 
 if(isset($displayData)) // $displayData wurde übergeben und enthält einem Blog-Beitrag oder einen Beitrag aus einem mod_articles_head.
 {
-	// Blgobeitrag
-	JLoader::register('ContentModelArticle', JPATH_SITE . '/components/com_content/models/article.php');
+    $settings_prefix = 'preview_';
+    $ptslider_class  = 'preview';
 
-	$settings_prefix = 'preview_';
-	$ptslider_class  = 'preview';
+    if(isset($displayData->type) && $displayData->type === 'category') {
+        $params = new JRegistry($displayData->params);
+    }
+    else {
+        // Blgobeitrag oder mod_articles_head
+        JLoader::register('ContentModelArticle', JPATH_SITE . '/components/com_content/models/article.php');
 
-	$contentId = $displayData->id;
+        $contentId = $displayData->id;
 
-	$artModel 	= new ContentModelArticle();
-	$article 	= $artModel->getItem($contentId);
-	$params 	= new JRegistry($article->attribs);
+        $artModel 	= new ContentModelArticle();
+        $article 	= $artModel->getItem($contentId);
+        $params 	= new JRegistry($article->attribs);
+    }
 }
 else if(JFactory::getApplication()->input->get('view', '', 'STRING') === 'article')
 {
@@ -92,7 +97,9 @@ if(isset($params))
 				if($item->image_caption != ''):
 			?>
 						<div class="item-caption">
-							<?php echo $item->image_caption;?>
+							<div>
+								<span><?php echo $item->image_caption;?></span>
+							</div>
 						</div>
 			<?php
 				endif;
@@ -103,47 +110,53 @@ if(isset($params))
 ?>
 		</div>
 	</div>
-</div>
-<script>
-	'use strict';
-	(function($) {
-		var initProtoslider = function() {
-			$('#ptslider-<?php echo JFactory::getApplication()->input->get('view', '', 'STRING');?>-<?php echo $contentId;?>').protoslider();
-			if($app.equalColumns) {
-				$app.equalColumns.destroy();
-				$app.equalColumns.init();
-			}
-		}
 
-		$(function() {
-			$($app).one('extensionsReady', function() {
+	<script>
+		'use strict';
+		(function($) {
+			var initProtoslider = function() {
+
+				$('#ptslider-<?php echo JFactory::getApplication()->input->get('view', '', 'STRING');?>-<?php echo $contentId;?>').protoslider();
+				if($app && $app.equalColumns) {
+				window.setTimeout(function(){
+						$app.equalColumns.destroy();
+						$app.equalColumns.init($app.extensions.list.equalcols.options);
+				}, 150);
+				}
+			}
+
+			$(function() {
 				$($app).one('protosliderReady', function() {
 					initProtoslider();
 				});
+				
 				<?php /* Wir laden Protoslider manuell, falls er abgeschaltet ist */?>
-				if(!$app.extensions.list.protoslider.available) { 
-					if(console) console.log('Protoslider layout is requesting protoslider.js...');
+				$($app).one('extensionsReady', function() {
+					if(!$app.extensions.list.protoslider.available) { 
+						if(console) console.log('Protoslider layout is requesting protoslider.js...');
+						$app.extensions.load('protoslider', true);
+					}
+				});
+			});
+
+			<?php /* Hier setzen wir einen Event Listener auf jedes mod_articles_head */?>
+			$('.mod-intro').one('afterLoad', function() {
+				// Ein mod_articles_head hat per AJAX einen Beitrag geladen, welcher dieses Layout angefordert hat. Wir starten Protoslider.
+				if(!$app.extensions.list.protoslider.available) {
+					$($app).one('protosliderReady', function() {
+						initProtoslider();
+					});
+					if(console) console.log('Protoslider layout is requesting protoslider.js for mod_articles_head after AJAX call...');
 					$app.extensions.load('protoslider', true);
 				}
-			});
-		});
-
-		<?php /* Hier setzen wir einen Event Listener auf jedes mod_articles_head */?>
-		$('.mod-intro').one('afterLoad', function() {
-			// Ein mod_articles_head hat per AJAX einen Beitrag geladen, welcher dieses Layout angefordert hat. Wir starten Protoslider.
-			if(!$app.extensions.list.protoslider.available) {
-				$($app).one('protosliderReady', function() {
+				else {
 					initProtoslider();
-				});
-				if(console) console.log('Protoslider layout is requesting protoslider.js for mod_articles_head after AJAX call...');
-				$app.extensions.load('protoslider', true);
-			}
-			else {
-				initProtoslider();
-			}			
-		});
-	})(jQuery);
-</script>
+				}			
+			});
+		})(jQuery);
+	</script>
+
+</div>
 <?php
 	endif;
 }
