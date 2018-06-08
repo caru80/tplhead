@@ -1,7 +1,7 @@
 <?php
 /**
-	Protoslider Layout - 1.0.0
-	CRu.: 2018-05-04
+	Protoslider Layout - 1.1.0
+	CRu.: 2018-06-08
 */
 $settings_prefix = '';
 $ptslider_class  = 'heroslider';
