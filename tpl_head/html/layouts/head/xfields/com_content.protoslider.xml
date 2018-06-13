@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form>
-	<fields name="params">
-		<fieldset name="custom" addfieldpath="/administrator/components/com_content/models/fields">
+	<fields name="attribs">
+		<fieldset name="protoslider">
 			<field
 				name="note-protoslider"
 				type="note"
@@ -23,19 +23,14 @@
 			<field 
 				name="preview_protoslider" 
 				type="subform"
-			    formsource="/plugins/content/xfields/forms/subform.protoslider.xml"
+			    formsource="/templates/head/html/layouts/head/xfields/subform.protoslider.xml"
 				multiple="true"
 			    label="Vorschau Protoslider (Blog Beiträge, mod_articles_head)"
 				description=""
 				max="10"
 				layout="joomla.form.field.subform.repeatable"
 			/>
-			<field
-				name="note-protoslider"
-				type="note"
-				label="Protoslider"
-				description="Für Blog, Blog-Beiträge und Beiträge "
-			/>
+
 			<field 
 				name="protoslider_options"
 				label="Protoslider Optionen"
@@ -46,10 +41,11 @@
 				default="{&quot;autoheight&quot;:false}"
 				hint="JSON: {&quot;option&quot;:&quot;wert&quot;,...}"
 			/>
+
 			<field name="protoslider" type="subform"
-			    formsource="/plugins/content/xfields/forms/subform.protoslider.xml"
+			    formsource="/templates/head/html/layouts/head/xfields/subform.protoslider.xml"
 				multiple="true"
-			    label="Protoslider"
+			    label="Protoslider (Beiträge, Kategorien)"
 				description=""
 				max="10"
 				layout="joomla.form.field.subform.repeatable"
