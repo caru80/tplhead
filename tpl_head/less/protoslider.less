@@ -1,5 +1,12 @@
 
-/* -- Protoslider */
+/* -- Protoslider 
+    <div class="ptslider [heroslider]" id="eine-beliebige-id">
+        <div class="ptslider-wrapper">
+            <div class="ptslider-item"></div>
+            ...
+        </div>
+    </div>
+*/
 .ptslider{
 	position: relative;
 }
@@ -11,42 +18,120 @@
 	overflow: hidden;
 }
 
-// -- Hero-Slider
-// Ein optionaler Style für einen Protoslider, der als Banner angezeigt wird. – So wie auf ALLEN Wesbites, die wir bauen.
+/* -- Slides */
+.ptslider .ptslider-item{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	-webkit-transform: translate3d(0,0,0);
+			transform: translate3d(0,0,0);
+}
+.ptslider .ptslider-item img{
+	max-width: 100%;
+}
+
+
+
+/* -- Hero-Slider
+	Der Heroslider hat eine feste Höhe.
+*/
 .ptslider.heroslider {
-	height: 400px; // -- Auf Smartphones, wenn die Addressleiste vom Browser ausgeblendet wird, verändert sich der Viewport und wenn Protoslider eine vh Angabe als Höhe hat, „zuckt” es.
-	@media(min-width: @screen-sm-min){height: 75vh;}
+	height: 400px; // -- Auf Smartphones, wenn die Addressleiste vom Browser ausgeblendet wird verändert sich der Viewport, und wenn Protoslider eine „vh” Angabe als Höhe hat, dann „zuckt” es.
+	@media(min-width: @screen-sm-min) {
+		height: 75vh;
+	}
 	
+	// -- Wrapper und Slides auf Höhe bringen
 	.ptslider-wrapper,
 	.ptslider-item {
 		height: 100%;
 	}
-
-	.ptslider-item{
-		background-size: cover;
-		background-position: center;
+}
+/* -- Hero-Slider auf Unterseiten
+	Template HEAD fügt dem <body> auf allen Unterseiten die Klasse „deeper” hinzu.
+*/
+.deeper .ptslider.heroslider{
+	height: 200px;
+	@media(min-width: @screen-sm-min) {
+		height: 50vh;
 	}
 }
-// -- Hero-Slider auf Unterseiten
-// In <body> wird vom Template auf Unterseiten automatisch die Klasse .deeper eingetragen.
-.deeper .ptslider.heroslider {
-	height: 400px; // -- Auf Smartphones, wenn die Addressleiste vom Browser ausgeblendet wird, verändert sich der Viewport und wenn Protoslider eine vh Angabe als Höhe hat, „zuckt” es.
-	@media(min-width: @screen-sm-min){height: 50vh;}
+.ptslider.heroslider .ptslider-item{
+	background-size: cover;
+	background-position: center;
 }
 
 
 /*
-	Protoslider mit Videos
+	-- Caption
+
+	<div class="ptslider-item">
+		<div class="ptslider-caption">
+			<span>1. Text, welcher eingeblendet wird</span>
+			<span>2. Text etc., wechler kurz nach 1. Text eingeblendet wird</span>
+		</div>
+	</div>
 */
-.ptslider .ptslider-item video { // Videos werden auf Handys nicht angezeigt.
+
+@ptsliderCaptionTransitionDuration: 0.4;
+.ptslider.heroslider .ptslider-item .item-caption{
+	> div{
+		.container-xl();
+	}
+	position: absolute;
+	top: 50%;
+	width: 100%;
+	transform: translate3d(0,-50%,0);
+
+	.mk-responsive-font-size(1.2em, 1.5em, 1.9em, 2.2em, 2.7em); // -- Benötigt payload.less
+	line-height: 1.3em;
+	text-align: center;
+}
+
+.ptslider.heroslider .ptslider-item .item-caption span{
+	display: block;
+	color: #ffffff;
+
+	text-transform: uppercase;
+	text-shadow: 2px 2px 2px rgba(0,0,0,0.75);
+
+	strong{
+		font-size: 1.1em;
+	}
+
+	transition: transform unit(@ptsliderCaptionTransitionDuration, s) ease, opacity unit(@ptsliderCaptionTransitionDuration, s) linear;
+	transition-delay: unit(@ptsliderCaptionTransitionDuration + 0.2, s);
+	& + span{
+		transition-delay: unit(@ptsliderCaptionTransitionDuration + 0.3, s);
+	}
+
+	transform: translate3d(0,50px,0);
+	opacity: 0;
+}
+.ptslider.heroslider .ptslider-item .item-caption.show span{
+	&, strong{
+		opacity: 1;
+		transform: translate3d(0,0,0);
+	}
+}
+
+
+/*
+	Videos
+*/
+.ptslider .ptslider-item video {
+	.show();
+}
+.ptslider.heroslider .ptslider-item video.cover {
 	.hide();
 }
-@media(min-width: @screen-md-min) {
-	.ptslider .ptslider-item video {
+@media(min-width: @screen-md-min){
+	.ptslider.heroslider .ptslider-item video.cover {
 		.show();
 	}
-	// -- Video als Cover (wie „background-size: cover; background-position: center;” für Hintergrundbilder)
-	.ptslider .ptslider-item video.cover{
+	// -- Skaliert ein Video wie „background-size: cover;”
+	.ptslider .ptslider-item video.cover {
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -57,91 +142,72 @@
 }
 
 
-/* -- Slides */
-.ptslider .ptslider-item{
-	top: 0;
-	left: 0;
-	width: 100%;
-	display: none;
-	visibility: hidden;
-
-	-webkit-transform: translate3d(0,0,0);
-			transform: translate3d(0,0,0);
-
-	img{
-		max-width: 100%;
-	}
-}
-
-
-/* Aktive Slides */
-//.ptslider .ptslider-item.ptin{
-//}
-
-/* -- Folgende - sehr wichtige - Zeilen erzwingen die Sichtbarkeit eines Slide während eine Animation läuft (Animates.css und Magic.css) */
-.ptslider .ptslider-item.animated,
-.ptslider .ptslider-item.magictime{
-	display: block !important;
-	visibility: visible !important;
-}
-
-/*
-	Eine Beispiel-Caption
-
-.ptslider .ptslider-item .item-caption{
-	
-	position: absolute;
-	top: 50%;
-	left: 50%;
-	transform: translate3d(-50%,-50%,0);
-	
-	padding: 1em 2em 3em 2em;
-	background-color: rgba(0,0,0,0.8);
-	font-weight: 400;
-}
-*/
 
 
 /* -- Pagination */
-.ptslider .ptslider-pagination{
+.ptslider .ptslider-pagination {
 	position: absolute;
-	left: 0;
 	right: 0;
-	bottom: 10px;
+	bottom: 0;
+	width: 100%;
 	text-align: center;
-	@media(min-width: @screen-sm-min) { 
+	line-height: 1;
+	padding: 12px 20px;
+}
+@media(min-width: @screen-md-min) { 
+	.ptslider .ptslider-pagination {
 		text-align: right; 
-		bottom: 20px;
+		width: auto;
+		background-color: fade(#ffffff, 0);
+		transition: background-color 0.2s ease;
+		&:hover {
+			background-color: fade(#ffffff, 20);
+		}
 	}
-	margin-right: 20px;
 }
 
-/* -- Ein Umschalter in der Pagination */
+
+// -- Ein Umschalter in der Pagination
 .ptslider .ptslider-pager{
 	display: inline-block;
-	width: 18px;
-	height: 18px;
+	width: 20px;
+	height: 20px;
 	
-	background-color: rgba(red(@brand-primary),green(@brand-primary),blue(@brand-primary),0.2);
-	border: 2px solid @brand-primary;
+	background-color: fade(lighten(@brand-primary, 30%), 50);
+	border-radius: 100%;
 	cursor: pointer;
 
 	& + .ptslider-pager{
-		margin-left: 5px;
+		margin-left: 7px;
 	}
 	
 	-webkit-transition: background-color 0.15s ease-in-out;
 			transition: background-color 0.15s ease-in-out;
 
 	&:hover{
-		background-color: lighten(@brand-primary, 25%);
+		background-color: lighten(@brand-primary, 20%);
 	}
-	
 	// Aktiv
 	&.current{
-		background-color: @brand-primary;		
+		background-color: lighten(@brand-primary, 30%);		
 	}
 }
+/* -- Ein Umschalter mit Beschriftung/Label
+	<div class="ptslider-item" data-ptoptions='{"label":"Beschriftung in der Paginierung"}'>
+*/
+.ptslider .ptslider-pager.labeled{
+	width: auto;
+	height: auto;
+	padding: 5px 7px;
+	margin-top: 5px;
+
+	border-radius: 0;
+	color: #ffffff;
+	font-size: 0.9em;
+}
+// -- Das Label
+.ptslider .ptslider-pager.labeled .ptslider-pager-label{}
+
 
 
 /* -- Vor- und Zurück-Buttons */
@@ -150,164 +216,171 @@
 }
 @media( min-width: @screen-sm-min ){
 	.ptslider .ptslider-nav{
+
+		font-size: @font-size-base;
+
 		display: block;
-		width: 46px;
-		height: 54px;
-		margin-top: -27px;
-		
 		position: absolute;
-		top: 50%;
-		
+		top: 0;
+
+		width: 3em;
+		height: 100%;
 		cursor: pointer;
+
+		background-color: fade(#ffffff, 0);
 		
-		 -webkit-transition: -webkit-transform 0.15s ease-in-out;
-			-moz-transition: -moz-transform 0.15s ease-in-out;
-				 transition: transform 0.15s ease-in-out;
+		-webkit-transition: -webkit-transform 0.15s ease-in-out, background-color 0.2s ease;
+				transition: 		transform 0.15s ease-in-out, background-color 0.2s ease;
 
 		&:before,
 		&:after{
+			content: '';
 			position: absolute;
 			top: 50%;
-			left: 0;
-			right: 0;
-			content: '';
+			height: 6px; 
+			margin-top: -3px;
+			width: 70%;
+			border-radius: 6px;
+			
 			background-color: @brand-primary;
-			height: 4px;
-			width: 40px;
-			border-radius: 4px;
-			 -webkit-transition: background-color 0.25s ease-in-out;	
-				-moz-transition: background-color 0.25s ease-in-out;	
-					 transition: background-color 0.25s ease-in-out;	
+			
+			-webkit-transition: background-color 0.2s ease;	
+					transition: background-color 0.2s ease;	
 		}
 		&:hover{
-			 -webkit-transform: scale3d(1.2,1.2,1.2);
-			 	-moz-transform: scale3d(1.2,1.2,1.2);
-			 		 transform: scale3d(1.2,1.2,1.2);
+			background-color: fade(#ffffff, 15);
 			&:before,
 			&:after{
-				background-color: lighten(@brand-primary, 10%);
+				background-color: lighten(@brand-primary, 15);
 			}
 		}
 	}
 	
 	/* -- Zurück-Button */
 	.ptslider .ptslider-nav.ptslider-nav-prev{ 
-		left: 20px;
+		left: 0px;
 		&:before,
 		&:after{
-			 -webkit-transform-origin: 0 0;
-				-moz-transform-origin: 0 0;
-					 transform-origin: 0 0;
+			left: 25%;
+			-webkit-transform-origin: 0 50%;
+					transform-origin: 0 50%;
 		}	
 		&:before{
-			 -webkit-transform: rotate3d(0,0,1,-45deg) translate3d(-2px,0,0);
-			 	-moz-transform: rotate3d(0,0,1,-45deg) translate3d(-2px,0,0);
-			 		 transform: rotate3d(0,0,1,-45deg) translate3d(-2px,0,0);
+			-webkit-transform: rotate3d(0,0,1,-47deg) translate3d(-3px,0,0);
+					transform: rotate3d(0,0,1,-47deg) translate3d(-3px,0,0);
 			
 		}
 		&:after{
-			 -webkit-transform: rotate3d(0,0,1,45deg) translate3d(0,0,0);
-				-moz-transform: rotate3d(0,0,1,45deg) translate3d(0,0,0);
-					 transform: rotate3d(0,0,1,45deg) translate3d(0,0,0);
+			-webkit-transform: rotate3d(0,0,1,47deg) translate3d(-3px,0,0);
+					transform: rotate3d(0,0,1,47deg) translate3d(-3px,0,0);
 		}	
 	}
 	
 	/* -- Vor-Button */
 	.ptslider .ptslider-nav.ptslider-nav-next{
-		right: 20px;
+		right: 0px;
 		&:before,
 		&:after{
-			 -webkit-transform-origin: 100% 100%;
-				-moz-transform-origin: 100% 100%;
-					 transform-origin: 100% 100%;
+			right: 25%;
+			-webkit-transform-origin: 100% 50%;
+					transform-origin: 100% 50%;
 		}	
 		&:before{
-			 -webkit-transform: rotate3d(0,0,1,45deg) translate3d(0,0,0);
-			 	-moz-transform: rotate3d(0,0,1,45deg) translate3d(0,0,0);
-			 		 transform: rotate3d(0,0,1,45deg) translate3d(0,0,0);
+			-webkit-transform: rotate3d(0,0,1,47deg) translate3d(3px,0,0);
+					transform: rotate3d(0,0,1,47deg) translate3d(3px,0,0);
 		}
 		&:after{
-			 -webkit-transform: rotate3d(0,0,1,-45deg) translate3d(2px,0,0);
-			 	-moz-transform: rotate3d(0,0,1,-45deg) translate3d(2px,0,0);
-			 		 transform: rotate3d(0,0,1,-45deg) translate3d(2px,0,0);
+			-webkit-transform: rotate3d(0,0,1,-47deg) translate3d(3px,0,0);
+					transform: rotate3d(0,0,1,-47deg) translate3d(3px,0,0);
 		}
 	}
 }
 
 
-/*
-	Die Ladeanzeige
-*/
-// -- Der Wrapper für die Ladeanzeige
+// -- Ladeanzeige Wrapper
 .ptslider .ptslider-preload{
-
 	position: relative;
 	width: 100%;
 	padding-top: 56.25%;
+	height: 100%;
 
 	display: none;
-	background-color: #222222;
+	background-color: lighten(@brand-primary, 25%);
 
 	&.visible{
 		display: block;
 	}
 }
-// -- Die Ladeanzeige
+.ptslider.heroslider .ptslider-preload{
+	padding-top: 0; // Weil die Ladeanzeige eine Höhe im Verhältnis 16:9 erzwingt, die zur festen Höhe von .herslider addiert werden würde.
+}
+
+// -- Ladeanzeige
 .ptslider .ptslider-indicator{
 	position: absolute;
 	top: 50%;
 	left: 50%;
-	 -webkit-transform: translate3d(-50%, -50%, 0);
-		-moz-transform: translate3d(-50%, -50%, 0);
-			 transform: translate3d(-50%, -50%, 0);
+	-webkit-transform: translate3d(-50%, -50%, 0);
+			transform: translate3d(-50%, -50%, 0);
 
 	.spinner {
-		width: 40px;
-		height: 40px;
+		width: 60px;
+		height: 60px;
 		position: relative;
-		margin: 0;
+		text-align: center;
+		
+		-webkit-animation: spinner-rotate 2.0s infinite linear;
+				animation: spinner-rotate 2.0s infinite linear;
 	}
 
+	// % geladen
 	.percent-loaded{
 		display: block;
 		text-align: center;
 		color: #ffffff;
-		padding-top: 10px;
+		padding-top: 20px;
+		font-size: 22px;
 	}
 
-	.double-bounce1, .double-bounce2 {
-		width: 100%;
-		height: 100%;
-		border-radius: 50%;
-		background-color: #078dcb;
-		opacity: 0.6;
+	.dot1, .dot2 {
+		width: 60%;
+		height: 60%;
+		display: inline-block;
 		position: absolute;
 		top: 0;
-		left: 0;
-		-webkit-animation: sk-bounce 2.0s infinite ease-in-out;
-				animation: sk-bounce 2.0s infinite ease-in-out;
+		background-color: spin(@brand-primary, 25);
+		border-radius: 100%;
+		
+		-webkit-animation: spinner-bounce 2.0s infinite ease-in-out;
+				animation: spinner-bounce 2.0s infinite ease-in-out;
 	}
-	.double-bounce2 {
+	  .dot2 {
+		top: auto;
+		bottom: 0;
 		-webkit-animation-delay: -1.0s;
 				animation-delay: -1.0s;
-	}
+	  }
 }
-// -- Die Animation der Ladeanzeige
-@-webkit-keyframes sk-bounce {
-	0%, 100% {
-		-webkit-transform: scale(0.0)
-	}
-	50% {
-		-webkit-transform: scale(1.0)
-	}
+ 
+@-webkit-keyframes spinner-rotate { 
+	100% { -webkit-transform: rotate(360deg) }
 }
-@keyframes sk-bounce {
-	0%, 100% { 
-		-webkit-transform: scale(0.0);
-				transform: scale(0.0);
-	} 
-	50% { 
-		-webkit-transform: scale(1.0);
-				transform: scale(1.0);
-	}
+@keyframes spinner-rotate { 
+	100% { transform: rotate(360deg); -webkit-transform: rotate(360deg) }
+}
+
+@-webkit-keyframes spinner-bounce {
+	0%, 100% 	{ -webkit-transform: scale(0.0) }
+	50% 		{ -webkit-transform: scale(1.0) }
+}
+
+@keyframes spinner-bounce {
+	0%, 100% 	{ 
+					transform: scale(0.0);
+					-webkit-transform: scale(0.0);
+				} 
+	50% 		{ 
+					transform: scale(1.0);
+					-webkit-transform: scale(1.0);
+				}
 }

@@ -7,7 +7,7 @@
 	<license></license>
 	<authorEmail>webmaster@headmarketing.de</authorEmail>
 	<authorUrl>www.headmarketing.de</authorUrl>
-	<version>0.3.1</version>
+	<version>0.4.0</version>
 	<scriptfile>install.script.php</scriptfile>
 	<description>Plugin für Custom-Felder</description>
 	<files>
