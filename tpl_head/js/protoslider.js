@@ -1,20 +1,7 @@
-/**
- * @package        Protoslider
- * @version        1.0.7
- * 
- * @author         Carsten Ruppert <ca.ru@posteo.de>
- * @link           
- * @copyright      Copyright © 2018 Carsten Ruppert All Rights Reserved
- * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
- */
 /*
-	Protoslider 1.0.7
+	Protoslider 1.0.6
 	Carsten Ruppert
 
-    1.0.7 – 2018-06-14
-    + Fix: Einen Bug in Plugin Videos gefixt, der verhinderte, dass der Autplay von Protoslider wieder anläuft, wenn manuell navigiert wurde während ein Video abgespielt wurde.
-    + Neue Ereignis „sliderReady” hinzugefügt, welches ausgelöst wird sobald Protoslider vollständig Bereit ist.
-    
 	1.0.6 - 2018-05-30
 	+ Fix: Einen Bug in play() korrigiert, weil Internet Explorer (alle Versionen) kein Number.isInteger kann, und einen Fehler in die Konsole geschrieben hat: https://docs.microsoft.com/en-us/scripting/javascript/reference/number-isinteger-function-number-javascript
 
@@ -104,7 +91,8 @@
 	- Preloader eingebaut
 	- Ladeanzeige eingebaut
 */
-"use strict";
+'use strict';
+
 (function($){
 
 	$.Protoslider = function( options, node ){
@@ -170,8 +158,8 @@
 
 		/* Z-Achsen für Pagninierung und Navigation (wird zu Z-Achsen von slides addiert) */
 		zAxis : {
-			pagination : 1,
-			navigation : 2
+			pagination : 2,
+			navigation : 1
 		},
 
 		/*
@@ -224,12 +212,14 @@
 			pagination  : '<div class="ptslider-pagination" />',
 			// Ein Element in der Paginierung:
 			pager 		: '<span class="ptslider-pager" />',
+			// Ein Element in der Paginierung mit einem Label:
+			pagerLabel  : '<span class="ptslider-pager-label">%s</span>',
 			// Die Ladeanzeige:
 			loading		: 	'<div class="ptslider-preload">' +
 								'<div class="ptslider-indicator">' +
 									'<div class="spinner">' +
-										'<div class="double-bounce1"></div>' +
-										'<div class="double-bounce2"></div>' +
+										'<div class="dot1"></div>' +
+										'<div class="dot2"></div>' +
 									'</div>' +
 									'<span class="percent-loaded"></span>' +
 								'</div>' +
@@ -239,6 +229,8 @@
 		// CSS Klassen und Regeln
 		css : {
 			classActive 	: 'ptin',			// Aktiver Slide
+
+			labeledPager 	: 'labeled',
 
 			classAnimated	: 'animated',		// Slide, welcher gerade animiert wird (Analog zur CSS-Animationsbibliothek; hier Animated.css)
 			classInfinite	: 'infinite',		// CSS Klasse für endlose Animation (Analog zur CSS-Animationsbibliothek; hier Animated.css)
@@ -556,7 +548,7 @@
 		{
 			if( this.options.loadingIndicator )
 			{
-				this.hideIndicator();
+			 	this.hideIndicator();
 			}
 
 			if( typeof this.options.onAfterImagePreload === 'function' )
@@ -1121,7 +1113,8 @@
 							var xd = this.map[i][x].data('ptoptions') || {};
 							if( xd.label )
 							{
-								label += xd.label;
+								label += this.options.html.pagerLabel.replace("%s", xd.label);
+								$pager.addClass(this.options.css.labeledPager);
 							}
 						}
 					}
