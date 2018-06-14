@@ -11,7 +11,7 @@
 		<field
 			name="video_url"
 			type="filelist"
-			directory="videos"
+			directory="images/videos"
 			hide_default="true"
 			default=""
 			filter="(.\.mp4)"

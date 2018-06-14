@@ -2,7 +2,7 @@
 defined ( '_JEXEC' ) or die ( 'Restricted access' );
 
 /**
-*	X-Fields 0.3.0
+*	X-Fields 0.3.1
 *	CRu.: 2018-04-30
 *
 */
@@ -29,7 +29,8 @@ class plgContentXfields extends JPlugin {
 		Suche in folgenden Verzeichnissen nach weiteren Felddefinitionen:
 	*/
 	private static $additonalPath = array(
-										JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_articles_head' . DIRECTORY_SEPARATOR . 'xfields'
+                                        JPATH_SITE . DIRECTORY_SEPARATOR . 'modules' . DIRECTORY_SEPARATOR . 'mod_articles_head' . DIRECTORY_SEPARATOR . 'xfields',
+                                        JPATH_SITE . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'head' . DIRECTORY_SEPARATOR . 'html' . DIRECTORY_SEPARATOR . 'layouts' . DIRECTORY_SEPARATOR . 'head' . DIRECTORY_SEPARATOR . 'xfields'
 									);
 
 	/**
