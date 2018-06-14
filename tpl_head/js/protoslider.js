@@ -1,7 +1,20 @@
+/**
+ * @package        Protoslider
+ * @version        1.0.7
+ * 
+ * @author         Carsten Ruppert <ca.ru@posteo.de>
+ * @link           
+ * @copyright      Copyright © 2018 Carsten Ruppert All Rights Reserved
+ * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
+ */
 /*
-	Protoslider 1.0.6
+	Protoslider 1.0.7
 	Carsten Ruppert
 
+    1.0.7 – 2018-06-14
+    + Fix: Einen Bug in Plugin Videos gefixt, der verhinderte, dass der Autplay von Protoslider wieder anläuft, wenn manuell navigiert wurde während ein Video abgespielt wurde.
+    + Neue Ereignis „sliderReady” hinzugefügt, welches ausgelöst wird sobald Protoslider vollständig Bereit ist.
+    
 	1.0.6 - 2018-05-30
 	+ Fix: Einen Bug in play() korrigiert, weil Internet Explorer (alle Versionen) kein Number.isInteger kann, und einen Fehler in die Konsole geschrieben hat: https://docs.microsoft.com/en-us/scripting/javascript/reference/number-isinteger-function-number-javascript
 
@@ -91,8 +104,7 @@
 	- Preloader eingebaut
 	- Ladeanzeige eingebaut
 */
-'use strict';
-
+"use strict";
 (function($){
 
 	$.Protoslider = function( options, node ){
@@ -156,7 +168,7 @@
 
 		plugins 					: [],
 
-		/* Z-Achsen für Pagninierung und Navigation (wird zu Z-Achsen von slides addiert */
+		/* Z-Achsen für Pagninierung und Navigation (wird zu Z-Achsen von slides addiert) */
 		zAxis : {
 			pagination : 1,
 			navigation : 2
@@ -185,19 +197,19 @@
 					delay		:	0
 				},
 				navigation : {							// Animation beim Klick auf Vor und Zurück
-					nextIn 		: 	'fadeInRight',		// Beim einblenden, wenn der Slide als nächstes eingeblendet wird (Klick auf Vorwärts, dieser Slide wird eingeblendet)
-					nextOut 	: 	'fadeOutLeft',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Vorwärts gelickt wird
-					prevIn 		: 	'fadeInLeft',		// Beim einblenden, wenn der Slide der Vorherige ist (Klick auf Zurück, dieser Slide wird eingeblendet)
-					prevOut 	: 	'fadeOutRight',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Zurück geklickt wird.
+					nextIn 		: 	'slideInRight',		// Beim einblenden, wenn der Slide als nächstes eingeblendet wird (Klick auf Vorwärts, dieser Slide wird eingeblendet)
+					nextOut 	: 	'slideOutLeft',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Vorwärts gelickt wird
+					prevIn 		: 	'slideInLeft',		// Beim einblenden, wenn der Slide der Vorherige ist (Klick auf Zurück, dieser Slide wird eingeblendet)
+					prevOut 	: 	'slideOutRight',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Zurück geklickt wird.
 					duration 	:	'0.75s',
 					delay		:	0
 				},
 				swipe : {								// Animation beim Wischen auf Touch-Geräten – wie navigation
-					nextIn 		: 	'fadeInRight',
-					nextOut 	: 	'fadeOutLeft',
-					prevIn 		: 	'fadeInLeft',
-					prevOut 	: 	'fadeOutRight',
-					duration 	:	'0.75s',
+					nextIn 		: 	'slideInRight',
+					nextOut 	: 	'slideOutLeft',
+					prevIn 		: 	'slideInLeft',
+					prevOut 	: 	'slideOutRight',
+					duration 	:	'0.3s',
 					delay		:	0
 				}
 		},
@@ -231,8 +243,10 @@
 			classAnimated	: 'animated',		// Slide, welcher gerade animiert wird (Analog zur CSS-Animationsbibliothek; hier Animated.css)
 			classInfinite	: 'infinite',		// CSS Klasse für endlose Animation (Analog zur CSS-Animationsbibliothek; hier Animated.css)
 
-			styleActive 	: { display: 'block', visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
-			styleInactive 	: { display: 'none', visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
+			//styleActive 	: { display: 'block', visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
+			//styleInactive 	: { display: 'none', visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
+			styleActive 	: { visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
+			styleInactive 	: { visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
 		},
 
 		eventNamespace 	: '.ptslider', 			// jQuery Event-Namespace
@@ -416,7 +430,7 @@
 
 		getViewportSize : function(){
 			var w = window,
-		    	e = document.documentElement,
+				e = document.documentElement,
 				b = document.getElementsByTagName('body')[0],
 				x = w.innerWidth || e.clientWidth || b.clientWidth,
 				y = w.innerHeight|| e.clientHeight|| b.clientHeight;
@@ -655,6 +669,8 @@
 			this.State.ready = true;
 
 			this.$node.addClass('ptready');
+
+			this.$node.triggerHandler('sliderReady');
 
 			if( typeof this.options.onAfterInit === 'function' )
 			{
@@ -936,6 +952,7 @@
 				if( this.options.autoheight )
 				{
 					this.autoHeight();
+					this.$node.addClass('autoheight');
 				}
 
 				this.State.isIdle = false;
@@ -1267,7 +1284,7 @@
 
 			if( !this.State.trigger.name ) // Wenn Navigieren z.B. von extern ausgeführt wird
 			{
-				this.State.trigger = { name : '', direction : ''};
+				this.State.trigger = {name : '', direction : ''};
 			}
 
 			switch( this.State.trigger.name )
@@ -1351,84 +1368,58 @@
 
 
 		/*
-			Slide (Spalte) ausblenden
-		*/
-		animateOut : function($slide, callback)
-		{
-			var self = this;
-
-			this.prepareSlideAnimation( $slide );
-
-			if( typeof self.options.onBeginSlideAnimation === 'function' )
-			{
-				self.options.onBeginSlideAnimation.apply( $slide ); // Public Callback
-			}
-
-			this.$node.triggerHandler('beforeSlideOut', [{slide : $slide}]);
-
-			var style = $.extend(this.options.css.styleActive, { "-webkit-animation-duration" : $slide.data('ptslider').duration, "animation-duration" : $slide.data('ptslider').duration });
-
-			$slide.removeClass( this.options.css.classActive ).css( style ).one( this.State.events.animationEnd, function()
-			{
-				var $slide = $(this);
-
-				$slide.css( self.options.css.styleInactive );
-
-				if( typeof callback === 'function' )
-				{
-					callback.apply($slide); // Callback
-				}
-
-				if( typeof self.options.onAfterSlideAnimation === 'function' )
-				{
-					self.options.onAfterSlideAnimation.apply( $slide ); // Public Callback
-				}
-
-				self.$node.triggerHandler('afterSlideOut', [{slide : $slide}]); // In Firefox und Safari funktioniert das nicht. Dort ist $slide der Slide, der gerade angezeigt wird, und nicht der, der zuletzt angezeigt wurde.
-				$slide.triggerHandler('afterSlideOut');
-			})
-			._ptsSetAnimation( $slide.data('ptslider').animationOut );
-		},
-
-
-		/*
 			Slide (Spalte) einblenden
 		*/
-		animateIn : function($slide, callback)
-		{
-			var self = this;
+		animateSlide : function(slide, direction, callback) {
+			var self 	= this;
+			
 
-			this.prepareSlideAnimation( $slide );
+			this.prepareSlideAnimation(slide);
+			var d = slide.data('ptslider');
 
-			if( typeof self.options.onBeginSlideAnimation === 'function' )
-			{
-				self.options.onBeginSlideAnimation.apply( $slide ); // Public Callback
+			var context;
+
+			switch(direction) {
+				case 'in' :
+					context = {direction : 'in', animation : slide.data('ptslider').animationIn, eventBefore : 'beforeSlideIn', eventAfter : 'afterSlideIn', cssClass : this.options.css.classActive, cssInline : this.options.css.styleActive, callback : callback};
+				break;
+				case 'out' :
+					context = {direction : 'out', animation : slide.data('ptslider').animationOut, eventBefore : 'beforeSlideOut', eventAfter : 'afterSlideOut', cssClass : this.options.css.classInactive, cssInline : this.options.css.styleInactive, callback : callback};
+				break;
 			}
 
-			this.$node.triggerHandler('beforeSlideIn', [{slide : $slide}]);
+			if(typeof self.options.onBeginSlideAnimation === 'function') {
+				self.options.onBeginSlideAnimation.apply(slide);
+			}
 
-			var style = $.extend(this.options.css.styleActive, { "-webkit-animation-duration" : $slide.data('ptslider').duration, "animation-duration" : $slide.data('ptslider').duration });
+			this.$node.triggerHandler(context.eventBefore, [{slide : slide}]);
 
-			$slide.addClass( this.options.css.classActive ).css( style ).one( this.State.events.animationEnd, function()
-			{
-				var $slide = $(this);
-
-				if( typeof callback === 'function' )
-				{
-					callback.apply($slide); // Callback
+			slide.one(this.State.events.animationEnd, function(slide, ev) {
+				
+				slide.css(context.cssInline);
+				
+				if(this.direction == 'in') {
+					slide.addClass(self.options.css.classActive)
+				}
+				else{
+					slide.removeClass(self.options.css.classActive)
 				}
 
-				if( typeof self.options.onAfterSlideAnimation === 'function' )
-				{
-					self.options.onAfterSlideAnimation.apply( $slide ); // Public Callback
+				if( typeof context.callback === 'function' ) {
+					context.callback();
 				}
+	
+				if( typeof self.options.onAfterSlideAnimation === 'function' ) {
+					self.options.onAfterSlideAnimation.apply(slide); // Public Callback
+				}
+	
+				self.$node.triggerHandler(context.eventAfter, [{slide : slide}]); // In Firefox und Safari funktioniert das nicht. Dort ist $slide der Slide, der gerade angezeigt wird, und nicht der, der zuletzt angezeigt wurde.
+				slide.triggerHandler(context.eventAfter);
 
-				self.$node.triggerHandler('afterSlideIn', [{slide : $slide}]);
-				$slide.triggerHandler('afterSlideIn');
-			})
-			._ptsSetAnimation( $slide.data('ptslider').animationIn );
+			}.bind(context, slide))
+			.css($.extend(this.options.css.styleActive, {"-webkit-animation-duration" : slide.data('ptslider').duration, "animation-duration" : slide.data('ptslider').duration}))
+			._ptsSetAnimation(context.animation);
 		},
-
 
 		changeColumn : function( col )
 		{
@@ -1459,21 +1450,24 @@
 				slides.current.css({ zIndex : nz });
 				slides.next.css({ zIndex : self.map.length });
 
-				//this.prepareSlideAnimation( col, slides.current );
-				//this.prepareSlideAnimation( col, slides.next );
-
-				this.animateOut( slides.current );
+				this.animateSlide(slides.current, 'out');
 
 				if( islast )
 				{
+					/*
 					this.animateIn( slides.next, function()
+					{
+						self._onAfterRowChange();
+					});*/
+					this.animateSlide(slides.next, 'in', function()
 					{
 						self._onAfterRowChange();
 					});
 				}
 				else
 				{
-					this.animateIn( slides.next );
+					//this.animateIn( slides.next );
+					this.animateSlide(slides.next, 'in');
 				}
 
 				this.State.stage[col] = slides.next;
@@ -1752,7 +1746,7 @@
 
 
 /*
-	Protoslider Plugin HTML5 Video 0.1
+	Protoslider Plugin HTML5 Video 0.2
 	Carsten Ruppert
 	2017-10-13
 
@@ -1787,34 +1781,35 @@
 
 		_init : function()
 		{
-			var self = this;
-			this.parent.on('afterSlideIn.ptslider.html5video afterRender.ptslider.html5video', function(ev)
+			this.parent.on('beforeSlideIn.ptslider.html5video sliderReady.ptslider.html5video', function(ev, context)
 			{
 				// afterRender wird ausgelöst wenn Protoslider instanziert wird, oder sich die Anzahl der sichtbaren Spalten ändert.
-				self.tick();
-			});
+				this.tick(context);
+			}.bind(this));
 		},
 
-		tick : function()
+		tick : function(context)
 		{
-			var self	= this,
-				slide 	= this.parent.State.stage[0],
-				video 	= this.getVideoObject(slide);
+			var slide = context ? context.slide : this.parent.State.stage[0],
+				video = this.getVideoObject(slide);
 
 			if(video)
 			{
 				if(video.readyState >= 2) // Mindestens die Metadaten und ein Frame des Videos stehen zur Verfügung.
 				{
-					this.playVideo();
-					if(this.parent.options.autoheight) this.parent.autoHeight();
+					this.playVideo(slide);
+					if(this.parent.options.autoheight) { 
+						this.parent.autoHeight();
+					}
 				}
 				else // Noch nix da. Müssen warten.
 				{
-					$(video).one('canplay.ptslider.html5video', function()
+					$(video).one('canplay.ptslider.html5video', function(slide, ev)
 					{
-						self.playVideo();
-						if(self.parent.options.autoheight) self.parent.autoHeight();
-					});
+						this.playVideo(slide);
+						if(this.parent.options.autoheight) this.parent.autoHeight();
+
+					}.bind(this, slide));
 				}
 			}
 		},
@@ -1826,13 +1821,11 @@
 			return false;
 		},
 
-		playVideo : function()
+		playVideo : function(slide)
 		{
-			var self  = this,
-				slide = this.parent.State.stage[0],
-				video = this.getVideoObject(slide);
+			var video = this.getVideoObject(slide);
 
-			if( video )
+			if(video)
 			{
 				var opt = $(video).data('ptoptions') || {};
 
@@ -1841,26 +1834,32 @@
 				{
 					slide.one('afterSlideOut.ptslider.html5video', function(ev)
 					{
-						var video = self.getVideoObject($(this));
-						if(video)
-						{
+						var video = this.getVideoObject($(ev.target));
+
+						if(video) {
 							video.pause();
 							video.currentTime = 0;
+
+							// -- Den ended-Handler des Videos zurücksetzen. Und Protoslider autoplay starten
+							// Es könnte sein, dass der User manuell navigiert hat, und der ended Event nicht eintreten konnte.
+							$(video).off('.ptslider.html5video');
+							if(this.parent.options.autoplay && this.parent.options.html5video.pauseOnPlay) {
+								this.parent.play();
+							}
 						}
-					});
+					}.bind(this));
 				}
 
-				// Autoplay
+				// -- Wenn Videos automatisch abgespielt werden sollen
 				if(this.parent.options.html5video.autoplay || opt.autoplay)
 				{
+					// -- Protoslider autoplay ist an, und Protoslider muss für die Dauer des Videos angehalten werden.
 					if(this.parent.options.html5video.pauseOnPlay && this.parent.options.autoplay)
 					{
 						$(video).one('ended.ptslider.html5video', function()
 						{
-							self.parent.options.autoplay = true;
-							self.parent.play(self.parent.options.html5video.timeoutAfterPlayback);
-						});
-						this.parent.options.autoplay = false; // Der afterRender-Event passiert vor dem Protoslider-Autostart, dann hat this.parent.pause() keine funktion. Deshalb wird autoplay hier komplett abgeschaltet.
+							this.parent.play(this.parent.options.html5video.timeoutAfterPlayback);
+						}.bind(this));
 						this.parent.pause();
 					}
 					video.play();
