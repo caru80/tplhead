@@ -147,7 +147,7 @@ function pagination_list_render($list)
  */
 function pagination_item_active(&$item)
 {
-	$class = '';
+	$class = ' class="page-item"';
 
 	// Check for "Start" item
 	if ($item->text == JText::_('JLIB_HTML_START'))
@@ -177,10 +177,10 @@ function pagination_item_active(&$item)
 	if (!isset($display))
 	{
 		$display = $item->text;
-		$class   = ' class="hidden-phone"';
+		$class   = ' class="hidden-phone page-item"';
 	}
 
-	return '<li' . $class . '><a title="' . $item->text . '" href="' . $item->link . '" class="pagenav">' . $display . '</a></li>';
+	return '<li' . $class . '><a title="' . $item->text . '" href="' . $item->link . '" class="pagenav page-link">' . $display . '</a></li>';
 }
 
 /**
@@ -197,33 +197,33 @@ function pagination_item_inactive(&$item)
 	// Check for "Start" item
 	if ($item->text == JText::_('JLIB_HTML_START'))
 	{
-		return '<li class="disabled"><a><i class="start"></i></a></li>';
+		return '<li class="disabled page-item"><a class="page-link"><i class="start"></i></a></li>';
 	}
 
 	// Check for "Prev" item
 	if ($item->text == JText::_('JPREV'))
 	{
-		return '<li class="disabled"><a><i class="backward"></i></a></li>';
+		return '<li class="disabled page-item"><a class="page-link"><i class="backward"></i></a></li>';
 	}
 
 	// Check for "Next" item
 	if ($item->text == JText::_('JNEXT'))
 	{
-		return '<li class="disabled"><a><i class="forward"></i></a></li>';
+		return '<li class="disabled page-item"><a class="page-link"><i class="forward"></i></a></li>';
 	}
 
 	// Check for "End" item
 	if ($item->text == JText::_('JLIB_HTML_END'))
 	{
-		return '<li class="disabled"><a><i class="end"></i></a></li>';
+		return '<li class="disabled page-item"><a class="page-link"><i class="end"></i></a></li>';
 	}
 
 	// Check if the item is the active page
 	if (isset($item->active) && ($item->active))
 	{
-		return '<li class="active hidden-phone"><a>' . $item->text . '</a></li>';
+		return '<li class="active hidden-phone page-item"><a class="page-link">' . $item->text . '</a></li>';
 	}
 
 	// Doesn't match any other condition, render a normal item
-	return '<li class="disabled hidden-phone"><a>' . $item->text . '</a></li>';
+	return '<li class="disabled hidden-phone page-item"><a class="page-link">' . $item->text . '</a></li>';
 }

@@ -1,1 +1,0 @@
-Template Override für Suchindex-Modul um mit $app.finder zu funktionieren.

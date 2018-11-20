@@ -3,12 +3,12 @@
 	<fields name="params">
 		<fieldset name="protoslider" addfieldpath="/administrator/components/com_content/models/fields">
 			<field
-				name="note-protoslider"
+				name="note-preview-protoslider"
 				type="note"
-				label="Protoslider"
-				description="Für Blog, Blog-Beiträge und Beiträge.&lt;br&gt; Siehe Layout: /templates/head/html/layouts/head/protoslider.php"
+				label="Vorschau-Protoslider"
+				description="Für Kategorien, die als Unterkategorien in einer Blog-Ansicht angezeigt werden."
 			/>
-
+			
 			<field 
 				name="preview_protoslider_options"
 				label="Vorschau Protoslider Optionen"
@@ -25,17 +25,19 @@
 				type="subform"
 			    formsource="/templates/head/html/layouts/head/xfields/subform.protoslider.xml"
 				multiple="true"
-			    label="Vorschau Protoslider (Blog Beiträge, mod_articles_head)"
+			    label="Vorschau-Protoslider"
 				description=""
 				max="10"
 				layout="joomla.form.field.subform.repeatable"
 			/>
+			
 			<field
 				name="note-protoslider"
 				type="note"
 				label="Protoslider"
-				description="Für Blog, Blog-Beiträge und Beiträge "
+				description="Für die Kategorie, wenn deise als Blog etc. angezeigt wird."
 			/>
+
 			<field 
 				name="protoslider_options"
 				label="Protoslider Optionen"

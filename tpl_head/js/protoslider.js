@@ -1,6 +1,19 @@
 /*
-	Protoslider 1.0.6
+	Protoslider 1.0.8
 	Carsten Ruppert
+
+	1.0.8 – 2018-11-17
+	+ Ein- und Ausblendeanimationen können nun für jeden Navigationstyp ein- und ausgeschaltet werden.
+	+ Ausblendeanimationen sind für die folgenden Navigationsvorgänge ausgeschaltet: 
+		- Autoplay
+		- Pagination
+		- Navigation 
+	
+
+	1.0.7 – 2018-08-29
+	+ Der Bilder-Preloader beachtet nun auch Hintergrundbilder von Slides
+	+ Um die Darstellung zu Prüfen, kann der Preloader jetzt in den Demo-Modus umgeschaltet werden.
+
 
 	1.0.6 - 2018-05-30
 	+ Fix: Einen Bug in play() korrigiert, weil Internet Explorer (alle Versionen) kein Number.isInteger kann, und einen Fehler in die Konsole geschrieben hat: https://docs.microsoft.com/en-us/scripting/javascript/reference/number-isinteger-function-number-javascript
@@ -93,12 +106,12 @@
 */
 'use strict';
 
-(function($){
+(function ($) {
 
-	$.Protoslider = function( options, node ){
+	$.Protoslider = function (options, node) {
 		this.$node = $(node);
 
-		if( ! this.$node.length ){
+		if (!this.$node.length) {
 			console.log('Kein node');
 			return false;
 		}
@@ -107,7 +120,7 @@
 
 		this.$wrap = this.$node.children('.ptslider-wrapper');
 
-		this._init( options );
+		this._init(options);
 
 		return this;
 	};
@@ -116,259 +129,264 @@
 	$.Protoslider.Plugins = [],
 
 
-	$.Protoslider.defaults = {
-		autoheight	 				: true,				// Automatische Höhe – Das wird Sinnlos wenn keine Höhe ermittelt werden kann
+		$.Protoslider.defaults = {
+			autoheight: true,				// Automatische Höhe – Das wird Sinnlos wenn keine Höhe ermittelt werden kann
 
-		/*
-			Image Preload
+			/*
+				Image Preload
+	
+				Zu beachten ist, dass der Preloader "dumm" ist. Wenn eine Datei nicht geladen werden kann, wird die Ladeanzeige für immer angezeigt.
+			*/
 
-			Zu beachten ist, dass der Preloader "dumm" ist. Wenn eine Datei nicht geladen werden kann, wird die Ladeanzeige für immer angezeigt.
-		*/
-		preload		 				: true,				// Preload ein/aus
-		loadingIndicator 			: true,				// Ladeanzeige
+			preloader : {
+				on              : true,
+				showProgress    : true,
+				demo 			: false
+			},
+
+			/*
+			preload : true,				// Preload ein/aus
+			loadingIndicator: true,				// Ladeanzeige
+			*/
+
+			/* Responsive */
+			size: [1200, 979, 767, 0],						// Bildschirmbreiten = 1200 +, 979 bis 1200, 767 bis 979, 0 bis 767
+			items: [1, 1, 1, 1],							// Anzahl Spalten analog zu Bildschrimbreiten = bei 1200+, 979 bis 1200, 767 bis 979, 0 bis 767
 
 
-		/* Responsive */
-		size  : [1200,979,767,0],						// Bildschirmbreiten = 1200 +, 979 bis 1200, 767 bis 979, 0 bis 767
-		items : [1,1,1,1],								// Anzahl Spalten analog zu Bildschrimbreiten = bei 1200+, 979 bis 1200, 767 bis 979, 0 bis 767
+			/* Autoplay */
+			autoplay	: true,				// Autoplay ...
+			loop		: true,				// Loop ...
+			randomstart	: false,			// Mit zufalliger Zeile Starten
+			timeout		: 5000,				// Zeit zwischen Zeilenwechsel bei autoplay
+			delaystart	: 0,				// Startverzögerung (wird zu timeout addiert!)
+			direction	: 'forwards', 		// Laufrichtung: 'forwards' | 'backwards' | 'random'
+			pauseonhover 	: false,		// Pausiere Protoslider solange der Mauszeiger drauf zeigt.
+			onlyInViewport 	: true,			// Nur animieren/autoplay wenn im Viewport sichtbar
 
+			/* Steuerelemente */
+			pagination 			: true,		// Paginierung anzeigen
+			paginationLabels 	: true, 	// Unterstützung für Beschriftungen in der Paginierung
+			navigation 			: true,		// Vor- und Zurück-Buttons anzeigen
 
-		/* Autoplay */
-		autoplay 					: true,				// Autoplay ...
-		loop						: true,				// Loop ...
-		randomstart 				: false,			// Mit zufalliger Zeile Starten
-		timeout 					: 5000,				// Zeit zwischen Zeilenwechsel bei autoplay
-		delaystart 					: 0,				// Startverzögerung (wird zu timeout addiert!)
-		direction 					: 'forwards', 		// Laufrichtung: 'forwards' | 'backwards' | 'random'
-		pauseonhover 				: true,				// Pausiere Protoslider solange der Mauszeiger drauf zeigt.
-		onlyInViewport 				: true,				// Nur animieren/autoplay wenn im Viewport sichtbar
+			/* Touch / Swipe */
+			swipe 				: true,		// Touch wischen – nur links und rechts
+			swipeThreshold 		: 80,		// Schwelle in Pixeln, die gewischt werden müssen, bevor irgendwas passiert.
+			pauseonswipe 		: true,		// Protoslider stoppen, wenn gewischt wurde.
+			swipepause 			: 20000,	// Nach pauseonswipe die Zeit in Millisekunden nach dem der Autoplay wieder anlaufen soll. 0 = niemals.
 
-		/* Steuerelemente */
-		pagination 					: true,				// Paginierung
-		paginationLabels 			: true, 			// Paginierung Beschriftung
-		navigation 					: true,				// Vor und Zurück
+			plugins: [], 	// Eine Liste von Plugins...
 
-		/* Touch / Swipe */
-		swipe						: true,				// Touch wischen – nur links und rechts
-		swipeThreshold 				: 80,				// Schwelle in Pixeln, die gewischt werden müssen, bevor irgendwas passiert.
-		pauseonswipe				: true,				// Protoslider stoppt, wenn gewischt wurde.
-		swipepause					: 20000,			// Nach pauseonswipe Zeit in Millisekunden nach dem der Autoplay wieder anläuft. 0 = niemals.
+			/* Z-Achsen für Pagninierung und Navigation (wird zu Z-Achsen von slides addiert) */
+			zAxis: {
+				pagination: 2,
+				navigation: 1
+			},
 
-		plugins 					: [],
+			/*
+				Animationen
+	
+				Kann auch pro Slide definiert werden:	<div class="ptslider-item" data-ptoptions='{"animations":{"autoplay":{"in":"flipInRight"},"pagination":{"in":"flipInLeft"}}}'>
+			*/
+			delay: 0,								// Verzögerung zwischen dem Spaltenwechsel (Slides) bei einem Zeilenwechsel – macht nur Sinn, wenn auch mehr als eine Spalte angezeigt wird
 
-		/* Z-Achsen für Pagninierung und Navigation (wird zu Z-Achsen von slides addiert) */
-		zAxis : {
-			pagination : 2,
-			navigation : 1
-		},
-
-		/*
-			Animationen
-
-			Kann auch pro Slide definiert werden:	<div class="ptslider-item" data-ptoptions='{"animations":{"autoplay":{"in":"flipInRight"},"pagination":{"in":"flipInLeft"}}}'>
-		*/
-		delay 		: 0,								// Verzögerung zwischen dem Spaltenwechsel (Slides) bei einem Zeilenwechsel – macht nur Sinn, wenn auch mehr als eine Spalte angezeigt wird
-
-		animations : {
-				autoplay : {							// Animationen bei Autoplay
-					in 			:	'fadeIn',			// Beim einblenden – String oder Array: 'fadeIn' oder ['fadeIn','pulse','blub']
-					out 		:	'fadeOut',			// Beim ausblenden – String oder Array
-					duration 	:	'1s',				// Dauer
-					random		: 	true,				// Wenn in und/oder out ein Array mit Animationsnamen enthalten, wird per Zufall eine daraus gewählt.
-														// Random wird erst interessant, wenn mehr als eine Spalte engezeigt wird.
-					delay		:	0
+			animations : {
+				// Animationen bei Autoplay
+				autoplay : 
+				{		
+                    on : {in : true, out: false}, 	// Animationen ein- und ausschalten {in (Einblenden), out (Ausblenden)}
+					in 			: 'fadeIn',		// Beim einblenden – String oder Array: 'fadeIn' oder ['fadeIn','pulse','blub']
+					out 		: 'fadeOut',	// Beim ausblenden – String oder Array
+					duration 	: 650,			// Dauer der Animation in Millisekunden
+					random 		: true,			// Wenn in und/oder out ein Array mit Animationsnamen enthalten, wird per Zufall eine daraus gewählt.
+												// Random wird erst interessant, wenn mehr als eine Spalte engezeigt wird.
+					delay 		: 0 			// 
 				},
-				pagination : {							// Animation bei Klick auf einen Pager in der Paginierung
-					in 			:	'fadeIn',
-					out 		:	'fadeOut',
-					duration 	:	'1s',
-					delay		:	0
+				pagination: {							// Animation bei Klick auf einen Pager in der Paginierung
+                    on : {in : true, out: false},
+                    in: 'fadeIn',
+					out: 'fadeOut',
+					duration: 650,
+					delay: 0
 				},
-				navigation : {							// Animation beim Klick auf Vor und Zurück
-					nextIn 		: 	'slideInRight',		// Beim einblenden, wenn der Slide als nächstes eingeblendet wird (Klick auf Vorwärts, dieser Slide wird eingeblendet)
-					nextOut 	: 	'slideOutLeft',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Vorwärts gelickt wird
-					prevIn 		: 	'slideInLeft',		// Beim einblenden, wenn der Slide der Vorherige ist (Klick auf Zurück, dieser Slide wird eingeblendet)
-					prevOut 	: 	'slideOutRight',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Zurück geklickt wird.
-					duration 	:	'0.75s',
-					delay		:	0
+                navigation: {							// Animation beim Klick auf Vor und Zurück
+                    on : {in : true, out: false},
+					nextIn: 'slideInRight',		// Beim einblenden, wenn der Slide als nächstes eingeblendet wird (Klick auf Vorwärts, dieser Slide wird eingeblendet)
+					nextOut: 'slideOutLeft',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Vorwärts gelickt wird
+					prevIn: 'slideInLeft',		// Beim einblenden, wenn der Slide der Vorherige ist (Klick auf Zurück, dieser Slide wird eingeblendet)
+					prevOut: 'slideOutRight',		// Beim ausblenden, wenn der Slide gerade angezeigt wird, und auf Zurück geklickt wird.
+					duration: 650,
+					delay: 0
 				},
-				swipe : {								// Animation beim Wischen auf Touch-Geräten – wie navigation
-					nextIn 		: 	'slideInRight',
-					nextOut 	: 	'slideOutLeft',
-					prevIn 		: 	'slideInLeft',
-					prevOut 	: 	'slideOutRight',
-					duration 	:	'0.3s',
-					delay		:	0
+                swipe: {								// Animation beim Wischen auf Touch-Geräten – wie navigation
+                    on : {in : true, out: true},
+					nextIn: 'slideInRight',
+					nextOut: 'slideOutLeft',
+					prevIn: 'slideInLeft',
+					prevOut: 'slideOutRight',
+					duration: 300,
+					delay: 0
 				}
-		},
-
-
-		html : {
-			// Zurück-Button, kann auch zur Laufzeit überschrieben werden: protoslider().options.html.btnPrev = '...'; protoslider.removeNavigation(); protoslider.addNavigation();
-			btnPrev 	: '<span class="ptslider-nav ptslider-nav-prev" />',
-			// Vorwärts-Button:
-			btnNext 	: '<span class="ptslider-nav ptslider-nav-next" />',
-			// Wrapper für die Paginierung:
-			pagination  : '<div class="ptslider-pagination" />',
-			// Ein Element in der Paginierung:
-			pager 		: '<span class="ptslider-pager" />',
-			// Ein Element in der Paginierung mit einem Label:
-			pagerLabel  : '<span class="ptslider-pager-label">%s</span>',
-			// Die Ladeanzeige:
-			loading		: 	'<div class="ptslider-preload">' +
-								'<div class="ptslider-indicator">' +
-									'<div class="spinner">' +
-										'<div class="dot1"></div>' +
-										'<div class="dot2"></div>' +
-									'</div>' +
-									'<span class="percent-loaded"></span>' +
-								'</div>' +
-							'</div>'
-		},
-
-		// CSS Klassen und Regeln
-		css : {
-			classActive 	: 'ptin',			// Aktiver Slide
-
-			labeledPager 	: 'labeled',
-
-			classAnimated	: 'animated',		// Slide, welcher gerade animiert wird (Analog zur CSS-Animationsbibliothek; hier Animated.css)
-			classInfinite	: 'infinite',		// CSS Klasse für endlose Animation (Analog zur CSS-Animationsbibliothek; hier Animated.css)
-
-			//styleActive 	: { display: 'block', visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
-			//styleInactive 	: { display: 'none', visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
-			styleActive 	: { visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
-			styleInactive 	: { visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
-		},
-
-		eventNamespace 	: '.ptslider', 			// jQuery Event-Namespace
-
-		// Standard-Events, die in jedem Browser funktionieren
-		bulkEvents : {
-			resize 				: 'resize',
-			orientationchange 	: 'orientationchange'
-		},
-
-		// Herstellerspezifische Event-Bezeichnungen (Protoslider ermittelt automatisch was benutzt werden kann)
-		vendorEvents : {
-			'animation' : { // Standard
-				animationEnd 		: 'animationend',
-				animationIteration 	: 'animationiteration',
-				transitionEnd		: 'transitionend'
 			},
-			'webkitAnimation' : { // Google (Apple, MS-Edge)
-				animationEnd 		: 'webkitAnimationEnd',
-				animationIteration 	: 'webkitAnimationIteration',
-				transitionEnd		: 'webkitTransitionEnd'
+
+
+			html: {
+				// Zurück-Button, kann auch zur Laufzeit überschrieben werden: protoslider().options.html.btnPrev = '...'; protoslider.removeNavigation(); protoslider.addNavigation();
+				btnPrev: '<span class="ptslider-nav ptslider-nav-prev" />',
+				// Vorwärts-Button:
+				btnNext: '<span class="ptslider-nav ptslider-nav-next" />',
+				// Wrapper für die Paginierung:
+				pagination: '<div class="ptslider-pagination" />',
+				// Ein Element in der Paginierung:
+				pager: '<span class="ptslider-pager" />',
+				// Ein Element in der Paginierung mit einem Label:
+				pagerLabel: '<span class="ptslider-pager-label">%s</span>',
+				// Die Ladeanzeige:
+				loading: '<div class="ptslider-preload">' +
+					'<div class="ptslider-indicator">' +
+					'<div class="spinner">' +
+					'<div class="dot1"></div>' +
+					'<div class="dot2"></div>' +
+					'</div>' +
+					'<span class="percent-loaded"></span>' +
+					'</div>' +
+					'</div>'
 			},
-			'oAnimation' : { // Opera
-				animationEnd 		: 'oanimationend',
-				animationIteration 	: 'oanimationiteration',
-				transitionEnd		: 'otransitionend'
-			}
-		},
+
+			// CSS Klassen und Regeln
+			css: {
+				classActive: 'ptin',			// Aktiver Slide
+
+				labeledPager: 'labeled',
+
+				classAnimated: 'animated',		// Slide, welcher gerade animiert wird (Analog zur CSS-Animationsbibliothek; hier Animated.css)
+				classInfinite: 'infinite',		// CSS Klasse für endlose Animation (Analog zur CSS-Animationsbibliothek; hier Animated.css)
+
+				//styleActive 	: { display: 'block', visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
+				//styleInactive 	: { display: 'none', visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
+				styleActive: { visibility: 'visible', position: 'absolute' }, 	// Regeln für aktive Slides – auch während der Ein- und Ausblende-Animation
+				styleInactive: { visibility: 'hidden', position: 'absolute' }		// Regeln für inaktive Slides
+			},
+
+			eventNamespace: '.ptslider', 			// jQuery Event-Namespace
+
+			// Standard-Events, die in jedem Browser funktionieren
+			bulkEvents: {
+				resize: 'resize',
+				orientationchange: 'orientationchange'
+			},
+
+			// Herstellerspezifische Event-Bezeichnungen (Protoslider ermittelt automatisch was benutzt werden kann)
+			vendorEvents: {
+				'animation': { // Standard
+					animationEnd: 'animationend',
+					animationIteration: 'animationiteration',
+					transitionEnd: 'transitionend'
+				},
+				'webkitAnimation': { // Google (Apple, MS-Edge)
+					animationEnd: 'webkitAnimationEnd',
+					animationIteration: 'webkitAnimationIteration',
+					transitionEnd: 'webkitTransitionEnd'
+				},
+				'oAnimation': { // Opera
+					animationEnd: 'oanimationend',
+					animationIteration: 'oanimationiteration',
+					transitionEnd: 'otransitionend'
+				}
+			},
 
 
-		/*
-			Public Callback-Funktionen
-			$('.xyz').protoslider({ onXYZ : function(){...} });
-		*/
-		onBeforeAnimation 		: false,	// Wird ausgeführt, bevor eine Animation startet
-		onBeginAnimation 		: false,	// Wird ausgeführt, wenn eine Animation startet
-		onAfterAnimation 		: false,	// nachdem eine Animation beendet wurde
-		onBeginSlideAnimation 	: false,	// Bevor die Animation eines Slides startet
-		onAfterSlideAnimation 	: false,	// Nachdem die Animation eines Slides beendet wurde
-		onPause 				: false,	// wenn Pause gefeuert wurde
-		onPlay 					: false,	// wenn Play gefeuert wurde
-		onInit					: false,	// Während der INitialisierung, der frühstmögliche Punkt um einzugreifen
-		onAfterInit 			: false,	// nachdem init beendet wurde, noch bevor Protoslider sich selbst returned hat
-		onAfterImagePreload		: false		// Nachdem der Bilder-Preload beendet wurde (wenn er denn lief)
-	};
+			/*
+				Public Callback-Funktionen
+				$('.xyz').protoslider({ onXYZ : function(){...} });
+			*/
+			onBeforeAnimation: false,	// Wird ausgeführt, bevor eine Animation startet
+			onBeginAnimation: false,	// Wird ausgeführt, wenn eine Animation startet
+			onAfterAnimation: false,	// nachdem eine Animation beendet wurde
+			onBeginSlideAnimation: false,	// Bevor die Animation eines Slides startet
+			onAfterSlideAnimation: false,	// Nachdem die Animation eines Slides beendet wurde
+			onPause: false,	// wenn Pause gefeuert wurde
+			onPlay: false,	// wenn Play gefeuert wurde
+			onInit: false,	// Während der INitialisierung, der frühstmögliche Punkt um einzugreifen
+			onAfterInit: false,	// nachdem init beendet wurde, noch bevor Protoslider sich selbst returned hat
+			onAfterImagePreload: false		// Nachdem der Bilder-Preload beendet wurde (wenn er denn lief)
+		};
 
 	$.Protoslider.prototype = {
-		_init : function( options )
-		{
+		_init: function (options) {
 			/* Optionen und Defaults zusammenführen zu this.options */
-			this.options = $.extend( true, {}, $.Protoslider.defaults, options );
+			this.options = $.extend(true, {}, $.Protoslider.defaults, options);
 
 			/* Optionen und inline-Optionen aus Attribut "data-ptoptions" zusammenführen */
-			if( this.$node.data('ptoptions') )
-			{
-				$.extend( true, this.options, this.$node.data('ptoptions') );
+			if (this.$node.data('ptoptions')) {
+				$.extend(true, this.options, this.$node.data('ptoptions'));
 			}
 
 			// Zustand:
-			this.State		= {
-				ready 		: false,	/* Setup beendet; Protoslider ist bereit */
-				isIdle		: false,	/* Animiert gerade? */
-				trigger 	: {},		/* Auslöser des letzten Navigationsvorgangs { name : 'autoplay' | 'navigation' | 'pagination' | 'swipe', direction : 'prev' | 'next' | INTEGER } – wird u.a. in prepareSlideAnimation verarbeitet, verschiedende Trigger können verschiedene Slide Animationen auslösen */
+			this.State = {
+				ready: false,	/* Setup beendet; Protoslider ist bereit */
+				isIdle: false,	/* Animiert gerade? */
+				trigger: {},		/* Auslöser des letzten Navigationsvorgangs { name : 'autoplay' | 'navigation' | 'pagination' | 'swipe', direction : 'prev' | 'next' | INTEGER } – wird u.a. in prepareSlideAnimation verarbeitet, verschiedende Trigger können verschiedene Slide Animationen auslösen */
 
-				rows		: 0,		/* Anzahl Zeilen */
-				row 		: 0,		/* Derzeit sichtbare Zeile */
-				rowNext		: 0,		/* Nächste Zeile, die eingeblendet wird */
-				columns		: this.options.items[0], /* Anzahl derzeit sichtbarer Spalten */
+				rows: 0,		/* Anzahl Zeilen */
+				row: 0,		/* Derzeit sichtbare Zeile */
+				rowNext: 0,		/* Nächste Zeile, die eingeblendet wird */
+				columns: this.options.items[0], /* Anzahl derzeit sichtbarer Spalten */
 
-				stage		: [],		/* Array mit derzeit sichtbaren Slides */
-				touch		: {}		/* Habe ich vergessen! Geht auch so. */
+				stage: [],		/* Array mit derzeit sichtbaren Slides */
+				touch: {}		/* Habe ich vergessen! Geht auch so. */
 			};
 
 
 			this.getVendorEvents();
 
 
-			this.Controls 	= {
-				pagination	: false,
-				prev 		: false,
-				next 		: false,
-				swipe		: false
+			this.Controls = {
+				pagination: false,
+				prev: false,
+				next: false,
+				swipe: false
 			}
 
 
 			this.Preload = {
-				entities	: false, 	/* zu laden */
-				loaded		: 0,		/* geladen */
+				entities    : false, 	/* zu laden */
+				loaded      : 0,		/* geladen */
 			},
 
 
-			this.playtimer 	= undefined; 	/* Autoplay Timeout Id */
+			this.playtimer = undefined; 	/* Autoplay Timeout Id */
 
-			this.$slides 	= this.$node.find('.ptslider-item'); /* Slides/Items */
+			this.$slides = this.$node.find('.ptslider-item'); /* Slides/Items */
 
 
-			if( ! this.$slides.length )
-			{
-				if( console ) console.log('Protoslider hat keine Slides in #' + this.$node.attr('id') + ' (' + this.$node.attr('class') + ')');
+			if (!this.$slides.length) {
+				if (console) console.log('Protoslider hat keine Slides in #' + this.$node.attr('id') + ' (' + this.$node.attr('class') + ')');
 				return false;
 			}
 
 
-			if( typeof this.options.onInit === 'function' )
-			{
+			if (typeof this.options.onInit === 'function') {
 				this.options.onInit.apply(this);
 			}
 
 			// Plugins instanzieren:
 			this.options.plugins = this.options.plugins.concat($.Protoslider.Plugins);
-			this.options.plugins = this.options.plugins.filter(function(value, index, self){return self.indexOf(value) === index;}); // https://stackoverflow.com/questions/1960473/get-all-unique-values-in-an-array-remove-duplicates
-			if( this.options.plugins.length > 0 )
-			{
-				for( var i = 0, len = this.options.plugins.length; i < len; i++ )
-				{
+			this.options.plugins = this.options.plugins.filter(function (value, index, self) { return self.indexOf(value) === index; }); // https://stackoverflow.com/questions/1960473/get-all-unique-values-in-an-array-remove-duplicates
+			if (this.options.plugins.length > 0) {
+				for (var i = 0, len = this.options.plugins.length; i < len; i++) {
 					this[this.options.plugins[i]] = new $[this.options.plugins[i]](this);
 				}
 
-				if( typeof this.options.onAfterInitPlugins === 'function' )
-				{
+				if (typeof this.options.onAfterInitPlugins === 'function') {
 					this.options.onAfterInitPlugins.apply(this);
 				}
 			} // ende Plugins
 
-			if(this.options.preload)
-			{
+			if (this.options.preloader.on) {
 				this._preload();
 			}
-			else
-			{
+			else {
 				this._setup();
 			}
 		},
@@ -387,10 +405,9 @@
 
 			Die Proxy-Funktionen machen nichts anderes als pt.$node.on(), aber übergeben nicht $node als "this" an die auszuführende Funktion, sondern die Protoslider-Instanz.
 		*/
-		on : function(){
-			for( var arg in arguments )
-			{
-				if( typeof arguments[arg] === 'function' ) arguments[arg] = $.proxy(arguments[arg], this);
+		on: function () {
+			for (var arg in arguments) {
+				if (typeof arguments[arg] === 'function') arguments[arg] = $.proxy(arguments[arg], this);
 			}
 			var args = Array.prototype.slice.call(arguments);
 			this.$node.on.apply(this.$node, args);
@@ -400,10 +417,9 @@
 		/*
 			Proxy für jQuery.one
 		*/
-		one : function(){
-			for( var arg in arguments )
-			{
-				if( typeof arguments[arg] === 'function' ) arguments[arg] = $.proxy(arguments[arg], this);
+		one: function () {
+			for (var arg in arguments) {
+				if (typeof arguments[arg] === 'function') arguments[arg] = $.proxy(arguments[arg], this);
 			}
 			var args = Array.prototype.slice.call(arguments);
 			this.$node.one.apply(this.$node, args);
@@ -413,30 +429,28 @@
 		/*
 			Proxy für jQuery.off
 		*/
-		off : function(){
+		off: function () {
 			var args = Array.prototype.slice.call(arguments);
 			this.$node.off.apply(this.$node, args);
 
 			return this;
 		},
 
-		getViewportSize : function(){
+		getViewportSize: function () {
 			var w = window,
 				e = document.documentElement,
 				b = document.getElementsByTagName('body')[0],
 				x = w.innerWidth || e.clientWidth || b.clientWidth,
-				y = w.innerHeight|| e.clientHeight|| b.clientHeight;
-			return {w : x, h : y};
+				y = w.innerHeight || e.clientHeight || b.clientHeight;
+			return { w: x, h: y };
 		},
 
 		// Ist Protoslider zu sehen?
-		isInViewport : function()
-		{
+		isInViewport: function () {
 			var vp = this.getViewportSize(),
 				sp = $(document).scrollTop();
 
-			if( vp.h + sp >= this.$node.offset().top && this.$node.offset().top + this.$node.height() > sp )
-			{
+			if (vp.h + sp >= this.$node.offset().top && this.$node.offset().top + this.$node.height() > sp) {
 				return true;
 			}
 
@@ -444,21 +458,16 @@
 		},
 
 		// Benutzbare Event-Namen ermitteln
-		getVendorEvents : function(){
-			for( var key in this.options.vendorEvents )
-			{
-				if( this.options.vendorEvents.hasOwnProperty(key) )
-				{
-					if( this.$node.get(0).style[key] !== undefined )
-					{
+		getVendorEvents: function () {
+			for (var key in this.options.vendorEvents) {
+				if (this.options.vendorEvents.hasOwnProperty(key)) {
+					if (this.$node.get(0).style[key] !== undefined) {
 						this.State.events = this.options.vendorEvents[key];
 
-						$.extend( this.State.events, this.options.bulkEvents );
+						$.extend(this.State.events, this.options.bulkEvents);
 
-						for(var event in this.State.events)
-						{
-							if( this.State.events.hasOwnProperty(event) )
-							{
+						for (var event in this.State.events) {
+							if (this.State.events.hasOwnProperty(event)) {
 								this.State.events[event] = this.State.events[event] + this.options.eventNamespace;
 							}
 						}
@@ -473,28 +482,43 @@
 		/*
 			Bilder-Preload
 		*/
-		_preload : function()
-		{
+		_preload: function () {
 			this.Preload.entities = this.$wrap.find('img');
 
-			if( this.Preload.entities.length > 0 )
+			// Finde Hintergrundbilder
+			let urlRegex, matches, img;
+			for (let i = 0, len = this.$slides.length; i < len; i++) 
 			{
+				urlRegex    = /url\((['"])?(.*?)\1\)/gi; // Wenn das Objekt nicht jedes Mal neu erzeugt wird, werden nicht alle Bilder gefunden !
+				matches     = urlRegex.exec(getComputedStyle(this.$slides.get(i)).backgroundImage);
+
+				if (matches !== null) 
+				{
+					img = new Image();
+					img.src = matches[2];
+					this.Preload.entities.push(img);
+				}
+			}
+
+			if (this.Preload.entities.length > 0) {
 				var self = this;
 
-				if( this.options.loadingIndicator )
-				{
+				if (this.options.preloader.showProgress) {
 					this.showIndicator();
 				}
 
+				this.Preload.entities.on('error' + this.options.eventNamespace, function () {
+				   ++self.Preload.loaded;
+					self._entityLoaded();
+				});
+
 				// for( var x = this.Preload.entities.length; x > 0; x-- ) // Der Browser wird vermutl. nicht Rückwärts laden
-				for( var x = 0, len = this.Preload.entities.length; x < len; x++ )
-				{
+				for (var x = 0, len = this.Preload.entities.length; x < len; x++) {
 					/*
 						https://support.microsoft.com/de-de/kb/167820
 					*/
-					if( window.navigator.userAgent.indexOf("MSIE ") > -1 )
-					{
-						this.Preload.entities.eq(x-1).attr("src", this.Preload.entities.eq(x-1).attr("src")); // OnLoad Bug von IE >5 und < Edge(?) übergehen.
+					if (window.navigator.userAgent.indexOf("MSIE ") > -1) {
+						this.Preload.entities.eq(x - 1).attr("src", this.Preload.entities.eq(x - 1).attr("src")); // OnLoad Bug von IE >5 und < Edge(?) übergehen.
 						/*
 							https://www.google.de/search?q=internet+explorer+image+onload+bug
 
@@ -502,9 +526,9 @@
 						*/
 					}
 
-					if( this.Preload.entities.get(x-1).complete )
+					if (this.Preload.entities.get(x - 1).complete) 
 					{
-						this.Preload.entities.eq(x-1).one('load' + this.options.eventNamespace, function() // Der Feuert wenn Resourcen, die sich im Cache befinden, nochmal per AJAX geladen werden – das wird von Firefox benötigt!
+						this.Preload.entities.eq(x - 1).one('load' + this.options.eventNamespace, function () // Der Feuert wenn Resourcen, die sich im Cache befinden, nochmal per AJAX geladen werden – das wird von Firefox benötigt!
 						{
 							++self.Preload.loaded;
 							self._entityLoaded();
@@ -515,55 +539,52 @@
 					}
 					else // Noch nicht geladen ... Internet Explorer bis einschl. 11 läuft immer hier rein
 					{
-						this.Preload.entities.eq(x-1).one('load' + this.options.eventNamespace, function()
-						{
+						this.Preload.entities.eq(x - 1).one('load' + this.options.eventNamespace, function () {
 							++self.Preload.loaded;
 							self._entityLoaded();
 						});
 					}
 				}
 			}
-			else
-			{
+			else {
 				this._onAfterPreload();
 			}
 
 		},
 
 
-		_entityLoaded : function()
-		{
-			if( this.options.loadingIndicator )
-			{
+		_entityLoaded: function () {
+			if (this.options.preloader.showProgress) {
 				this.updateIndicator();
 			}
 
-			if( this.Preload.loaded == this.Preload.entities.length )
-			{
+			if (this.Preload.loaded == this.Preload.entities.length) {
 				this._onAfterPreload();
 			}
 		},
 
-		_onAfterPreload : function()
+		_onAfterPreload: function () 
 		{
-			if( this.options.loadingIndicator )
+			if(!this.options.preloader.demo)
 			{
-			 	this.hideIndicator();
-			}
+				if (this.options.preloader.showProgress) 
+				{
+					this.hideIndicator();
+				}
 
-			if( typeof this.options.onAfterImagePreload === 'function' )
-			{
-				this.options.onAfterImagePreload.apply(this);
-			}
+				if (typeof this.options.onAfterImagePreload === 'function') {
+					this.options.onAfterImagePreload.apply(this);
+				}
 
-			this._setup();
+				this.$node.triggerHandler('afterImagePreload');
+
+				this._setup();
+			}
 		},
 
 		// Zeige Ladeindikator
-		showIndicator : function()
-		{
-			if( ! this.$indicator )
-			{
+		showIndicator: function () {
+			if (!this.$indicator) {
 				this.$indicator = $(this.options.html.loading);
 
 				var $text = this.$indicator.find('.percent-loaded');
@@ -575,44 +596,38 @@
 			this.$indicator.addClass('visible');
 		},
 
-		updateIndicator : function()
-		{
+		updateIndicator: function () {
 			//if( this.$indicator )
 			//{
-				var $text 	= this.$indicator.find('.percent-loaded'),
-					val 	= Math.round(this.Preload.loaded / this.Preload.entities.length * 100 + 0.4);
+			var $text 	= this.$indicator.find('.percent-loaded'),
+				val 	= Math.round(this.Preload.loaded / this.Preload.entities.length * 100 + 0.4);
 
-				val = val > 100 ? 100 : val; // Firefox zeigt auch mal mehr als 100%
+			val = val > 100 ? 100 : val; // Firefox zeigt auch mal mehr als 100%
 
-				$text.off(this.State.events.transitionEnd).on(this.State.events.transitionEnd, function()
-				{
-					$text.removeClass('updated');
-				});
-				$text.addClass('updated').html( val + '%');
+			$text.off(this.State.events.transitionEnd).on(this.State.events.transitionEnd, function () {
+				$text.removeClass('updated');
+			});
+			$text.addClass('updated').html(val + '%');
 			//}
 		},
 
 		// Verberge Ladeindikator
-		hideIndicator : function()
-		{
-			if( this.$indicator )
-			{
+		hideIndicator: function () {
+			if (this.$indicator) {
 				this.$indicator.removeClass('visible');
 			}
 		},
 
-		_setup : function(){
+		_setup: function () {
 			// var self = this;
 
-			if( this.State.ready ) /* Das sollte niemals passieren ... */
-			{
-				if(console) console.log('Protoslider ist bereit, wollte _setup aber erneut ausführen!');
+			if (this.State.ready) /* Das sollte niemals passieren ... */ {
+				if (console) console.log('Protoslider ist bereit, wollte _setup aber erneut ausführen!');
 				return;
 			}
 
-			var d = { ptslider : this };
-			for( var i = 0, len = this.$slides.length; i < len; i++ )
-			{
+			var d = { ptslider: this };
+			for (var i = 0, len = this.$slides.length; i < len; i++) {
 				this.$slides.eq(i).data('ptslider', d);
 			}
 
@@ -620,94 +635,80 @@
 			/*
 				Animations-Helper installieren
 			*/
-			if( !$.fn._ptsSetAnimation && !$.fn._ptsClearAnimation )
-			{
+			if (!$.fn._ptsSetAnimation && !$.fn._ptsClearAnimation) {
 				this.installAnimationHelpers();
 			}
 
 
-			if( this.render() )
-			{
+			if (this.render()) {
 				this.observeViewport();
 
-				if(this.options.autoplay)
-				{
-					if(this.options.pauseonhover)
-					{
+				if (this.options.autoplay) {
+					if (this.options.pauseonhover) {
 						this.setPauseEvents(); /* Pause bei mouseover */
 					}
 
-					if( this.options.delaystart > 0 )
-					{ // verzögerter Start
+					if (this.options.delaystart > 0) { // verzögerter Start
 						var self = this;
-						this.State.starttimer = window.setTimeout( function(){ self.play() }, this.options.delaystart );
+						this.State.starttimer = window.setTimeout(function () { self.play() }, this.options.delaystart);
 					}
-					else
-					{
+					else {
 						this.play();
 					}
 				}
 
 				this._onAfterSetup();
 			}
-			else if( console )
-			{
+			else if (console) {
 				console.log('Protoslider Rendern fehlgeschlagen!');
 			}
 		},
 
-		_onAfterSetup : function()
-		{
+		_onAfterSetup: function () {
 			this.State.ready = true;
 
 			this.$node.addClass('ptready');
 
 			this.$node.triggerHandler('sliderReady');
 
-			if( typeof this.options.onAfterInit === 'function' )
-			{
+			if (typeof this.options.onAfterInit === 'function') {
 				this.options.onAfterInit.apply(this);
 			}
 		},
 
 
-		installAnimationHelpers : function()
-		{
+		installAnimationHelpers: function () {
 			/*
 				!!!! Unzuverlässig, überarbeiten!
 			*/
-			$.fn._ptsSetAnimation = function(ani, infinite, infCallback)
-			{
-				var $slide 	= $(this),
-					d 		= $slide.data('ptslider') || {};
+			$.fn._ptsSetAnimation = function (ani, infinite, infCallback) {
+				var $slide = $(this),
+					d = $slide.data('ptslider') || {};
 
-				if( ! d.ptslider ) return;
+				if (!d.ptslider) return;
 
 
 				/*if(!d.ac)
 				{*/
-					$slide.addClass(d.ptslider.options.css.classAnimated);
-					d.ac = 0;
-					d.anims = new Array();
+				$slide.addClass(d.ptslider.options.css.classAnimated);
+				d.ac = 0;
+				d.anims = new Array();
 				/*}*/
 
 				$slide.addClass(ani + (infinite ? ' ' + d.ptslider.options.css.classInfinite : ''));
 
 				++d.ac;
 
-				if( !infinite )
-				{
-					$slide.one(d.ptslider.State.events.animationEnd, function()
-					{
-						$(this)._ptsClearAnimation( ani );
+				if (!infinite) {
+					$slide.one(d.ptslider.State.events.animationEnd, function () {
+						$(this)._ptsClearAnimation(ani);
 					})
 				}
-				else if(typeof infCallback === 'function')
-				{
+				else if (typeof infCallback === 'function') {
 					infCallback.apply(this);
 				}
 
-				d.anims[d.ac] = { name : ani, loop : infinite };
+				d.anims[d.ac] = { name: ani, loop: infinite };
 
 				$slide.data('ptslider', $.extend($slide.data('ptslider'), d));
 
@@ -715,21 +716,18 @@
 			}
 
 
-			$.fn._ptsClearAnimation = function(ani, infinite)
-			{
-				var $slide 	= $(this),
-					d		= $slide.data('ptslider');
+			$.fn._ptsClearAnimation = function (ani, infinite) {
+				var $slide = $(this),
+					d = $slide.data('ptslider');
 
 				$slide.removeClass(ani + (infinite ? ' ' + d.ptslider.options.css.classInfinite : ''));
 
-				if(d.ac > 0)
-				{
+				if (d.ac > 0) {
 					--d.ac;
 				}
 
-				if(!d.ac)
-				{
-					$slide.removeClass( d.ptslider.options.css.classAnimated );
+				if (!d.ac) {
+					$slide.removeClass(d.ptslider.options.css.classAnimated);
 				}
 
 				$slide.data('ptslider', $.extend($slide.data('ptslider'), d));
@@ -738,22 +736,17 @@
 			}
 
 
-			$.fn._ptsClearAllAnimations = function()
-			{
-				var $slide 	= $(this),
-					d 		= $slide.data('ptslider');
+			$.fn._ptsClearAllAnimations = function () {
+				var $slide = $(this),
+					d = $slide.data('ptslider');
 
-				if( $slide && d )
-				{
+				if ($slide && d) {
 					$slide.off(d.ptslider.options.eventNamespace);
 
-					if(d.anims)
-					{
+					if (d.anims) {
 						//for( var x = d.anims.length; x--; )
-						for( var x = 0, len = d.anims.length; x < len; x++ )
-						{
-							if( d.anims[x] )
-							{
+						for (var x = 0, len = d.anims.length; x < len; x++) {
+							if (d.anims[x]) {
 								//console.log(d.anims[x]);
 								$slide._ptsClearAnimation(d.anims[x].name, d.anims[x].loop);
 							}
@@ -763,27 +756,24 @@
 			}
 		},
 
-		getRandomRow : function()
-		{
-			return Math.floor( Math.random() * this.map.length );
+		getRandomRow: function () {
+			return Math.floor(Math.random() * this.map.length);
 		},
 
 		/*
 			Mit Vorsicht zu genießen...
 		*/
-		destroy : function()
-		{
+		destroy: function () {
 			this.clearAutoplayTimeout();
 			this.clearSlideAnimations();
 
-			if( this.options.pauseonhover ) this.unsetPauseEvents();
+			if (this.options.pauseonhover) this.unsetPauseEvents();
 
-			if( this.options.pagination ) this.removePagination();
+			if (this.options.pagination) this.removePagination();
 
-			if( this.options.navigation ) this.removeNavigation();
+			if (this.options.navigation) this.removeNavigation();
 
-			this.$slides.each(function()
-			{
+			this.$slides.each(function () {
 				$slide = $(this);
 				$slide.removeData('ptslider');
 			});
@@ -792,15 +782,12 @@
 		},
 
 		// -- Pause/Play Event (options.pauseonhover)
-		setPauseEvents : function(){
+		setPauseEvents: function () {
 			var self = this;
-			this.$node.on('mouseover' + this.options.eventNamespace, function()
-			{
-				if( ! self.State.paused )
-				{
+			this.$node.on('mouseover' + this.options.eventNamespace, function () {
+				if (!self.State.paused) {
 					self.pause();
-					self.$node.one('mouseout' + self.options.eventNamespace, function()
-					{
+					self.$node.one('mouseout' + self.options.eventNamespace, function () {
 						self.play();
 					});
 				}
@@ -808,25 +795,20 @@
 			});
 		},
 
-		unsetPauseEvents : function()
-		{
+		unsetPauseEvents: function () {
 			this.$node.off('mouseover' + this.options.eventNamespace);
 			this.$node.off('mouseout' + this.options.eventNamespace);
 		},
 
 		// 1.
-		getSliderColumns : function()
-		{
+		getSliderColumns: function () {
 			var width = this.getViewportSize().w;
 
-			for( var i = 0, len = this.options.size.length; i < len; i++ )
-			{
-				if( width < this.options.size[i] && width >= this.options.size[i+1] )
-				{
-					return this.options.items[i+1];
+			for (var i = 0, len = this.options.size.length; i < len; i++) {
+				if (width < this.options.size[i] && width >= this.options.size[i + 1]) {
+					return this.options.items[i + 1];
 				}
-				else if( width >= this.options.size[i] )
-				{
+				else if (width >= this.options.size[i]) {
 					return this.options.items[i];
 				}
 			}
@@ -836,24 +818,20 @@
 
 
 		// 2.
-		getSliderRows : function()
-		{
+		getSliderRows: function () {
 			return Math.round(this.$slides.length / this.State.columns + 0.4);
 		},
 
 
 		// 3.
-		getSliderMap : function()
-		{
+		getSliderMap: function () {
 			var sliderMap = new Array();
 
-			for( var i = 0, ilen = this.State.rows; i < ilen; i++ )
-			{
+			for (var i = 0, ilen = this.State.rows; i < ilen; i++) {
 				sliderMap[i] = new Array();
 
-				for( var x = 0, xlen = this.State.columns; x < xlen; x++ )
-				{
-					var $slide = this.$slides.eq( i * this.State.columns + x );
+				for (var x = 0, xlen = this.State.columns; x < xlen; x++) {
+					var $slide = this.$slides.eq(i * this.State.columns + x);
 
 					sliderMap[i][x] = $slide;
 				}
@@ -863,31 +841,27 @@
 		},
 
 		// 4.
-		prepareSlidesOnStage : function()
-		{
+		prepareSlidesOnStage: function () {
 			var self = this;
 
-			for( var row = 0, rowlen = this.map.length; row < rowlen; row++ )
-			{
-				for( var col = 0, collen = this.map[row].length; col < collen; col++ )
-				{
-					var $slide 	= this.map[row][col],
-						d 		= $slide.data('ptslider') || {};
+			for (var row = 0, rowlen = this.map.length; row < rowlen; row++) {
+				for (var col = 0, collen = this.map[row].length; col < collen; col++) {
+					var $slide = this.map[row][col],
+						d = $slide.data('ptslider') || {};
 
 					$slide.css({
-						zIndex : this.State.rows - row
-						,width : (100 / this.State.columns) + '%'
-						,left  : col * (100 / this.State.columns) + '%'
+						zIndex: this.State.rows - row
+						, width: (100 / this.State.columns) + '%'
+						, left: col * (100 / this.State.columns) + '%'
 					});
 
-					if( row == this.State.row ) // Aktuell sichtbare Zeile
+					if (row == this.State.row) // Aktuell sichtbare Zeile
 					{
 						this.State.stage[col] = $slide;
-						$slide.addClass( self.options.css.classActive ).css( self.options.css.styleActive );
+						$slide.addClass(self.options.css.classActive).css(self.options.css.styleActive);
 					}
-					else
-					{
-						$slide.removeClass( self.options.css.classActive ).css( self.options.css.styleInactive );
+					else {
+						$slide.removeClass(self.options.css.classActive).css(self.options.css.styleInactive);
 					}
 				}
 			}
@@ -898,51 +872,45 @@
 
 			Wird auch beim ändern der Anzahl der Spalten aufgerufen (responsive...), und führt einen vollständigen Reset des Sliders durch.
 		*/
-		render : function()
-		{
+		render: function () {
 			this.clearAutoplayTimeout();
 
 			this.clearSlideAnimations();
 
 			var columns = this.getSliderColumns(); // 1. Anzahl anzuzeigender Spalten ermitteln
-			if( this.State.columns != columns )
-			{
+			if (this.State.columns != columns) {
 				this.State.columns = columns;
 			}
 
 			this.State.rows = this.getSliderRows(); // 2. Anzahl Zeilen ermitteln
 
-			if( this.State.columns > 0 ){
+			if (this.State.columns > 0) {
 				this.map = this.getSliderMap(); // 3. "Karte" aufbauen – Array[Zeilen][Slides]
 			}
 
-			if( this.map ){ // Ohne this.map funktioniert gar nichts
+			if (this.map) { // Ohne this.map funktioniert gar nichts
 
-				this.State.row 	= this.options.randomstart ? this.getRandomRow() : 0; // (neue) Startzeile ermitteln
+				this.State.row = this.options.randomstart ? this.getRandomRow() : 0; // (neue) Startzeile ermitteln
 
 				this.prepareSlidesOnStage(); // 4. Slides im Vordergrund vorbereiten
 
 				// Navigation bauen, wenn nicht vorhanden
-				if( this.options.navigation && ! this.Controls.next && ! this.Controls.prev )
-				{
+				if (this.options.navigation && !this.Controls.next && !this.Controls.prev) {
 					this.addNavigation();
 				}
 
 				// Paginierung bauen / aktualisieren
-				if( this.options.pagination )
-				{
+				if (this.options.pagination) {
 					this.addPagination(); // Ersetzt auch bereits existierene Paginierung
 				}
 
 				// Swipe aktivieren, wenn nicht schon aktiv
-				if( this.options.swipe && ! this.Controls.swipe )
-				{
+				if (this.options.swipe && !this.Controls.swipe) {
 					this.addSwipe();
 				}
 
 				// Automatische Höhe
-				if( this.options.autoheight )
-				{
+				if (this.options.autoheight) {
 					this.autoHeight();
 					this.$node.addClass('autoheight');
 				}
@@ -953,32 +921,26 @@
 
 				return true;
 			}
-			else
-			{
+			else {
 				return false;
 			}
 		},
 
 
-		observeViewport : function()
-		{
+		observeViewport: function () {
 			var self = this;
 
-			$(window).one( this.State.events.resize, function()
-			{
-				if( self.options.autoplay ) self.pause();
+			$(window).one(this.State.events.resize, function () {
+				if (self.options.autoplay) self.pause();
 
-				if( self.getSliderColumns() != self.State.columns )
-				{
-					if( self.render() )
-					{
-						if( self.options.autoplay ) self.play();
+				if (self.getSliderColumns() != self.State.columns) {
+					if (self.render()) {
+						if (self.options.autoplay) self.play();
 					}
 				}
-				else
-				{
-					if( self.options.autoheight ) self.autoHeight();
-					if( self.options.autoplay ) self.play();
+				else {
+					if (self.options.autoheight) self.autoHeight();
+					if (self.options.autoplay) self.play();
 				}
 
 				self.$node.triggerHandler('resize');
@@ -987,27 +949,22 @@
 			});
 		},
 
-		autoHeight : function( row )
-		{
+		autoHeight: function (row) {
 			var r = row === undefined ? this.State.row : row, // Ziel-Items aus Reihe row
 				h = 0, // Zielhöhe
 				$slide;
 
-			for( var i = 0; i < this.map[r].length; i++ )
-			{
+			for (var i = 0; i < this.map[r].length; i++) {
 				$slide = this.map[r][i];
 
-				if(h === 0)
-				{
+				if (h === 0) {
 					h = $slide.outerHeight();
 				}
-				else if( h < $slide.outerHeight() )
-				{
+				else if (h < $slide.outerHeight()) {
 					h = $slide.outerHeight();
 				}
 
-				if( this.$wrap.height() != h && h > 0)
-				{
+				if (this.$wrap.height() != h && h > 0) {
 					this.$wrap.height(Math.round(h));
 				}
 			}
@@ -1015,10 +972,8 @@
 
 
 		// -- Entfernt alle Animationen
-		clearSlideAnimations : function()
-		{
-			for( var i = 0, len = this.$slides.length; i < len; i++ )
-			{
+		clearSlideAnimations: function () {
+			for (var i = 0, len = this.$slides.length; i < len; i++) {
 				var $slide = this.$slides.eq(i);
 
 				$slide._ptsClearAllAnimations();
@@ -1032,29 +987,25 @@
 		*/
 
 		// Vor und Zurück bauen
-		addNavigation : function()
-		{
-			if( this.$slides.length == 1 ) // Keine Navigation wenn nur ein Slide
+		addNavigation: function () {
+			if (this.$slides.length == 1) // Keine Navigation wenn nur ein Slide
 			{
 				return;
 			}
 
 			var self = this;
 
-			var navs   	= new Array(),
-				dir 	= new Array('prev','next'),
-				navcss 	= { zIndex : this.$slides.length + this.options.zAxis.navigation };
+			var navs = new Array(),
+				dir = new Array('prev', 'next'),
+				navcss = { zIndex: this.$slides.length + this.options.zAxis.navigation };
 
 			navs[0] = $(this.options.html.btnPrev).css(navcss);
 			navs[1] = $(this.options.html.btnNext).css(navcss);
 
-			$.each(navs, function(i, $nav)
-			{
-				$nav.on('click' + self.options.eventNamespace, function()
-				{
-					if(!self.State.isIdle)
-					{
-						self.State.trigger = { name : 'navigation', direction : dir[i] };
+			$.each(navs, function (i, $nav) {
+				$nav.on('click' + self.options.eventNamespace, function () {
+					if (!self.State.isIdle) {
+						self.State.trigger = { name: 'navigation', direction: dir[i] };
 						self.navigate(dir[i]);
 					}
 				});
@@ -1066,10 +1017,8 @@
 		},
 
 
-		removeNavigation : function()
-		{
-			if( this.Controls.prev && this.Controls.next )
-			{
+		removeNavigation: function () {
+			if (this.Controls.prev && this.Controls.next) {
 				this.Controls.prev.remove();
 				this.Controls.prev = false;
 
@@ -1080,9 +1029,8 @@
 
 
 		// -- Paginierung bauen
-		addPagination : function()
-		{
-			if( this.$slides.length == 1 ) // Keine Paginierung wenn nur ein Slide
+		addPagination: function () {
+			if (this.$slides.length == 1) // Keine Paginierung wenn nur ein Slide
 			{
 				return;
 			}
@@ -1090,29 +1038,24 @@
 
 			var self = this;
 
-			if( this.$pagination )
-			{
+			if (this.$pagination) {
 				this.removePagination();
 			}
 
-			this.$pagination = $(this.options.html.pagination).css({ zIndex : this.$slides.length + this.options.zAxis.pagination });
+			this.$pagination = $(this.options.html.pagination).css({ zIndex: this.$slides.length + this.options.zAxis.pagination });
 
-			for( var i = 0, len = this.map.length; i < len; i++ )
-			{
+			for (var i = 0, len = this.map.length; i < len; i++) {
 				var $pager = $(this.options.html.pager);
 
-				$pager.data('ptslider', { targetRow : i }).addClass('target-row'+i);
+				$pager.data('ptslider', { targetRow: i }).addClass('target-row' + i);
 
-				if( this.options.paginationLabels )
-				{
+				if (this.options.paginationLabels) {
 					var label = '';
 
-					for( var x = 0, xlen = this.map[i].length; x < xlen; x++ )
-					{
-						if( this.map[i] ){
-							var xd = this.map[i][x].data('ptoptions') || {};
-							if( xd.label )
-							{
+					for (var x = 0, xlen = this.map[i].length; x < xlen; x++) {
+						if (this.map[i]) {
+							var xd = this.map[i][x].data('ptoptions') ||  {};
+							if (xd.label) {
 								label += this.options.html.pagerLabel.replace("%s", xd.label);
 								$pager.addClass(this.options.css.labeledPager);
 							}
@@ -1123,20 +1066,17 @@
 
 
 
-				if( i == this.State.row )
-				{
+				if (i == this.State.row) {
 					$pager.addClass('current');
 				}
 
-				$pager.on('click' + this.options.eventNamespace, function()
-				{
+				$pager.on('click' + this.options.eventNamespace, function () {
 					var target = $(this).data('ptslider').targetRow;
 
-					if( target != self.State.row && !self.State.isIdle )
-					{
-						self.State.trigger = { name : 'pagination', direction : target };
+					if (target != self.State.row && !self.State.isIdle) {
+						self.State.trigger = { name: 'pagination', direction: target };
 
-						self.navigate( target );
+						self.navigate(target);
 					}
 				})
 
@@ -1152,10 +1092,8 @@
 		/*
 			Paginierung entfernen
 		*/
-		removePagination : function()
-		{
-			if( this.$pagination )
-			{
+		removePagination: function () {
+			if (this.$pagination) {
 				this.$pagination.remove();
 			}
 
@@ -1168,12 +1106,9 @@
 		/*
 			Paginierung aktualisieren
 		*/
-		updatePagination : function(index)
-		{
-			if( this.Controls.pagination )
-			{
-				if( index === undefined )
-				{
+		updatePagination: function (index) {
+			if (this.Controls.pagination) {
+				if (index === undefined) {
 					index = this.State.row;
 				}
 
@@ -1186,48 +1121,41 @@
 		/*
 			Touch-Events/-Steuerung hinzufügen
 		*/
-		addSwipe : function()
-		{
+		addSwipe: function () {
 			var self = this;
 
-			this.on('touchstart' + this.options.eventNamespace, function(ev)
-			{
+			this.on('touchstart' + this.options.eventNamespace, function (ev) {
 				this.State.touch.start = parseInt(ev.originalEvent.changedTouches[0].clientX);
 
-				if( this.options.pauseonswipe == true && this.options.autoplay == true )
-				{
+				if (this.options.pauseonswipe == true && this.options.autoplay == true) {
 					this.pause();
 				}
 			});
 
-			this.on('touchmove' + this.options.eventNamespace, function(ev)
-			{
+			this.on('touchmove' + this.options.eventNamespace, function (ev) {
 				this.State.trigger.name = 'swipe';
 
 				var distance = parseInt(ev.originalEvent.changedTouches[0].clientX) - this.State.touch.start;
 
-				if( distance > this.options.swipeThreshold ) // Rückwärts – Nach rechts gewischt
+				if (distance > this.options.swipeThreshold) // Rückwärts – Nach rechts gewischt
 				{
 					this.State.trigger.direction = 'prev';
 
-					this.navigate( 'prev' );
+					this.navigate('prev');
 				}
-				else if( distance < -(this.options.swipeThreshold) ) // Vorwärts – Nach links gewischt
+				else if (distance < -(this.options.swipeThreshold)) // Vorwärts – Nach links gewischt
 				{
 					this.State.trigger.direction = 'next';
 
-					this.navigate( 'next' );
+					this.navigate('next');
 				}
 
 			});
 
-			this.$wrap.on('touchend' + this.options.eventNamespace, function()
-			{
-				self.on('afterRowChange', function(ev, data)
-				{
-					if( this.options.pauseonswipe == true && this.State.paused == true && this.options.swipepause > 0 )
-					{
-						this.play( this.options.swipepause );
+			this.$wrap.on('touchend' + this.options.eventNamespace, function () {
+				self.on('afterRowChange', function (ev, data) {
+					if (this.options.pauseonswipe == true && this.State.paused == true && this.options.swipepause > 0) {
+						this.play(this.options.swipepause);
 					}
 				});
 			});
@@ -1239,8 +1167,7 @@
 		/*
 			Touch-Events/-Steuerung entfernen
 		*/
-		removeSwipe : function()
-		{
+		removeSwipe: function () {
 			this.$wrap.off('touchstart' + this.options.eventNamespace);
 
 			this.$wrap.off('touchmove' + this.options.eventNamespace);
@@ -1260,100 +1187,100 @@
 		/*
 			Slide-Animationen vorbereiten (Klassennamen in Datenobjekt in Slide speichern)
 		*/
-		prepareSlideAnimation : function( $slide )
-		{
-			var d 			= $slide.data('ptslider') || {},
-				opt 		= $slide.data('ptoptions') || {},
-				config  	= {};
+		prepareSlideAnimation: function ($slide) {
+			var d = $slide.data('ptslider') || {},
+				opt = $slide.data('ptoptions') || {},
+				config = {};
 
-			if( opt.animations )
-			{
-				var animations = $.extend( true, {}, this.options.animations, opt.animations );
+			if (opt.animations) {
+				var animations = $.extend(true, {}, this.options.animations, opt.animations);
 			}
-			else{
+			else {
 				var animations = this.options.animations;
 			}
 
 
-			if( !this.State.trigger.name ) // Wenn Navigieren z.B. von extern ausgeführt wird
+			if (!this.State.trigger.name) // Wenn Navigieren z.B. von extern ausgeführt wird
 			{
-				this.State.trigger = {name : '', direction : ''};
+				this.State.trigger = { name: '', direction: '' };
 			}
 
-			switch( this.State.trigger.name )
-			{
-				case 'navigation' :
-					switch( this.State.trigger.direction )
-					{
-						case 'next' :
+			switch (this.State.trigger.name) {
+				case 'navigation':
+					switch (this.State.trigger.direction) {
+						case 'next':
 							config = {
-								 animationIn 	: animations.navigation.nextIn
-								,animationOut 	: animations.navigation.nextOut
-								,duration		: animations.navigation.duration
+                                  on            : animations.navigation.on
+								, animationIn   : animations.navigation.nextIn
+								, animationOut  : animations.navigation.nextOut
+								, duration      : animations.navigation.duration
 							}
-						break;
-						case 'prev' :
+							break;
+						case 'prev':
 							config = {
-								 animationIn 	: animations.navigation.prevIn
-								,animationOut 	: animations.navigation.prevOut
-								,duration		: animations.navigation.duration
+                                on            : animations.navigation.on
+								, animationIn: animations.navigation.prevIn
+								, animationOut: animations.navigation.prevOut
+								, duration: animations.navigation.duration
 							}
-						break;
+							break;
 					}
 
-				break;
+					break;
 
-				case 'swipe' :
+				case 'swipe':
 
-					switch( this.State.trigger.direction )
-					{
-						case 'next' :
+					switch (this.State.trigger.direction) {
+						case 'next':
 							config = {
-								 animationIn 	: animations.swipe.nextIn
-								,animationOut 	: animations.swipe.nextOut
-								,duration		: animations.swipe.duration
+                                on            : animations.swipe.on
+								, animationIn: animations.swipe.nextIn
+								, animationOut: animations.swipe.nextOut
+								, duration: animations.swipe.duration
 							}
-						break;
-						case 'prev' :
+							break;
+						case 'prev':
 							config = {
-								 animationIn 	: animations.swipe.prevIn
-								,animationOut 	: animations.swipe.prevOut
-								,duration		: animations.swipe.duration
+                                on            : animations.swipe.on
+								, animationIn: animations.swipe.prevIn
+								, animationOut: animations.swipe.prevOut
+								, duration: animations.swipe.duration
 							}
-						break;
+							break;
 					}
 
-				break;
+					break;
 
-				case 'pagination' :
+				case 'pagination':
 
 					config = {
-						 animationIn 	: 	animations.pagination.in
-						,animationOut 	:	animations.pagination.out
-						,duration		:	animations.pagination.duration
+                        on            : animations.pagination.on
+						, animationIn: animations.pagination.in
+						, animationOut: animations.pagination.out
+						, duration: animations.pagination.duration
 					};
 
-				break;
+					break;
 
-				case 'autoplay'   :
-				default :
+				case 'autoplay':
+				default:
 
 					var ain = animations.autoplay.in,
 						out = animations.autoplay.out;
 
-					if( animations.autoplay.random && typeof ain === 'object' && typeof out === 'object' )
-					{
-						ain = ain[ Math.floor( Math.random() * ain.length ) ];
-						out = out[ Math.floor( Math.random() * out.length ) ];
+					if (animations.autoplay.random && typeof ain === 'object' && typeof out === 'object') {
+						ain = ain[Math.floor(Math.random() * ain.length)];
+						out = out[Math.floor(Math.random() * out.length)];
 					}
 
 					config = {
-						animationIn 	: 	ain
-						,animationOut 	:  	out
-						,duration	 	:	animations.autoplay.duration
+                        on            : animations.autoplay.on
+						, animationIn: ain
+						, animationOut: out
+						, duration: animations.autoplay.duration
 					};
 
-				break;
+					break;
 			}
 
 			$slide.data('ptslider', $.extend(true, d, config));
@@ -1363,65 +1290,79 @@
 		/*
 			Slide (Spalte) einblenden
 		*/
-		animateSlide : function(slide, direction, callback) {
-			var self 	= this;
-			
+		animateSlide: function (slide, direction, callback) {
+			var self = this;
+
 
 			this.prepareSlideAnimation(slide);
 			var d = slide.data('ptslider');
 
 			var context;
 
-			switch(direction) {
-				case 'in' :
-					context = {direction : 'in', animation : slide.data('ptslider').animationIn, eventBefore : 'beforeSlideIn', eventAfter : 'afterSlideIn', cssClass : this.options.css.classActive, cssInline : this.options.css.styleActive, callback : callback};
-				break;
-				case 'out' :
-					context = {direction : 'out', animation : slide.data('ptslider').animationOut, eventBefore : 'beforeSlideOut', eventAfter : 'afterSlideOut', cssClass : this.options.css.classInactive, cssInline : this.options.css.styleInactive, callback : callback};
-				break;
+			switch (direction) {
+				case 'in':
+					context = { direction: 'in', animation: slide.data('ptslider').animationIn, eventBefore: 'beforeSlideIn', eventAfter: 'afterSlideIn', cssClass: this.options.css.classActive, cssInline: this.options.css.styleActive, callback: callback };
+					break;
+				case 'out':
+					context = { direction: 'out', animation: slide.data('ptslider').animationOut, eventBefore: 'beforeSlideOut', eventAfter: 'afterSlideOut', cssClass: this.options.css.classInactive, cssInline: this.options.css.styleInactive, callback: callback };
+					break;
 			}
 
-			if(typeof self.options.onBeginSlideAnimation === 'function') {
+			if (typeof self.options.onBeginSlideAnimation === 'function') {
 				self.options.onBeginSlideAnimation.apply(slide);
 			}
 
-			this.$node.triggerHandler(context.eventBefore, [{slide : slide}]);
+			this.$node.triggerHandler(context.eventBefore, [{ slide: slide }]);
 
-			slide.one(this.State.events.animationEnd, function(slide, ev) {
-				
+			context.afterAnimation = function(slide) {
 				slide.css(context.cssInline);
-				
-				if(this.direction == 'in') {
+
+				if (this.direction == 'in') {
 					slide.addClass(self.options.css.classActive)
 				}
-				else{
+				else {
 					slide.removeClass(self.options.css.classActive)
 				}
 
-				if( typeof context.callback === 'function' ) {
+				if (typeof context.callback === 'function') {
 					context.callback();
 				}
-	
-				if( typeof self.options.onAfterSlideAnimation === 'function' ) {
+
+				if (typeof self.options.onAfterSlideAnimation === 'function') {
 					self.options.onAfterSlideAnimation.apply(slide); // Public Callback
 				}
-	
-				self.$node.triggerHandler(context.eventAfter, [{slide : slide}]); // In Firefox und Safari funktioniert das nicht. Dort ist $slide der Slide, der gerade angezeigt wird, und nicht der, der zuletzt angezeigt wurde.
-				slide.triggerHandler(context.eventAfter);
 
-			}.bind(context, slide))
-			.css($.extend(this.options.css.styleActive, {"-webkit-animation-duration" : slide.data('ptslider').duration, "animation-duration" : slide.data('ptslider').duration}))
-			._ptsSetAnimation(context.animation);
+				self.$node.triggerHandler(context.eventAfter, [{ slide: slide }]); // In Firefox und Safari funktioniert das nicht. Dort ist $slide der Slide, der gerade angezeigt wird, und nicht der, der zuletzt angezeigt wurde.
+				slide.triggerHandler(context.eventAfter);
+            }
+				
+            if(slide.data('ptslider').on[direction] === false)
+            {
+			    window.setTimeout(function (slide) {
+                    this.afterAnimation(slide);
+                }.bind(context, slide), slide.data('ptslider').duration);
+             
+                slide.css(this.options.css.styleActive);
+            }
+            else 
+            {
+                slide.one(this.State.events.animationEnd, function (slide) {
+                    this.afterAnimation(slide);
+                }.bind(context, slide))
+
+                slide.css($.extend(this.options.css.styleActive, { "-webkit-animation-duration": slide.data('ptslider').duration / 1000 + 's', "animation-duration": slide.data('ptslider').duration / 1000 + 's' }))
+                    ._ptsSetAnimation(context.animation);
+            } 
+
 		},
 
-		changeColumn : function( col )
-		{
-			var self 	= this,
-				islast	= false,
-				slides 	= 	{
-								current : this.State.stage[col],
-								next 	: this.map[this.State.rowNext][col]
-							};
+		changeColumn: function (col) {
+			var self = this,
+				islast = false,
+				slides = {
+					current: this.State.stage[col],
+					next: this.map[this.State.rowNext][col]
+				};
 
 			/*
 				Hier passiert nichts wenn:
@@ -1431,77 +1372,65 @@
 				- wenn eine Zeile erreicht wird, an der slides.next wieder existiert, der aber bereits angezeigt wird – Das passiert z.B. bei 3 Spalten mit nur insg. 5 Slides im Protoslider
 
 			*/
-			if( slides.next.get(0) && slides.next !== slides.current )
-			{
+			if (slides.next.get(0) && slides.next !== slides.current) {
 				var nz = this.State.rowNext == 0 ? 1 : this.map.length - this.State.rowNext;
 
-				if( col + 1 == this.map[this.State.rowNext].length )
-				{
+				if (col + 1 == this.map[this.State.rowNext].length) {
 					islast = true; // Letzter Slide in Zeile "nextRow"
 				}
 
-				slides.current.css({ zIndex : nz });
-				slides.next.css({ zIndex : self.map.length });
+				slides.current.css({ zIndex: nz });
+				slides.next.css({ zIndex: self.map.length });
 
 				this.animateSlide(slides.current, 'out');
 
-				if( islast )
-				{
+				if (islast) {
 					/*
 					this.animateIn( slides.next, function()
 					{
 						self._onAfterRowChange();
 					});*/
-					this.animateSlide(slides.next, 'in', function()
-					{
+					this.animateSlide(slides.next, 'in', function () {
 						self._onAfterRowChange();
 					});
 				}
-				else
-				{
+				else {
 					//this.animateIn( slides.next );
 					this.animateSlide(slides.next, 'in');
 				}
 
 				this.State.stage[col] = slides.next;
 
-				if( !islast )
-				{
+				if (!islast) {
 					this.changeRow(col + 1);
 				}
 
 			}
-			else
-			{
+			else {
 				// slides.next in Spalte "col" entspricht slides.current, weil die derzeitige Zeile weniger Slides enthält, als die anderen Zeilen.
 				self._onAfterRowChange();
 			}
 		},
 
 
-		changeRow : function( col )
-		{
+		changeRow: function (col) {
 			this._onRowChange();
 
-			if(!col)
-			{
+			if (!col) {
 				col = 0;
 			}
 
 			var delay = this.options.animations[this.State.trigger.name].delay;
 
-			if( col > 0 && delay > 0 && this.State.columns > 1 )
-			{
+			if (col > 0 && delay > 0 && this.State.columns > 1) {
 				var self = this;
 
-				window.setTimeout( function()
-				{
-					self.changeColumn( col );
+				window.setTimeout(function () {
+					self.changeColumn(col);
 				}, delay);
 			}
-			else
-			{
-				this.changeColumn( col );
+			else {
+				this.changeColumn(col);
 			}
 		},
 
@@ -1509,24 +1438,20 @@
 		/*
 			Beim starten eines Zeilenwechsels:
 		*/
-		_onRowChange : function()
-		{
-			this.State.isIdle 	= true;
+		_onRowChange: function () {
+			this.State.isIdle = true;
 
-			if( this.options.autoheight )
-			{
+			if (this.options.autoheight) {
 				this.autoHeight(this.State.rowNext);
 			}
 
-			if( typeof this.options.onBeginAnimation === 'function' )
-			{
+			if (typeof this.options.onBeginAnimation === 'function') {
 				this.options.onBeginAnimation.apply(this); // Public Callback
 			}
 
-			this.$node.triggerHandler('rowChange', [{row : this.State.rowNext}]);
+			this.$node.triggerHandler('rowChange', [{ row: this.State.rowNext }]);
 
-			if( this.options.pagination )
-			{
+			if (this.options.pagination) {
 				this.updatePagination(this.State.rowNext);
 			}
 		},
@@ -1535,22 +1460,19 @@
 		/*
 			Nach einem Zeilenwechsel:
 		*/
-		_onAfterRowChange : function()
-		{
-			this.State.row 			= this.State.rowNext;
-			this.State.isIdle 		= false;
+		_onAfterRowChange: function () {
+			this.State.row = this.State.rowNext;
+			this.State.isIdle = false;
 
-			if( this.options.autoplay && !this.State.paused )
-			{
+			if (this.options.autoplay && !this.State.paused) {
 				this.play();
 			}
 
-			if( typeof this.options.onAfterAnimation === 'function' )
-			{
+			if (typeof this.options.onAfterAnimation === 'function') {
 				this.options.onAfterAnimation.apply(this); // Public Callback
 			}
 
-			this.$node.triggerHandler('afterRowChange', [{row : this.State.row}]);
+			this.$node.triggerHandler('afterRowChange', [{ row: this.State.row }]);
 		},
 
 
@@ -1563,27 +1485,25 @@
 		/*
 			Nächste Zeile für Autoplay
 		*/
-		getNavDirection : function()
-		{
+		getNavDirection: function () {
 			var navTo = 0;
 
-			switch( this.options.direction )
-			{
-				case 'forwards' :
+			switch (this.options.direction) {
+				case 'forwards':
 					navTo = 'next';
-				break;
-				case 'backwards' :
+					break;
+				case 'backwards':
 					navTo = 'prev';
-				break;
-				case 'random' :
-					do{
-						navTo = Math.floor( Math.random() * this.map.length );
+					break;
+				case 'random':
+					do {
+						navTo = Math.floor(Math.random() * this.map.length);
 					}
 					while (navTo == this.State.row);
-				break;
-				default :
+					break;
+				default:
 					navTo = 'next';
-				break;
+					break;
 			}
 
 			return navTo;
@@ -1593,34 +1513,29 @@
 		/*
 			Blende Zeile "to" ein
 		*/
-		navigate : function( to )
-		{
-			if( this.State.isIdle )
-			{
+		navigate: function (to) {
+			if (this.State.isIdle) {
 				return;
 			}
 
 
 			this.clearAutoplayTimeout(); // Falls Navigation oder Paginierung geklickt wird, ist das hier sicherer
 
-			switch(to)
-			{
-				case 'next' :
+			switch (to) {
+				case 'next':
 					this.State.rowNext = this.State.row + 1 < this.map.length ? this.State.row + 1 : 0;
-				break;
-				case 'prev' :
+					break;
+				case 'prev':
 					this.State.rowNext = this.State.row - 1 < 0 ? this.map.length - 1 : this.State.row - 1;
-				break;
-				default :
-					if( !isNaN(to) && to != this.State.row )
-					{
+					break;
+				default:
+					if (!isNaN(to) && to != this.State.row) {
 						this.State.rowNext = to > 0 && to < this.map.length ? to : 0;
 					}
-				break;
+					break;
 			}
 
-			if( typeof this.options.onBeforeAnimation === 'function' )
-			{
+			if (typeof this.options.onBeforeAnimation === 'function') {
 				this.options.onBeforeAnimation.apply(this); // Public Callback
 			}
 
@@ -1629,15 +1544,13 @@
 
 
 		// -- Lösche autoplay Timeout
-		clearAutoplayTimeout : function()
-		{
-			window.clearTimeout( this.State.playtimer ); // Autoplay Timeout
+		clearAutoplayTimeout: function () {
+			window.clearTimeout(this.State.playtimer); // Autoplay Timeout
 		},
 
 
-		clearDelayedStart : function()
-		{
-			window.clearTimeout( this.State.starttimer );  // Delay Start Timeout
+		clearDelayedStart: function () {
+			window.clearTimeout(this.State.starttimer);  // Delay Start Timeout
 		},
 
 
@@ -1646,34 +1559,31 @@
 
 			@param delay – Optionale Zeit in Millisekunden – anstelle von options.timeout
 		*/
-		play : function(delay)
-		{
+		play: function (delay) {
 			this.clearAutoplayTimeout();
 
 			// if( this.$slides.length < 2 ) return;
 
-			if( !this.options.loop && (this.State.row + 1) == this.State.rows || this.$slides.length < 2 )
-			{
+			if (!this.options.loop && (this.State.row + 1) == this.State.rows || this.$slides.length < 2) {
 				this.pause();
 				return;
 			}
 
 			this.State.paused = false;
 
-			var self 	= this;
-			
+			var self = this;
+
 			delay = !isNaN(parseInt(delay)) ? delay : this.options.timeout;
 
-			this.State.playtimer = window.setTimeout( function()
-			{
+			this.State.playtimer = window.setTimeout(function () {
 				self.run();
 
-			}, delay );
+			}, delay);
 
 
-			if( typeof this.options.onPlay === 'function' ) // <------- Ist das noch an der richtigen Stelle?
+			if (typeof this.options.onPlay === 'function') // <------- Ist das noch an der richtigen Stelle?
 			{
-				this.options.onPlay.apply( this );
+				this.options.onPlay.apply(this);
 			}
 
 			this.$node.triggerHandler('play'); // <------- Ist das hier an der richtigen Stelle?
@@ -1683,19 +1593,17 @@
 		/*
 			Sofort einen Zeilenwechsel einleiten, mit Richtung aus this.options.direction
 		*/
-		run : function()
-		{
-			if( this.options.onlyInViewport && !this.isInViewport() )
-			{
+		run: function () {
+			if (this.options.onlyInViewport && !this.isInViewport()) {
 				this.play();
 				return;
 			}
 
 			var navigateTo = this.getNavDirection()
 
-			this.State.trigger = { name : 'autoplay', direction : navigateTo };
+			this.State.trigger = { name: 'autoplay', direction: navigateTo };
 
-			this.navigate( navigateTo );
+			this.navigate(navigateTo);
 
 
 		},
@@ -1704,19 +1612,16 @@
 		/*
 			Autoplay Pause
 		*/
-		pause : function()
-		{
+		pause: function () {
 			this.clearAutoplayTimeout();
 
-			if( this.State.starttimer )
-			{
+			if (this.State.starttimer) {
 				this.clearDelayedStart();
 			}
 
 			this.State.paused = true;
 
-			if( typeof this.options.onPause === 'function' )
-			{
+			if (typeof this.options.onPause === 'function') {
 				this.options.onPause.apply(this); // Public Callback
 			}
 			this.$node.triggerHandler('pause');
@@ -1725,11 +1630,10 @@
 	}
 
 
-	$.fn.protoslider = function( options ){
-		var self = $(this).data( 'ptslider' );
+	$.fn.protoslider = function (options) {
+		var self = $(this).data('ptslider');
 
-		if( self === undefined )
-		{
+		if (self === undefined) {
 			self = new $.Protoslider(options, this);
 		}
 		return self;
@@ -1751,19 +1655,18 @@
 */
 'use strict';
 
-(function($) {
+(function ($) {
 
 	$.Protoslider.Plugins.push('ProtosliderHtml5video');
 
 	$.Protoslider.defaults.html5video = {
-		pauseOnPlay 			: true,		// Protoslider beim Abspielen eines Videos anhalten, wenn autoplay an ist. Nach dem Ende des Videos läuft Protoslider weiter.
-		autoplay 				: false,	// Videos automatisch abspielen (erzwungen, ansonsten mit: <video data-ptoptions='{"autoplay":true}'  ... >) – !!! <video autoplay ...> würde das Video starten, selbst wenn es noch gar nicht zu sehen ist !!!
-		timeoutAfterPlayback 	: 100
+		pauseOnPlay: true,		// Protoslider beim Abspielen eines Videos anhalten, wenn autoplay an ist. Nach dem Ende des Videos läuft Protoslider weiter.
+		autoplay: false,	// Videos automatisch abspielen (erzwungen, ansonsten mit: <video data-ptoptions='{"autoplay":true}'  ... >) – !!! <video autoplay ...> würde das Video starten, selbst wenn es noch gar nicht zu sehen ist !!!
+		timeoutAfterPlayback: 100
 	};
 
 
-	$.ProtosliderHtml5video = function(parent)
-	{
+	$.ProtosliderHtml5video = function (parent) {
 		this.parent = parent;
 		this._init();
 	}
@@ -1772,71 +1675,70 @@
 
 		// this.parent ist in diesem Kontext eine protoslider Instanz
 
-		_init : function()
-		{
-			this.parent.on('beforeSlideIn.ptslider.html5video sliderReady.ptslider.html5video', function(ev, context)
-			{
+		_init: function () {
+			this.parent.on('beforeSlideIn.ptslider.html5video sliderReady.ptslider.html5video', function (ev, context) {
 				// afterRender wird ausgelöst wenn Protoslider instanziert wird, oder sich die Anzahl der sichtbaren Spalten ändert.
 				this.tick(context);
 			}.bind(this));
 		},
 
-		tick : function(context)
-		{
+		tick: function (context) {
 			var slide = context ? context.slide : this.parent.State.stage[0],
 				video = this.getVideoObject(slide);
 
-			if(video)
-			{
-				if(video.readyState >= 2) // Mindestens die Metadaten und ein Frame des Videos stehen zur Verfügung.
+			if (video) {
+				if (video.readyState >= 2) // Mindestens die Metadaten und ein Frame des Videos stehen zur Verfügung.
 				{
 					this.playVideo(slide);
-					if(this.parent.options.autoheight) { 
+					if (this.parent.options.autoheight) {
 						this.parent.autoHeight();
 					}
 				}
 				else // Noch nix da. Müssen warten.
 				{
-					$(video).one('canplay.ptslider.html5video', function(slide, ev)
-					{
+					// -- Safari emittiert „canplay” nicht mehr, wegen Deren fragwürdigen Entscheidung, dass das automatische Abspielen von Videos vom User pro Seite, in den untiefen der Einstellungen von Safari, erlaubt werden muss.
+					$(video).one('loadedmetadata.ptslider.html5video canplay.ptslider.html5video', function (slide, ev) {
 						this.playVideo(slide);
-						if(this.parent.options.autoheight) this.parent.autoHeight();
-
+						if (this.parent.options.autoheight) this.parent.autoHeight();
 					}.bind(this, slide));
 				}
 			}
 		},
 
-		getVideoObject : function(slide)
-		{
+		getVideoObject: function (slide) {
 			var video = slide.find('video');
-			if( video.length ) return video.get(0);
+			
+			// if (video.length) return video.get(0);
+			if(video.length)
+			{
+				// Update: Prüfen, ob das Video überhaupt angezeigt wird
+				if(video.css('display') !== 'none' && video.css('visibility') !== 'hidden')
+				{
+					return video.get(0);
+				}
+			}
 			return false;
 		},
 
-		playVideo : function(slide)
-		{
+		playVideo: function (slide) {
 			var video = this.getVideoObject(slide);
 
-			if(video)
-			{
-				var opt = $(video).data('ptoptions') || {};
+			if (video) {
+				var opt = $(video).data('ptoptions') ||  {};
 
 				// Video Zurückspulen wenn ein Slide ausgeblendet wurde.
-				if(!video.hasAttribute('loop'))
-				{
-					slide.one('afterSlideOut.ptslider.html5video', function(ev)
-					{
+				if (!video.hasAttribute('loop')) {
+					slide.one('afterSlideOut.ptslider.html5video', function (ev) {
 						var video = this.getVideoObject($(ev.target));
 
-						if(video) {
+						if (video) {
 							video.pause();
 							video.currentTime = 0;
 
 							// -- Den ended-Handler des Videos zurücksetzen. Und Protoslider autoplay starten
 							// Es könnte sein, dass der User manuell navigiert hat, und der ended Event nicht eintreten konnte.
 							$(video).off('.ptslider.html5video');
-							if(this.parent.options.autoplay && this.parent.options.html5video.pauseOnPlay) {
+							if (this.parent.options.autoplay && this.parent.options.html5video.pauseOnPlay) {
 								this.parent.play();
 							}
 						}
@@ -1844,19 +1746,30 @@
 				}
 
 				// -- Wenn Videos automatisch abgespielt werden sollen
-				if(this.parent.options.html5video.autoplay || opt.autoplay)
-				{
+				if (this.parent.options.html5video.autoplay || opt.autoplay) {
 					// -- Protoslider autoplay ist an, und Protoslider muss für die Dauer des Videos angehalten werden.
-					if(this.parent.options.html5video.pauseOnPlay && this.parent.options.autoplay)
-					{
-						$(video).one('ended.ptslider.html5video', function()
-						{
+					if (this.parent.options.html5video.pauseOnPlay && this.parent.options.autoplay) {
+						$(video).one('ended.ptslider.html5video', function () {
 							this.parent.play(this.parent.options.html5video.timeoutAfterPlayback);
 						}.bind(this));
 						this.parent.pause();
 					}
 					video.play();
-				}
+                }
+                else 
+                {
+                    if(this.parent.options.html5video.pauseOnPlay)
+                    {
+                        $(video).on('play.ptslider', function(){
+                            this.parent.pause();
+
+                        }.bind(this));
+
+                        $(video).on('pause.ptslider', function(vid){
+                            this.parent.play(this.parent.options.timeout);
+                        }.bind(this, video));
+                    }
+                }
 			}
 		}
 

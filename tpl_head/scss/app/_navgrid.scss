@@ -1,0 +1,82 @@
+/* --------------------------------------------------------------------------------
+	NavGrid
+
+	Auslöser: <a data-ngrid-toggle tabindex="0">Menü</a>
+
+	Markup:
+
+	[Code] = Optional
+	
+	<div id="ngrid" class="ngrid<?php echo $app->input->cookie->get('ngridcollapsed') != '' && $app->input->cookie->get('ngridcollapsed') == 0 ? '' : ' collapsed';?>">
+		[<div class="ngrid-quick">
+			z.B. Icons. Ist auch sichtbar wenn das Menü eingefahren ist.
+		</div>]
+		<div class="ngrid-slide">
+			z.B. ein Menü
+		</div>
+		<div class="ngrid-main">
+			<main>
+				<jdoc:include type="component" />
+			</main>
+		</div>
+	</div>
+*/
+.navgrid{
+	position: relative;
+}
+
+.navgrid .navgrid-slide,
+.navgrid .navgrid-quicknav{
+	transform: translate3d(0,0,0);
+}
+.navgrid .navgrid-slide{
+	width: $app-navgrid-slide-width;
+	max-width: 100%;
+
+	position: fixed;
+	z-index: 100;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+	transition: transform 0.3s ease;
+	
+	background-color: $app-navgrid-slide-bg;
+}
+.navgrid.collapsed .navgrid-slide{
+    transform: translate3d(-($app-navgrid-slide-width),0,0);
+}
+.navgrid .navgrid-quicknav + .navgrid-slide{
+	width: $app-navgrid-slide-width + $app-navgrid-quicknav-width;
+	padding-left: $app-navgrid-quicknav-width;
+}
+.navgrid .navgrid-quicknav{
+	width: $app-navgrid-quicknav-width;
+	position: fixed;
+	z-index: 101;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	
+	background-color: $app-navgrid-quicknav-bg;
+}
+.navgrid .navgrid-quicknav + .navgrid-slide + .navgrid-content{
+	padding-left: $app-navgrid-quicknav-width;
+}
+
+@include media-breakpoint-up(lg) {
+	.navgrid .navgrid-content{
+		padding-left: $app-navgrid-slide-width;
+		transition: padding 0.3s ease;
+	}
+	.navgrid > .navgrid-quicknav + .navgrid-slide + .navgrid-content{
+		padding-left: $app-navgrid-slide-width + $app-navgrid-quicknav-width;
+	}
+	.navgrid.collapsed .navgrid-content{
+		padding-left: 0px;
+	}
+	.navgrid.collapsed > .navgrid-quicknav + .navgrid-slide + .navgrid-content{
+		padding-left: $app-navgrid-quicknav-width;
+	}
+}

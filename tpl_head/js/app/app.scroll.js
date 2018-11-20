@@ -1,6 +1,9 @@
 /*
 	Cru.: 2017-04-20
 
+	2018-10-16
+	+ Offset Element kann nun eine Liste von Query Selektoren enthalten.
+
 	2017-06-13
 	+ Offset Element hinzugefügt
 
@@ -59,19 +62,18 @@
 		defaults : {
 			speed 					: 0.7,					// Kleiner = schneller!
 			triggers 				: '[data-scroll]',		// Auslöser, siehe oben
-			force					: false,				// false = Es wird nur gescrollt, wenn das Element NICHT im Vieport zu sehen ist
+			force					: true,					// false = Es wird nur gescrollt, wenn das Element NICHT im Vieport zu sehen ist
 			instantOnSmallDevice 	: true,					// true	 = Bei einer horizontalen Auflösung kleiner defaults.smallDevice wird nicht animiert, sondern direkt gesprungen
 			smallDevice 			: 767,					// Bis zu dieser Bildschrimbreite wird nicht animiert
-			offsetElement 			: false					// Ein jQuery-Selektor von einem Element, dessen Höhe beim Scrollen abgezogen wird (z.B. ein fixierter Seiten-Header...), oder false.
+			offsetElement 			: false,				// Ein Query Selektor, oder eine durch Komma getrennte Liste von Query Selektoren, von Elementen, dessen Höhen beim Scrollen abgezogen werden (z.B. ein fixierter Seiten-Header...), oder false.
+			manualOffset 			: 0						// Ein manueller Offset (integer), dessen Wert beim Scrollen abgezogen wird.
 		},
 
-		init : function(options){
-
+		init : function(options) 
+		{
 			this.options = $.extend({}, this.defaults, options);
-
 			this.setTriggers();
 		},
-
 
 		setTriggers : function()
 		{
@@ -119,15 +121,10 @@
 
 							break;
 						}
-
-
-
 					});
-
 				}
 			}
 		},
-
 
 
 		/*
@@ -147,8 +144,11 @@
 		{
 			if( typeof data === 'string' )
 			{
-				var opt = {el : $(data + ',[name="'+data.replace('#','')+'"]')};
+				var opt = {el : $(data + ',[name="'+data.replace('#','')+'"]').eq(0)};
+				
 				opt = $.extend( {}, this.options, opt );
+				el = opt.el;
+				
 			}
 			else
 			{
@@ -187,9 +187,36 @@
 			if( typeof callback === 'function' ) opt.complete = callback;
 
 			var y = el.offset().top;
+
+			/*
 			if( this.options.offsetElement )
 			{
 				y -= $(this.options.offsetElement).outerHeight();
+			}
+			*/
+
+			if(this.options.offsetElement)
+			{
+				let offElements = $(this.options.offsetElement),
+					gap = 0;
+
+				if(offElements.length)
+				{
+					offElements.each(function() {
+						gap += $(this).outerHeight();
+					});
+				}
+
+				y -= gap;
+			}
+
+			if(data.offset > 0)
+			{
+				y -= data.offset;
+			} 
+			else if(this.options.manualOffset > 0)
+			{
+				y -= this.options.manualOffset;
 			}
 
 			$('html, body').stop().animate({ scrollTop : y }, opt );

@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<extension type="package" version="3.7" method="upgrade">
+<extension type="package" version="3.8" method="upgrade">
 <name>Template HEAD Package</name>
 <author>Carsten Ruppert</author>
-<creationDate>2018-04-04</creationDate>
+<creationDate>2018-11-20</creationDate>
 <packagename>tplhead</packagename>
-<version>1.1.0</version>
+<version>1.3.0</version>
 <url>http://www.headmarketing.de/</url>
 <packager>Carsten Ruppert</packager>
 <packagerurl>http://www.headmarketing.de/</packagerurl>
-<description>Template HEAD. 1.1.0 Installationspaket</description>
+<description>Template HEAD. 1.3.0 Installationspaket</description>
 <files folder="packages">
-	<file type="plugin" id="lesscompiler" group="system">plg_system_lesscompiler.zip</file>
+	<file type="plugin" id="scsscompiler" group="system">plg_system_scsscompiler.zip</file>
 	<file type="plugin" id="remover" group="system">plg_system_remover.zip</file>
 	<file type="plugin" id="xfields" group="content">plg_content_xfields.zip</file>
 	<file type="template" id="head" client="site">tpl_head.zip</file>

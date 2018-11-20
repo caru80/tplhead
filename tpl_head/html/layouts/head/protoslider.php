@@ -1,7 +1,7 @@
 <?php
 /**
-	Protoslider Layout - 1.2.0
-	CRu.: 2018-06-08
+	Protoslider Layout 
+	CRu.: 2018
 	
 	Wie lade ich dieses Layout in einem Blog und einem Beitrag?
 
@@ -21,164 +21,289 @@
 		<?php echo JLayoutHelper::render('head.protoslider', $child); ?>
 
 */
-$settings_prefix = '';
-$ptslider_class  = 'heroslider';
+use \Joomla\CMS;
 
-$contentId = 0; // Dieser Wert muss eindeutig sein, und wird dem <div class="ptslider"> als id hinzugefügt.
+JLoader::register('HeadProtosliderLayoutHelper', __DIR__ . '/helper.php');
 
-if(isset($displayData)) // $displayData wurde übergeben und enthält einem Blog-Beitrag oder einen Beitrag aus einem mod_articles_head.
+$app = CMS\Factory::getApplication();
+
+$field_prefix = '';
+$slider_class = 'heroslider';
+
+$requestVars = array(
+	'view' 		=> 'string',
+	'layout' 	=> 'string',
+	'id' 		=> 'int'
+);
+$requestVars = (object) $app->input->getArray($requestVars);
+
+if(isset($displayData)) // $displayData (ist so ein Joomla Ding) wurde übergeben und enthält einem Blog-Beitrag, eine Kindkategorie im Blog, oder einen Beitrag aus einem mod_articles_head.
 {
-	// echo get_class($displayData);
-	$settings_prefix = 'preview_';
-	$ptslider_class  = 'preview';
+	$field_prefix = 'preview_'; // Daten aus dem Feld „preview_protoslider” holen
+	$slider_class = 'preview'; 	// Class-Suffix für Protoslider
 
-	if('Joomla\CMS\Categories\CategoryNode' === get_class($displayData)) { 
-		// Kind-Kategorie im Blog-Layout
-		$contentId = 'catchild-'.$displayData->id;
+	$requestVars->id = $displayData->id;
 
-		$params = new JRegistry($displayData->params);
+	// Kindkategorie im Blog, oder Blogbeitrag, oder Beitrag in ModArticlesHead?
+	if('Joomla\CMS\Categories\CategoryNode' === get_class($displayData)) 
+	{
+		// Kind-Kategorie im Blog
+		$params 	= new JRegistry($displayData->params);
 	}
-	else {
-		// Blogbeitrag oder mod_articles_head
-		JLoader::register('ContentModelArticle', JPATH_SITE . '/components/com_content/models/article.php');
-
-		$contentId  = $displayData->id;
+	else 
+	{
+		// Blogbeitrag oder Beitrag in ModArticlesHead
+		JLoader::register('ContentModelArticle', JPATH_SITE . '/components/com_content/models/article.php'); // <<< Prüfen ob der schon da ist, und das raus kann.
 		
-		$artModel 	= new ContentModelArticle();
-		$article 	= $artModel->getItem($contentId);
-		$params 	= new JRegistry($article->attribs);
+		$model 		= new ContentModelArticle();
+		$item 		= $model->getItem($requestVars->id);
+		$params 	= new JRegistry($item->attribs);
 	}
 }
-else if(JFactory::getApplication()->input->get('view', '', 'STRING') === 'article')
+else 
 {
-	// Beitrag (option=com_content&view=article)
-	$contentId	= JFactory::getApplication()->input->get('id', 0, 'INT');
+	switch($requestVars->view) 
+	{
+		case 'article' :
+			$model	 	= new ContentModelArticle();
+			$item 	 	= $model->getItem($requestVars->id);
+			$params 	= new JRegistry($item->attribs);
+		break;
 
-	$artModel 	= new ContentModelArticle();
-	$article 	= $artModel->getItem($contentId);
-	$params 	= new JRegistry($article->attribs);
+		case 'category' :
+			$model 		= JCategories::getInstance('content');
+			$item 		= $model->get($requestVars->id);
+			$params 	= new JRegistry($item->params);
+		break;
+	}
 }
-else if(JFactory::getApplication()->input->get('view', '', 'STRING') === 'category')
-{
-	// Kategorie: Blog/Category (option=com_content&view=category)
-	$contentId = JFactory::getApplication()->input->get('id', 0, 'INT');
 
-	$catModel 	= JCategories::getInstance('content');
-	$category 	= $catModel->get($contentId);
-	$params 	= new JRegistry($category->params);
-}
+
 
 if(isset($params))
 {
-	$slideroptions 	= $params->get($settings_prefix . 'protoslider_options','');
-	$sliderdata 	= $params->get($settings_prefix . 'protoslider','');
-	if($sliderdata != ''):
+	$config = (object) array(
+		"class_list" => array(
+			$slider_class,
+			$requestVars->view != '' ? 'view-' . $requestVars->view : '',
+			$requestVars->layout != '' ? 'layout-' . $requestVars->layout : ''
+		),
+		"slider_id" 	=> 'ptslider-' . $requestVars->id . '-' . rand(0, 100000),
+		"options" 		=> $params->get($field_prefix . 'protoslider_options', ''),
+		"items" 		=> $params->get($field_prefix . 'protoslider', array()),
+		"url_prefix"	=> JUri::root(true)
+	);
+	
+	//print_r($config);
+
+	if(count($config->items)):
 ?>
-<div class="ptslider-layout">
-	<div id="ptslider-<?php echo JFactory::getApplication()->input->get('view', '', 'STRING');?>-<?php echo $contentId;?>" class="ptslider <?php echo $ptslider_class;?> <?php echo JFactory::getApplication()->input->get('view', '', 'STRING');?> <?php echo JFactory::getApplication()->input->get('layout', '', 'STRING');?>"
-		<?php echo $slideroptions != '' ? ' data-ptoptions=\''.$slideroptions.'\'' : '';?>
-		>
+<div class="ptslider-layout <?php echo implode(' ', $config->class_list); ?>">
+	<div 
+		id="<?php echo $config->slider_id; ?>"
+		class="ptslider <?php echo implode(' ', $config->class_list); ?>"
+		<?php 
+			// JSON Optionen
+			echo $slideroptions != '' ? ' data-ptoptions=\''.$slideroptions.'\'' : '';
+		?>
+	>
+
 		<div class="ptslider-wrapper">
 <?php
-		foreach($sliderdata as $i => $item):
+		// Items/Slides bauen:
+		foreach($config->items as $i => $item) :
 
-			$class 		= '';
-			$attributes = '';
+			// Lightbox Video anzeigen?
+			$video_lightbox = '';
+			if( $item->lightbox_video_url != -1 
+				&& JFile::exists(JPATH_SITE . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . $item->lightbox_video_url) )
+			{
+				$button_label 		= JText::_('TPL_HEAD_PLAY_VIDEO');
 
-			if ($item->video_url != -1 && JFile::exists(JPATH_SITE . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . $item->video_url)) :
-				// -- Mit Video
-				if($item->video_cover) {
-					$class 		.= ' cover';
-					$attributes .= ' data-ptoptions=\'{"autoplay":true}\'';
-				}
-				else
-				{
-					$attributes .= ' style="width: 100%;"';
-					$attributes .= $item->video_controls ? ' controls' : '';
-					$attributes .= $item->video_autoplay ? ' data-ptoptions=\'{"autoplay":true}\'' : '';
-				}
+				$video_lightbox = <<<HTML
+	<div class="lightbox-video" data-fullvideo="images/videos/$item->lightbox_video_url" title="$button_label"></div>
+HTML;
+			}
+
+
+			// Video Player
+			$video_player = '';
+			if ( $item->video_url != -1 
+				&& JFile::exists(JPATH_SITE . DIRECTORY_SEPARATOR . 'images' . DIRECTORY_SEPARATOR . 'videos' . DIRECTORY_SEPARATOR . $item->video_url))
+			{
+				$attributes  = '';
 				$attributes .= $item->video_loop ? ' loop' : '';
 				$attributes .= $item->video_mute ? ' muted' : '';
 
-				$class = $class != '' ? ' class="'.$class.'"' : '';
-			?>
-					<div class="ptslider-item"<?php echo $item->image_url != '' ? ' style="background-image: url('.$item->image_url.');"' : '';?>>
-						<video preload="metadata" <?php echo $class; echo $attributes?> poster="<?php echo $item->image_url;?>">
-							<source src="<?php echo JUri::root();?>images/videos/<?php echo $item->video_url;?>" type="video/mp4" />
-						</video>
+				$video_container = pathinfo($item->video_url, PATHINFO_EXTENSION);
 
-			<?php
-				elseif($item->image_url != ''):
-					// -- Ohne Video
-			?>
-					<div class="ptslider-item">
-						<img src="<?php echo $item->image_url;?>" alt="" />
-			<?php
-				endif;
+				$video_player = <<<HTML
+	<video preload="metadata" $attributes controls poster="$item->image_url">
+		<source src="$config->url_prefix/images/videos/$item->video_url" type="video/$video_container" />
+	</video>
+HTML;
+			}
 
-				if($item->image_caption != ''):
-			?>
-						<div class="item-caption">
-							<div>
-								<span><?php echo $item->image_caption;?></span>
-							</div>
+
+			// Bild
+			$background_image = '';
+			$foreground_image = '';
+			if($item->image_background)
+			{
+				$background_image = ' style="background-image: url(' . $config->url_prefix . '/' . $item->image_url . ');?>"';
+			}
+			else
+			{
+				$foreground_image = '<img class="item-image" src="' . $config->url_prefix . '/' . $item->image_url . '" />';
+			}
+
+			// „Caption”
+			if($item->show_item_caption && $item->image_caption != '')
+			{
+				// Weiterlesen URL – In der Caption wird der String {readmore_url} ersetzt.
+				if(isset($item->readmore) && $item->readmore != '') 
+				{
+					$readmore_url = HeadProtosliderLayoutHelper::getReadmoreUrl($item);
+					$item->image_caption = preg_replace("#" . preg_quote("{readmore_url}", "/") . "#", $readmore_url, $item->image_caption);
+				}
+
+				/* 
+					STANDARD-CAPTION:
+				$caption = <<<HTML
+	<div class="item-caption">
+		<div class="item-caption-inner">
+			$item->image_caption
+		</div>
+	</div>
+HTML;*/
+				/* Sensoplast Caption */
+				ob_start();
+				?>
+					<div class="item-caption-bg"></div>
+					<div class="item-caption">
+						<div class="item-caption-inner">
+							<?php echo $item->image_caption; ?>
 						</div>
-			<?php
-				endif;
-			?>
-					</div> <?php // Ende von .ptslider-item;?>
+						<div class="item-caption-custom">
+							<div class="we-care">
+								<span><?php echo JText::_(TPL_HEAD_SLOGAN_WECARE);?></span>
+							</div>
+							<?php if(isset($item->readmore) && $item->readmore != '' && $item->readmore_label != ''): ?>
+								<div class="readmore">
+									<a href="<?php echo HeadProtosliderLayoutHelper::getReadmoreUrl($item);?>"><?php echo $item->readmore_label;?> <i class="fas fa-angle-right"></i></a>
+								</div>
+							<?php endif; ?>
+						</div>
+					</div>
+				<?php
+				$caption = ob_get_contents();
+				ob_end_clean();
+			}
+
+
+			/* Item/Slide Ausgeben */
+?>
+			<div class="ptslider-item item-<?php echo $i; ?>"<?php echo $background_image; ?>>
+				<?php echo $background_image === '' ? $foreground_image : ''; ?>
+				<?php echo $video_lightbox; ?>
+				<?php echo $video_player; ?>
+				<?php echo $item->slide_html;?>
+				<?php echo $caption; ?>
+			</div>
 <?php
 		endforeach;
 ?>
 		</div>
 	</div>
 
-	<script>
-		'use strict';
-		(function($) {
-			var initProtoslider = function() {
-				$('#ptslider-<?php echo JFactory::getApplication()->input->get('view', '', 'STRING');?>-<?php echo $contentId;?>').protoslider();
-				if($app.equalColumns) {
-					window.setTimeout(function(){
-							$app.equalColumns.destroy();
-							$app.equalColumns.init($app.extensions.list.equalcols.options);
-					}, 150);
-				}
-			}
+<script>
+	'use strict';
+	(function($) {
+		var initProtoslider = function() 
+		{
+			let slider = $('#<?php echo $config->slider_id; ?>').protoslider({
+				onInit : function()
+				{
+					this.initSprites();
+				},
 
-			$(function() {
+				onAfterInit : function()
+				{
+					var $slide  = this.State.stage[this.State.columns -1],
+						sprites = this.getSprites( $slide );
+	
+					if( sprites.length )
+					{
+						this.spritesIn( sprites );
+					}
+				}
+			});
+			slider.on('afterSlideIn', function( e, data )
+			{
+				let sprites = this.getSprites( data.slide );
+				if( sprites.length )
+				{
+					this.spritesIn( sprites );
+				}
+			});
+			slider.on('afterSlideOut', function( e, data )
+			{
+				let sprites = this.getSprites( data.slide );
+				if( sprites.length )
+				{
+					this.spritesReset( sprites );
+				}
+			});
+		}
+
+		$(function() {
+			$($app).one('protosliderReady', function() {
+				initProtoslider();
+			});
+			
+			<?php /* Wir laden Protoslider manuell, falls er abgeschaltet ist */?>
+			$($app).one('extensionsReady', function() {
+				if(!$app.extensions.list.protoslider.available) { 
+					//if(console) console.log('Protoslider-Layout wartet auf protoslider.js von $app...');
+					$app.extensions.load('protoslider', true);
+				}
+			});
+		});
+
+		<?php /* Hier setzen wir einen Event Listener auf jedes mod_articles_head */?>
+		$('.mod-intro').one('afterLoad.ptslider', function(ev) {
+			
+			// Vielleicht hat ein mod_articles_head einen Beitrag geladen, welcher dieses Layout angefordert hat.
+			
+			if(!$app.extensions.list.protoslider.available) {
 				$($app).one('protosliderReady', function() {
 					initProtoslider();
 				});
-				
-				<?php /* Wir laden Protoslider manuell, falls er abgeschaltet ist */?>
-				$($app).one('extensionsReady', function() {
-					if(!$app.extensions.list.protoslider.available) { 
-						if(console) console.log('Protoslider-Layout wartet auf protoslider.js von $app...');
-						$app.extensions.load('protoslider', true);
-					}
-				});
-			});
+				//if(console) console.log('Protoslider-Layout velangt protoslider.js von $app für mod_articles_head nach AJAX-Aufruf...');
+				$app.extensions.load('protoslider', true);
+			}
+			else {
+				initProtoslider();
+			}			
+		});
+	})(jQuery);
+</script>
 
-			<?php /* Hier setzen wir einen Event Listener auf jedes mod_articles_head */?>
-			$('.mod-intro').one('afterLoad.ptslider', function(ev) {
-				
-				// Vielleicht hat ein mod_articles_head einen Beitrag geladen, welcher dieses Layout angefordert hat.
-				
-				if(!$app.extensions.list.protoslider.available) {
-					$($app).one('protosliderReady', function() {
-						initProtoslider();
-					});
-					if(console) console.log('Protoslider-Layout velangt protoslider.js von $app für mod_articles_head nach AJAX-Aufruf...');
-					$app.extensions.load('protoslider', true);
-				}
-				else {
-					initProtoslider();
-				}			
-			});
-		})(jQuery);
-	</script>
-
+    <div class="protoslider-layout-modules">
+    <?php
+		if($slider_class !== 'preview') 
+		{
+            $modules = \Joomla\CMS\Helper\ModuleHelper::getModules('position-protoslider-layout');
+            if(count($modules))
+            {
+                foreach($modules as $mod)
+                {
+                    echo \Joomla\CMS\Helper\ModuleHelper::renderModule($mod, array("style" => ""));
+                }
+            }
+        }
+	?>
+    </div>
 </div>
 <?php
 	endif;

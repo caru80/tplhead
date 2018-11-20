@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+    <fieldset>
+        
+        <field
+            name="kachel_type"
+            type="list"
+            label="Darstellung"
+            description="Die Darstellung dieser Kachel."
+            default="tile"
+        >
+            <option value="tile">Kachel</option>
+            <option value="section">Sektion</option>
+        </field>
+        
+        <field 
+            name="backend_notiz"
+            type="text"
+            class="input-xxlarge"
+            label="Notiz"
+            description="Nur eine Notiz, wird nirgendwo angezeigt."
+        />
+
+        <field 
+            name="kachel_heading_tag"
+            type="list"
+			showon="kachel_type:section"
+            label="Überschriftgröße"
+            description="Die größe der Überschrift auswählen."
+        >
+			<option value="h1">H1</option>
+			<option value="h2">H2</option>
+		</field>
+
+        <field 
+            name="kachel_title"
+            type="text"
+            class="input-lg"
+            label="Titel"
+            description="Der Titel der Kachel, oder nur eine Überschrift."
+        />
+        <field 
+            name="kachel_subtitle"
+            type="text"
+            showon="kachel_type:section"
+            class="input-lg"
+            label="Untertitel"
+            description="Der Titel der Kachel, oder nur eine Überschrift."
+        />
+
+        <field
+            name="alternate_bg"
+            type="radio"
+            class="btn-group"
+            label="Hintergrund alternieren"
+            description=""
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+
+        <field
+            name="kachel_image"
+            type="media"
+            label="Bild"
+            description="Ein Einleitungsbild"
+        />
+
+        <field
+            name="backend-advanced_tile"
+            type="radio"
+            showon="kachel_type:tile"
+            class="btn-group"
+            label="Erweitert"
+            description="Erweiterte Einstellungen"
+            default="0"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field 
+            name="grid_column_size"
+            type="text"
+            showon="backend-advanced_tile:1[AND]kachel_type:tile"
+            class="input-lg"
+            label="Grid-Spaltengröße"
+            description="Optional. Erzwinge eine Spaltengröße."
+            default=""
+        />
+
+        <field 
+            name="tile_class"
+            type="text"
+            showon="backend-advanced_tile:1[AND]kachel_type:tile"
+            class="input-lg"
+            label="Kachel CSS Klassen"
+            description="Optional. Füge CSS Klassen ein."
+            default=""
+        />
+
+        <field 
+            name="backend_hide-editor"
+            type="radio"
+            class="btn-group"
+            label="Editor ausblenden"
+            description="Zeige/Vertecke den Texteditor"
+            default="1"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
+
+        <field
+            name="kachel_description"
+            type="editor"
+            showon="backend_hide-editor:0"
+            label="Text"
+            description="Dein Text."
+            filter="raw"
+        />
+
+    </fieldset>
+</form>

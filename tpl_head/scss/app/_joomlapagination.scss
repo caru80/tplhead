@@ -1,0 +1,8 @@
+
+
+@each $key, $icon in $app-pagination-icons {
+    .pagination i.#{$key}:before {
+        @extend .fa;
+        content: '#{$icon}';
+	}
+}

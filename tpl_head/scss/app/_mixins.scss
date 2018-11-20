@@ -1,0 +1,32 @@
+
+// 
+// Erzeuge dynamische Schriftgrößen (je nach Breakpoint)
+//
+@mixin make-font-size($xs: 1rem, $sm: $xs, $md: $sm, $lg: $md, $xl: $lg) {
+	@include media-breakpoint-up(xs) {
+		font-size: $xs;
+	}
+	@include media-breakpoint-up(sm) {
+		font-size: $sm;
+	}
+	@include media-breakpoint-up(md) {
+		font-size: $md;
+	}
+	@include media-breakpoint-up(lg) {
+		font-size: $lg;
+	}
+	@include media-breakpoint-up(xl) {
+		font-size: $xl;
+	}
+}
+
+//
+// Automatische Silbentrennung/Zeilenumbrüche in Wörtern
+//
+@mixin hyphenate() {
+	overflow-wrap: break-word;
+	word-wrap: break-word;
+	-webkit-hyphens: auto;
+	-ms-hyphens: auto;
+	hyphens: auto;
+}

@@ -1,0 +1,239 @@
+/*
+	Menüknopf...: <a class="app-btn btn-menu"><i></i></a>
+	
+	Schließen-Knopf: <a class="app-btn btn-menu close|active"><i></i></a>
+	
+	Suchen-Knopf: <a class="app-btn btn-search [close|active]"><i></i></a>
+*/
+
+ 
+/*
+	
+	Button Basis
+		
+*/
+
+// -- „X”
+@mixin app-btn-close($reverse: 0) {
+
+	&:before,
+	&:after{
+		width: $app-buttons-size;
+		height: $app-buttons-thickness;
+		background-color: map-get($app-buttons-color, "close");
+		border-radius: $app-buttons-curve;
+		-webkit-transform-origin: 50% 50%;
+		transform-origin: 50% 50%;
+	}
+	&:before{
+		top: 50%;
+		left: 0;
+
+		@if $reverse == 1 {
+			-webkit-transform: rotate3d(0,0,1,45deg);
+					transform: rotate3d(0,0,1,45deg);
+		}
+		@else {
+			-webkit-transform: rotate3d(0,0,1,-45deg);
+					transform: rotate3d(0,0,1,-45deg);
+		}
+
+
+		margin-top: -($app-buttons-thickness / 2);
+		}
+	&:after{
+		top: 50%;
+		border-width: 0;
+
+		@if $reverse == 1 {
+			-webkit-transform: rotate3d(0,0,1,-45deg);
+					transform: rotate3d(0,0,1,-45deg);
+		}
+		@else {
+			-webkit-transform: rotate3d(0,0,1,45deg);
+					transform: rotate3d(0,0,1,45deg);
+		}
+
+		margin-top: -($app-buttons-thickness / 2);
+		}
+}
+
+
+
+//
+// Basis
+//
+.app-btn {
+	font-size: 1rem;
+	//@include size($app-buttons-size, $app-buttons-size);
+	
+	min-width: $app-buttons-size;
+	height: $app-buttons-size;
+
+	vertical-align: top;
+	line-height: 0;
+
+	display: inline-block;
+	position: relative;
+
+	cursor: pointer;
+	&:focus, &:hover, &:active{
+		outline: none;
+		text-decoration: none;
+	}
+	> span{
+		display: inline-block;
+		margin-left: $app-buttons-size;
+		padding-left: 0.5em;
+		height: $app-buttons-size;
+		line-height: $app-buttons-size;
+		transition: opacity 0.2s ease;
+		span{
+			color: map-get($app-buttons-color, "menu");
+			font-size: 1.2em; 
+			font-weight: 500;
+			line-height: inherit;
+			font-family: $app-buttons-font;
+		}
+	}
+
+	&.active > span{
+		opacity: 0;
+	}
+}
+
+
+
+@mixin btn-menu-colourize( $color: map-get($app-buttons-color, "menu"), $hover-color: lighten(map-get($app-buttons-color, "menu"), 10%), $active-color: map-get($app-buttons-color, "close"), $active-hover-color: lighten(map-get($app-buttons-color, "close"), 10%)) {
+	i, &:before, &:after{
+		background-color: $color;
+
+	}
+	&:hover{
+		i, &:before, &:after{
+			background-color: $hover-color;
+			}
+	}
+
+	&.active,
+	&.close{
+		i, &:before, &:after{
+			background-color: $active-color;
+			}
+		&:hover{
+			&:before, &:after{
+				background-color: $active-hover-color;
+				}
+			}
+	}
+}
+
+//
+// Menüknopf	
+//
+.app-btn.btn-menu {
+
+	@include btn-menu-colourize();
+	
+	i, &:before, &:after {
+		display: inline-block;
+		content: '';
+		position: absolute;
+		left: 0;
+		
+		height: $app-buttons-thickness;
+		width: $app-buttons-size;
+		border-radius: $app-buttons-curve;
+		transform: translate3d(0,0,0);
+		
+		transition: all 0.3s ease;
+	}
+
+	i {
+        top: $app-buttons-size / 2;
+		-webkit-transform: translate3d(0, -50%, 0);
+                transform: translate3d(0, -50%, 0);
+	}
+	
+	&:before {
+		top: 0.4em;
+	}
+	&:after {
+		top: $app-buttons-size - 0.4em;
+		margin-top: -$app-buttons-thickness;
+	}
+	
+	&.active,
+	&.close {
+		i {
+			width: 0;
+			opacity: 0;
+		}
+		@include app-btn-close(1);
+	}
+}
+
+
+
+//
+// Suchen/Lupe
+//
+.app-btn.btn-search {
+
+	i {
+		position: relative;
+		display: block;
+		@include size(100%, 100%);
+	}
+
+	i:before, i:after {
+		display: block;
+		content: '';
+		position: absolute;
+
+		transform: translate3d(0,0,0);
+		transition: all 0.3s ease;
+	}
+	i:before { // Lupe Stiel
+		width: 1.05em;
+
+		height: $app-buttons-thickness;
+		
+		background-color: map-get($app-buttons-color, "search");
+		border-radius: 0 $app-buttons-curve $app-buttons-curve 0;
+		
+        //top: 1em;
+        bottom: 0;
+		right: 0;
+        
+        transform-origin: 100% 100%;
+		-webkit-transform: rotate3d(0,0,1,45deg) translate3d(-($app-buttons-thickness / 2), $app-buttons-thickness / 2, 0);
+				transform: rotate3d(0,0,1,45deg) translate3d(-($app-buttons-thickness / 2), $app-buttons-thickness / 2, 0);
+	}
+	
+	i:after { // Lupe Kreis
+        // @include size(1.86em,1.86em);
+        @include size(1.1em,1.1em);
+
+		border-radius: 100%;
+		
+		top: 0;
+		left: 0;
+
+		border: $app-buttons-thickness solid map-get($app-buttons-color, "search");
+	}
+
+	&.close i,
+	&.active i {
+		@include app-btn-close();
+	}
+
+}
+
+
+
+
+
+
+
+

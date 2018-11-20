@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.8" type="plugin" group="system" method="upgrade">
+	<name>SCSS Compiler</name>
+	<author>Carsten Ruppert</author>
+	<creationDate>2018-11-20</creationDate>
+	<copyright>Copyright (C) 2018 HEAD. MARKETING GmbH. All rights reserved.</copyright>
+	<license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+	<authorEmail>webmaster@headmarketing.de</authorEmail>
+	<authorUrl>www.headmarketing.de</authorUrl>
+	<version>0.3.0</version>
+	<description>PLG_SYSTEM_SCSSCOMP_XML_DESCRIPTION</description>
+	<scriptfile>install.script.php</scriptfile>
+	<files>
+		<filename plugin="scsscompiler">scsscompiler.php</filename>
+		<filename>index.html</filename>
+		<filename>install.script.php</filename>
+		<folder>vendor</folder>
+	</files>
+	<languages>
+		<language tag="de-DE">language/de-DE/de-DE.plg_system_scsscompiler.ini</language>
+		<language tag="de-DE">language/de-DE/de-DE.plg_system_scsscompiler.sys.ini</language>
+	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+
+				<field
+					name="verbose_compiler"
+					type="radio"
+					class="btn-group btn-group-yesno"
+					label="PLG_SYS_SCSSCOMP_VERBOSE_LABEL"
+					description="PLG_SYS_SCSSCOMP_VERBOSE_DESC"
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+
+				<field
+					name="force_compilation"
+					type="radio"
+					class="btn-group btn-group-yesno"
+					label="PLG_SYS_SCSSCOMP_FORCE_COMPILATION_LABEL"
+					description="PLG_SYS_SCSSCOMP_FORCE_COMPILATION_DESC"
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+
+
+				<field
+					name="compiler-note-input"
+					type="note"
+					label="PLG_SYS_SCSSCOMP_NOTE_INPUT_LABEL"
+					description="PLG_SYS_SCSSCOMP_NOTE_INPUT_DESC"
+				/>
+
+				<field
+					name="scss_input_directory"
+					type="text"
+					class="input-lg"
+					label="PLG_SYS_SCSSCOMP_INPUT_DIR_LABEL"
+					description="PLG_SYS_SCSSCOMP_INPUT_DIR_DESC"
+					default="scss"
+				/>
+
+				<field
+					name="scss_input_file"
+					type="text"
+					class="input-lg"
+					label="PLG_SYS_SCSSCOMP_INPUT_FILE_LABEL"
+					description="PLG_SYS_SCSSCOMP_INPUT_FILE_DESC"
+					hint="PLG_SYS_SCSSCOMP_INPUT_FILE_HINT"
+				/>
+
+				<field
+					name="compiler-note-output"
+					type="note"
+					label="PLG_SYS_SCSSCOMP_NOTE_OUTPUT_LABEL"
+					description="PLG_SYS_SCSSCOMP_NOTE_OUTPUT_DESC"
+				/>
+
+				<field
+					name="css_output_directory"
+					type="text"
+					class="input-lg"
+					label="PLG_SYS_SCSSCOMP_OUTPUT_DIR_LABEL"
+					description="PLG_SYS_SCSSCOMP_OUTPUT_DIR_DESC"
+					default="css"
+				/>
+
+				<field
+					name="css_output_file"
+					type="text"
+					class="input-lg"
+					label="PLG_SYS_SCSSCOMP_OUTPUT_FILE_LABEL"
+					description="PLG_SYS_SCSSCOMP_OUTPUT_FILE_DESC"
+					hint="PLG_SYS_SCSSCOMP_OUTPUT_FILE_HINT"
+				/>
+
+				<field
+					name="compiler_formatter"
+					type="list"
+					label="PLG_SYS_SCSSCOMP_FORMATTER_LABEL"
+					description="PLG_SYS_SCSSCOMP_FORMATTER_DESC"
+					default="Compressed"
+				>
+					<option value="Compact">PLG_SYS_SCSSCOMP_FORMATTER_OPT_COMPACT</option>
+					<option value="Compressed">PLG_SYS_SCSSCOMP_FORMATTER_OPT_COMPRESSED</option>
+					<option value="Crunched">PLG_SYS_SCSSCOMP_FORMATTER_OPT_CRUNCHED</option>
+					<option value="Expanded">PLG_SYS_SCSSCOMP_FORMATTER_OPT_EXPANDED</option>
+					<option value="Nested">PLG_SYS_SCSSCOMP_FORMATTER_OPT_NESTED</option>
+				</field>
+
+				<field
+					name="compiler_line_comments"
+					type="radio"
+					class="btn-group btn-group-yesno"
+					showon="compiler_formatter:Compact[OR]compiler_formatter:Expanded[OR]compiler_formatter:Nested"
+					label="PLG_SYS_SCSSCOMP_LINE_COMMENTS_LABEL"
+					description="PLG_SYS_SCSSCOMP_LINE_COMMENTS_DESC"
+					default="0"
+				>
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+
+				<field
+					name="formatter-note-expanded"
+					type="note"
+					showon="compiler_formatter:Expanded"
+					label="PLG_SYS_SCSSCOMP_FORMATTER_NOTE"
+					description="PLG_SYS_SCSSCOMP_FORMATTER_NOTE_EXPANDED"
+				/>
+				<field
+					name="formatter-note-nested"
+					type="note"
+					showon="compiler_formatter:Nested"
+					label="PLG_SYS_SCSSCOMP_FORMATTER_NOTE"
+					description="PLG_SYS_SCSSCOMP_FORMATTER_NOTE_NESTED"
+				/>
+				<field
+					name="formatter-note-compact"
+					type="note"
+					showon="compiler_formatter:Compact"
+					label="PLG_SYS_SCSSCOMP_FORMATTER_NOTE"
+					description="PLG_SYS_SCSSCOMP_FORMATTER_NOTE_COMPACT"
+				/>
+				<field
+					name="formatter-note-compressed"
+					type="note"
+					showon="compiler_formatter:Compressed"
+					label="PLG_SYS_SCSSCOMP_FORMATTER_NOTE"
+					description="PLG_SYS_SCSSCOMP_FORMATTER_NOTE_COMPRESSED"
+				/>
+				<field
+					name="formatter-note-crunched"
+					type="note"
+					showon="compiler_formatter:Crunched"
+					label="PLG_SYS_SCSSCOMP_FORMATTER_NOTE"
+					description="PLG_SYS_SCSSCOMP_FORMATTER_NOTE_CRUNCHED"
+				/>
+
+			</fieldset>
+		</fields>
+	</config>
+</extension>

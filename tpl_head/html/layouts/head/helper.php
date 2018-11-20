@@ -1,0 +1,81 @@
+<?php
+
+defined('_JEXEC') or die;
+
+use \Joomla\CMS; 
+
+JLoader::register('ContentHelperRoute', JPATH_SITE . '/components/com_content/helpers/route.php');
+CMS\MVC\Model\BaseDatabaseModel::addIncludePath(JPATH_SITE . '/components/com_content/models', 'ContentModel');
+
+
+
+abstract class HeadProtosliderLayoutHelper {
+	 /** 
+	 * Generiert den Weiterlesen-Link eines Beitrags
+	 * 
+	 * @param   \Joomla\CMS\MVC\Model\BaseDatabaseModel  &$item   Ein Objekt, welches ein Beitrags-Model repräsentiert.
+	 * 
+	 * @return   string   Ein String, welcher den Weiterlesen-URL repräsentiert oder ein leerer String, wenn gar kein URL ermittelt werden konnte.
+	 * 
+	 * @since   1.7.4
+	 */
+	public static function getReadmoreUrl(&$item) 
+	{
+	//	$attribs 		= new \Joomla\Registry\Registry($item->attribs);
+		$readmore_url 	= '';
+
+		switch($item->readmore)
+		{
+			case 'menuitem' :
+				$menu_item = CMS\Factory::getApplication()->getMenu()->getItem($item->readmore_menuitem);
+
+				if($menu_item)
+				{
+					if($menu_item->flink)
+					{
+						$readmore_url = $menu_item->flink;
+					}
+					else
+					{
+						$readmore_url = CMS\Router\Route::_($menu_item->link . '&Itemid=' . $menu_item->id);
+					}
+				}
+			break;
+
+			case 'article' : 
+				$id = $item->readmore_article; // $attribs->get('xfields_readmore_override_article', 0);
+
+				$db = CMS\Factory::getDbo();
+				$q 	= $db->getQuery(true);
+	
+				$q->select($db->quoteName('id') .', '. $db->quoteName('state'))
+					->from($db->quoteName('#__content'))
+					->where($db->quoteName('id') . ' = ' . $db->quote($id));
+	
+				$db->setQuery($q);
+				$db->execute();
+	
+				if($result = $db->loadObject()) // Artikel ist vorhanden.
+				{
+					if($result->state !== '1') break; // Der Artikel ist nicht veröffentlicht.
+
+					// -- Hole Artikel Model, weil es nicht immer verfügbar ist, und hole damit den Artikel.
+					$model = CMS\MVC\Model\BaseDatabaseModel::getInstance('Article','ContentModel');
+
+					$article = $model->getItem( $id );
+
+					if( $article )
+					{
+						$readmore_url = CMS\Router\Route::_(ContentHelperRoute::getArticleRoute($article->id, $article->catid));
+					}
+				}
+			break;
+			
+			default :
+				$readmore_url = '';
+		}
+
+		return $readmore_url;
+	}
+}
+?>

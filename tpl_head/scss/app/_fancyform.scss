@@ -1,0 +1,648 @@
+
+
+/**
+	„Fany-Form”
+
+	Für Bootstrap 4.
+
+	<form class="chronoform">
+		<div class="fancy-form">
+
+			<fieldset>
+				<legend>Textfelder</legend>
+
+				<div class="form-group inline">
+					<label for="kontakt_telefon">Name</label>
+					<input type="text" name="kontakt_name" id="kontakt_name" value="<?php echo $form->data["kontakt_name"]; ?>" />
+				</div>
+
+				<div class="form-group inline">
+					<label for="kontakt_telefon">Telefon</label>
+					<input type="text" name="kontakt_telefon" id="kontakt_telefon" value="<?php echo $form->data["kontakt_telefon"]; ?>" />
+					<div class="checkbox">
+						<label for="kontakt_rueckruf">
+							<input type="checkbox" name="kontakt_rueckruf" id="kontakt_rueckruf" value="<?php echo JText::_('JYES');?>" 
+								<?php echo $form->data['kontakt_rueckruf'] === JText::_('JYES') ? ' checked' : ''; ?>
+							/>
+							<i></i>
+							<span>Bitte rufen Sie mich zurück!</span>
+						</label>
+					</div>
+				</div>
+			</fieldset>
+
+
+			<fieldset>
+				<legend>Radio und Checkbox</legend>
+
+				<div class="form-group">
+					<div class="radio">
+						<label for="mein-radio-0">
+							<input type="checkbox" name="mein-radio" id="mein-radio-0" value="[FIELD_OPT_MEINRADIO_JA]" 
+								class="validate['group:mein-radio']" 
+								<?php echo $form->data["mein-radio"] === $form->translate('[FIELD_OPT_MEINRADIO_JA]') ? ' checked' : ''; ?>
+							/>
+							<i></i>
+							<span>[FIELD_OPT_MEINRADIO_JA]</span>
+						</label>
+						<label for="mein-radio-1">
+							<input type="checkbox" name="mein-radio" id="mein-radio-1" value="[FIELD_OPT_MEINRADIO_NEIN]"
+								class="validate['group:mein-radio']" 
+								<?php echo $form->data["mein-radio"] === $form->translate('[FIELD_OPT_MEINRADIO_NEIN]') ? ' checked' : ''; ?>
+							/>
+							<i></i>
+							<span>[FIELD_OPT_MEINRADIO_NEIN]</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<!-- Ein einzelnes Checkbox -->
+
+					<div class="checkbox">
+						<label for="mein-check-a">
+							<input type="checkbox" name="mein-check-a" id="mein-check-a" value="[FIELD_OPT_MEINCHECK_A_JA]"
+								class="validate['required']" 
+								<?php echo $form->data['mein-check-a'] === $form->translate('[FIELD_OPT_MEINCHECK_A_JA'] ? ' checked' : ''; ?>
+							/>
+							<i></i>
+							<span>[FIELD_OPT_MEINCHECK_JA]</span>
+						</label>
+					</div>
+				</div>
+
+				<div class="form-group">
+					<!-- Mehrfachauswahl -->
+					
+					<div class="checkbox">
+						<?php
+							$meinCheckWerte = $form->data["mein-check"];
+						?>
+						<label for="mein-check-0">
+							<input type="checkbox" name="mein-check[]" id="mein-check-0" value="[FIELD_OPT_MEINCHECK_JA]"
+								class="validate['group:mein-check']" 
+								<?php echo in_array($form->translate('[FIELD_OPT_MEINCHECK_JA]'), $meinCheckWerte) ? ' checked' : ''; ?>
+							/>
+							<i></i>
+							<span>[FIELD_OPT_MEINCHECK_JA]</span>
+						</label>
+						<label for="mein-check-1">
+							<input type="checkbox" name="mein-check[]" id="mein-check-1" value="[FIELD_OPT_MEINCHECK_NEIN]"
+								class="validate['group:mein-check']" 
+								<?php echo in_array($form->translate('[FIELD_OPT_MEINCHECK_NEIN]'), $meinCheckWerte) ? ' checked' : ''; ?>
+							/>
+							<i></i>
+							<span>[FIELD_OPT_MEINCHECK_NEIN]</span>
+						</label>
+					</div>
+				</div>
+			</fieldset>
+
+
+			<div class="form-actions">
+				<button type="submit">Senden</button>
+			</div>
+
+		</div>
+	</form>
+*/
+
+
+
+//
+// !!! HONEYPOT !!!
+//
+.form-group.honigtopf{
+	display: none !important;
+	visibility: hidden !important;
+}
+
+//
+// Chronoforms Copyright
+//
+p.chrono_credits{
+	display: none !important;
+	visibility: hidden !important;
+}
+
+//
+// Datenschutz gelesen?
+//
+.checkbox.privacy-statement {
+	padding-top: 2rem;
+	.privacy-statement-text {
+		font-size: 0.9rem;
+	}
+}
+
+
+.fancy-form {
+	text-align: left;
+}
+@include media-breakpoint-down(sm) {
+	#fancy-write-me {
+		text-align: center;
+		margin-bottom: 1.5em; 
+	}
+	.fancy-form {
+		display: none;
+		&.show {
+			display: block;
+		}
+	}
+}
+@include media-breakpoint-up(md) {
+	#fancy-write-me {
+		display: none;
+	}
+}
+
+
+
+//
+// Dropzone
+//
+@import '../css/dropzone.css';
+.fancy-form .dropzone 
+{
+	background: white;
+	border-radius: 5px;
+	border: 2px dashed rgb(0, 135, 247);
+	border-image: none;
+	max-width: 500px;
+	min-height: 50px;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1rem;
+
+	display: flex;
+	flex-wrap: wrap;
+	align-content: stretch;
+}
+.fancy-form .dropzone .dz-preview {
+	margin: 0;
+	flex-basis: 33%;
+	min-width: 100px;
+	padding: 0.5rem;
+}
+.fancy-form .dropzone .dz-preview .dz-image {
+	width: 100%;
+	padding-top: 100%;
+}
+
+.fancy-form .dropzone .dz-preview .dz-progress {
+	top: auto;
+	bottom: 3rem;
+}
+.fancy-form .dropzone .dz-message 
+{
+	margin: 0;
+}
+
+
+//
+// Ladeanzeige; Formular wird gesendet.
+// 
+form.chronoform {
+	position: relative; // Zum positionieren der Ladeanzeige
+}
+form.chronoform .loading-indicator {
+	position: absolute;
+	z-index: 100;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	text-align: center;
+	background-color: $app-faforms-loading-bg;
+
+	.loading-inner {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		transform: translate3d(0%, -50%, 0);
+	}
+
+	.loading-indicator-text {
+		font-size: 1.3rem;
+		text-align: center;
+		padding: 1.5rem;
+		margin-top: -1rem;
+		background-color: $app-faforms-loading-textbg;
+		color: $app-faforms-loading-text;
+		border-radius: 3px;
+	}
+}
+
+
+//
+// Erfolgsmeldung; Formular wurde gesendet.
+//
+.fancy-form-submitted {
+	position: relative;
+	min-height: 250px;
+
+	.success-msg {
+		position: absolute;
+		top: 50%;
+		left: 0;
+		width: 100%;
+		transform: translate3d(0, -50%, 0);
+		text-align: center;
+	}
+
+	i {
+		@include make-font-size($xs: 6rem, $md: 8rem);
+		display: block;
+		color: $app-faforms-sent-icolor;
+		font-size: 8rem;
+		line-height: 1;
+
+		transform: scale3d(0.7, 0.7, 0.7);
+		opacity: 0;
+		transition: opacity 0.2s ease, transform 0.3s ease-in-out;
+	}
+	&.in i{
+		transform: scale3d(1, 1, 1);
+		opacity: 1;
+	}
+
+	.success-text {
+		color: $app-faforms-sent-textcolor;
+		font-size: 1.2rem;
+		padding-top: 1em;
+	}
+}
+
+
+//
+// Fehlermeldungen 
+//
+.fancy-form-errors { // <dl>
+	padding: 1rem;
+	background-color: $danger;
+	color: #ffffff;
+	border-radius: 2px;
+	dd {
+		margin: 0;
+		+ dd{
+			margin-top: 0.5em;
+		}
+	}
+}
+
+
+/**
+	Wrapper für Aktionen (Senden etc.):
+	<div class="form-controls">
+		<button type="submit" ...>Senden</button>
+	</div>
+*/
+.fancy-form	.form-controls{
+	text-align: center;
+	padding-top: 1em;
+}
+
+//
+// Feldgruppen
+//
+.fancy-form fieldset{
+	& + fieldset{
+		margin-top: 1rem;
+	}
+}
+.fancy-form fieldset{
+	h3, h4{
+		margin-top: 0;
+	}
+}
+.fancy-form fieldset legend {
+	font-size: $app-faform-legend-size;
+	font-family: $font-family-sans-serif;
+	font-weight: 400;
+	color: $app-faform-legend-color;
+	border: none;
+	margin-bottom: 0.5em;
+}
+
+
+//
+// Ein Feld-Container
+//
+.fancy-form .form-group {
+	position: relative; // Zum ausrichten der JS-Validierungs-Tooltipps
+	background-color: $input-bg;
+	transition: background-color 0.1s ease;
+	
+	border: $input-border-width solid $input-border-color;
+	border-radius: $input-border-radius;
+	@include media-breakpoint-up(sm) {
+		border-radius: $input-border-radius-sm;
+	}
+	@include media-breakpoint-up(lg) {
+		border-radius: $input-border-radius-lg;
+	}
+
+	&.disabled {
+		background-color: $input-disabled-bg;
+		*{
+			color: $gray-500 !important;
+		}
+	}
+
+	&.focus {
+		background-color: $input-focus-bg;
+		border-color: $input-focus-border-color;
+	}
+}
+
+.fancy-form .form-group > label { // Nur direkte Nachfaren von .form-group vom typ label (i.d.R. das 1. <label>).
+	display: block;
+	hyphens: auto;
+	margin: 0;
+	font-size: 13px;
+	color: $app-faform-label-color;
+	padding: $input-padding-y $input-padding-x;
+	font-weight: 600;
+}
+.fancy-form .form-group .radio > label, 
+.fancy-form .form-group .checkbox > label {
+	color: $body-color;
+}
+
+.fancy-form .form-group {
+	input,
+	select,
+	textarea,
+	> div {
+		padding-top: 0;
+		padding-left: $input-padding-x;
+		padding-right: $input-padding-x;
+		padding-bottom: $input-padding-y;
+	}
+
+	input,
+	select,
+	textarea {
+		border-width: 0;
+		box-shadow: none;
+		font-weight: 500;
+		&, &[readonly]{
+			/** "readonly"-Felder werden genauso dargestellt wie andere Felder. Der Sinn dahinter ist, dass auf Mobilgeräten die Tastatur nicht angezeigt wird, z.B. bei Datepicker-Feldern. */
+			background-color: transparent;
+		}
+		&:focus{
+			box-shadow: none;
+		}
+	}
+
+	textarea {
+		width: 100%;
+	}
+}
+
+@include media-breakpoint-up(lg) {
+	//
+	// Inline = Label und <input> etc. nebeneinander
+	//
+	.fancy-form .form-group.inline {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		> label {
+			white-space: nowrap;
+			line-height: 1em;
+			flex-grow: 1;
+			order: 1;
+			width: 25%;
+			line-height: 2em;
+		}
+		input,
+		select,
+		textarea {
+			padding-top: $input-padding-y;
+			width: auto;
+			flex-grow: 2;
+			order: 2;
+		}
+	}
+}
+
+/** Ausgewähles Feld: */
+.fancy-form .form-group.focus {
+	background-color: #d6ebde; // lighten($secondary, 65%);
+}
+
+
+
+/**
+	Radio und Checkbox:
+
+	- Das div.form-group & das erste label sind optional.
+	- Klasse large = größere Schrift und icon ab @screen-sm-min
+	- Klasse block = Bei „Multi” Checkboxen/Radios untereinander
+
+	Single:
+
+	<div class="form-group">
+		<label>Meine Checkbox</label>
+		<div class="checkbox [large block]">
+			<label for="FELDNAME">
+				<input name="FELDNAME" id="FELDNAME" value="Ja" type="checkbox">
+				<i></i>
+				<span>Checkbox Beschriftung</span>
+			</label>
+		</div>
+	</div>
+
+	Multi:
+
+	<div class="form-group">
+		<label>Meine Radios</label>
+		<div class="radio [large block]">
+			<label for="FELDNAME_1">
+				<input name="FELDNAME[]" id="FELDNAME_1" value="Ja" type="radio">
+				<i></i>
+				<span>Checkbox Beschriftung</span>
+			</label>
+			<label for="FELDNAME_2">
+				<input name="FELDNAME[]" id="FELDNAME_2" value="Ja" type="radio">
+				<i></i>
+				<span>Checkbox Beschriftung</span>
+			</label>
+		</div>
+	</div>
+
+*/
+.fancy-form .checkbox,
+.fancy-form .radio {
+
+	$icon-size: 1em;
+	
+	font-size: 1rem;
+	min-height: $input-height;
+	margin: 0;
+
+	order: 3;
+
+	label{
+		color: $app-faform-label-color;
+		position: relative;
+		display: inline-block;
+		margin: 0 0.75em 0 0;
+		hyphens: auto;
+		&.small span {
+			font-size: 0.9em;
+		}
+	}
+	&.block label{ // Untereinander
+		display: block;
+		+ label{ margin: 0.75em 0 0 0; }
+	}
+
+	&.radio-lg,
+	&.checkbox-lg {
+		@include make-font-size(1em, 1.2em);
+	}
+
+	label{
+		font-weight: 400;
+		position: relative;
+		cursor: pointer;
+		padding: 0;
+
+		font-size: 1em;
+		font-family: $font-family-sans-serif;
+		font-weight: normal;
+
+		padding-left: $icon-size * 1.3;
+
+		span{
+			display: inline-block;
+		}
+		i{
+			@include size($icon-size, $icon-size);
+			position: absolute;
+			left: 0;
+			top: 0.25em;
+
+			display: block;
+			background-color: $gray-500;
+			//border-radius: $input-border-radius-sm;
+			border-radius: 1px;
+
+			transition: background-color 0.25s ease;
+
+			&:before,
+			&:after {
+				display: block;
+				position: absolute;
+				transition-duration: 0.25s;
+				transition-timing-function: ease;
+			}
+			&:before {
+				background-color: $white;
+				transition-property: background-color;
+				//border-radius: $input-border-radius-sm;
+				content: '';
+				top: 2px;
+				right: 2px;
+				bottom: 2px;
+				left: 2px;
+			}
+			&:after {
+				@extend .fas;
+				content: '#{$fa-var-check}';
+				font-size: 1.2em;
+				bottom: -2px;
+				left: 0px;
+				transform: rotate(-15deg) scale3d(0.7, 0.7, 0.7);
+				//left: 0.4em;
+				//top: 0.25em;
+				
+				color: $success;
+				opacity: 0;
+				transition-property: opacity, transform;
+				z-index: 2;
+			}
+
+		}
+
+		// Asterix (*)
+		/*
+		i + span + span{
+			display: none;
+		}
+		*/
+
+		input{
+			visibility: hidden;
+			position: absolute;
+
+			margin: 0;
+			padding: 0;
+			border: none;
+
+			&:checked + i {
+				background-color: transparentize($gray-100, 80%);
+			}
+
+			&:checked + span + i:before,
+			&:checked + i:before{
+				background-color: transparentize($white, 80%);
+			}
+			&:checked + span + i:after,
+			&:checked + i:after{
+				opacity: 1;
+				transform: rotate(-9deg) scale3d(1, 1, 1);
+			}
+		}
+	} // label
+}
+/**
+	Runde Radiobuttons:
+*/
+
+.fancy-form .radio label i{
+	&, &:before, &:after{
+		border-radius: 100%;
+	}
+}
+
+
+//
+// JavaScript-/Client-Validierung (Tooltips)
+//
+.gtooltip.gvalidation-error-tip {
+	background-color: $app-faforms-jsva-bgcolor !important;
+	opacity: 1 !important;
+	border: none !important;
+	left: 50% !important;
+	transform: translate3d(-50%, 0, 0);
+	top: auto !important;
+	bottom: 100% !important;
+	min-width: 240px !important;
+	max-width: 300px !important;
+	box-shadow: none !important;
+}
+.gvalidation-error-tip .gtooltip-arrow-border {
+	border: none !important;
+}
+.gvalidation-error-tip .gtooltip-arrow {
+	border-color: $app-faforms-jsva-bgcolor transparent transparent transparent !important;
+}
+.gvalidation-error-tip .gtooltip-close {
+	margin: 3px 3px 0 0 !important;
+}
+.gvalidation-error-tip .gtooltip-content {
+	padding: 5px 18px 5px 18px !important;
+}
+.gvalidation-error-text {
+	color: #ffffff !important;
+	font-size: 0.85rem !important;
+}
+
+
+

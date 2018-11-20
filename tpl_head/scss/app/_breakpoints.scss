@@ -1,0 +1,17 @@
+.breakpoints {
+    position: fixed;
+    z-index: 10000;
+    top: 0;
+    left: 0;
+    color: red;
+
+    > div {display: none};
+  
+    @each $breakpoint, $size in $grid-breakpoints {
+        @media(min-width: $size) {
+            .#{$breakpoint} {
+                display: block;
+                }
+        }
+    }
+}

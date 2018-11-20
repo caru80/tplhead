@@ -1,0 +1,10 @@
+
+.googlemap {
+    height: $app-googlemap-height-sm;
+    @include media-breakpoint-between(sm, md) {
+        height: $app-googlemap-height;
+    }
+    @include media-breakpoint-up(lg) {
+        height: $app-googlemap-height-lg;
+    }
+}

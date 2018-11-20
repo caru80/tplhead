@@ -1,0 +1,1675 @@
+//
+// Bootstrap
+//
+@import "bootstrap/bootstrap";
+
+
+//
+// Custom Variablen + Mixins
+//
+
+// -- Farben
+$trinary: #1f3c42 !default;
+$secondary-light: lighten($secondary, 10%) !default;
+
+$primary-light:  lighten($primary, 10%) !default;
+$primary-dark:   darken($primary, 10%) !default;
+
+// -- Seitenkopf
+$site-header-height: 	165px !default;
+$site-header-height-sm: 135px !default;
+$site-header-height-xs: 66px !default;
+
+// <h1>
+@mixin heading-one() {
+	@include hyphenate();
+	@include make-font-size($xs: 1.7rem, $md: 2.2rem, $lg: 2.6rem);
+
+	color: $primary;
+	font-weight: 500;
+	font-family: $font-family-sans-serif;
+	margin: 0 0 2rem 0;
+	text-align: center;
+	letter-spacing: 0.025em;
+
+	// Untertitel
+	span,
+	+ h1 {
+		@include heading-subheading();
+		padding-top: 0.15em;
+		color: lighten($secondary, 10%);
+	}
+	span {
+		display: block;
+	}
+	+ h1 {
+		margin-top: -2rem;
+		margin-bottom: 2rem;
+		text-align: center;
+	}
+}
+
+@mixin heading-subheading() {
+	@include make-font-size($xs: 1.9rem, $md: 2.4rem, $lg: 2.8rem);
+	font-weight: 300;
+}
+
+@mixin heading-two() {
+	@include make-font-size($xs: 1.6rem, $md: 1.8rem, $lg: 2.1rem);
+	font-weight: 400;
+}
+@mixin section-heading-two() {
+	@include heading-two();
+	span {
+		@include make-font-size($xs: 1.8rem, $md: 2.0rem, $lg: 2.3rem);
+		display: block;
+		padding-top: 0.15em;
+		font-weight: 300;
+		color: lighten($secondary, 10%);
+	}
+}
+
+
+//
+// Font Awesome
+//
+@import "fontawesome/fontawesome";
+@import "fontawesome/regular";
+@import "fontawesome/solid";
+@import "fontawesome/brands";
+
+
+//
+// Fonts
+//
+@import "font_roboto";
+
+
+//
+// App
+//
+@import "app/app";
+
+
+//
+// Sonstiges
+//
+@import "modintro_videos";
+
+
+//
+// Menüs Reset
+//
+.nav,
+.ptmenu .nav-first {
+	&, ul {
+		list-style-type: none;
+	}
+	&, ul, li {
+		margin: 0;
+		padding: 0;
+	}
+}
+
+
+//
+// Seitenkopf Allgemein
+//
+#site-header {
+	height: $site-header-height-xs;
+	background-color: #ffffff;
+
+	position: fixed;
+	z-index: 200;
+	top: 0;
+	left: 0;
+	width: 100%;
+
+	border-bottom: 1px solid #eeeeee;
+	transition: border-color 0.3s ease;
+	&.active {
+		border-bottom-color: #25464d;
+	}
+}
+
+.navgrid .navgrid-slide {
+	margin-top: $site-header-height-xs;
+}
+
+#site-header .site-header-inner {
+	height: 100%;
+	display: block;
+	position: relative;
+	z-index: 10;
+	background-color: #ffffff;
+}
+#site-header #site-logo { // = <picture>
+	img {height: 100%;}
+}
+
+
+//
+// Seitenkopf Minimal
+//
+@include media-breakpoint-down(md) {
+	#site-header #site-logo img {
+		float: right;
+	}
+	#site-header .site-header-inner {
+		@include make-container();
+		padding: 15px 15px;
+	}
+
+	// Wrapper für „NavGrid” Kontrolle (Menü-Knopf) etc.
+	#site-header .header-controls {
+
+		transform: translate3d(0, 0, 0);
+
+		overflow: hidden;
+		position: absolute;
+		z-index: 20;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 130px;
+		padding: 0 15px;
+		background-color: $primary;
+		border-radius: 0 ($site-header-height-sm / 2) ($site-header-height-sm / 2) 0;
+		transition: width 0.3s ease, border-radius 0.3s ease, background-color 0.3s ease;
+
+	}
+	#site-header.active .header-controls {
+		overflow: visible;
+		width: $app-navgrid-slide-width;
+		max-width: 100%;
+		border-radius: 0;
+		background-color: $secondary;
+	}
+
+	#site-header .header-controls .btn-menu,
+	#site-header .header-controls .quicknav {
+		position: absolute;
+		top: 50%;
+		transform: translate3d(0, -50%, 0);
+	}
+	#site-header .header-controls .btn-menu {
+		z-index: 2;
+	}
+	#site-header .header-controls .quicknav {
+		z-index: 1;
+		left: 100%;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		transition-delay: 0.2s;
+		text-align: right;
+	}
+	#site-header.active .header-controls .quicknav {
+		right: 15px;
+		left: 15px;
+		opacity: 1;
+	}
+
+	#site-header .mainmenu {
+		display: none !important;
+		visibility: hidden !important;
+	}
+
+	.ptslider-layout:not(.preview) { // Heroslider
+		padding-top: $site-header-height-xs;
+	}
+	main {
+		padding-top: $site-header-height-xs;
+	}
+	.ptslider-layout + main {
+		padding-top: 0px;
+	}
+}
+
+
+//
+// Seitenkopf für höhere Auflösungen
+// 
+@include media-breakpoint-up(lg) {
+	
+	#site-header {
+		height: $site-header-height;
+		transition: height 0.3s ease;
+		
+		transform: translate3d(0, 0, 0);
+	}
+	
+	#site-header.offset,
+	#site-header.active {
+		height: $site-header-height-sm;
+	}
+	
+	#site-header .site-header-inner {
+		height: 100%;
+		padding: 40px 40px 0px;
+	}
+
+	#site-header .header-controls {
+		display: none;
+	}
+
+	#site-header #site-logo { // = <picture>
+		img {height: 50%;}
+	}
+}
+
+
+//
+// Protoslider und <main>
+//
+@include media-breakpoint-up(lg) {
+	.ptslider-layout:not(.preview) {
+		padding-top: $site-header-height;
+	}
+	main {
+		padding-top: $site-header-height;
+	}
+	.ptslider-layout + main {
+		padding-top: 0px;
+	}
+}
+
+
+
+
+//
+// Menüs im Seitenkopf
+//
+#site-header .mainmenu,
+#site-header .servicemenu {
+	display: none;
+	visibility: hidden;
+}
+@include media-breakpoint-up(lg) {
+	#site-header .mainmenu,
+	#site-header .servicemenu {
+		@import "protomenu/desktop";
+
+		position: absolute;
+		display: block;
+		visibility: visible;
+	}
+
+	#site-header .mainmenu {
+		z-index: 10;
+		right: 0;
+		bottom: 0;
+		width: 100%;
+	}
+
+	#site-header .servicemenu {
+		z-index: 20;
+		top: 0;
+		right: 0;
+	}
+}	
+
+
+//
+// Hauptmenü Desktop
+//
+@include media-breakpoint-up(lg) {
+	#site-header .mainmenu .nav-wrapper {
+		padding-right: 1rem;
+	}
+
+	// Hyperlinks 1. Ebene
+	#site-header .mainmenu ul.nav-first > li > .nav-item .item-label {
+		@include hyphenate();
+		text-transform: uppercase;
+		font-weight: 400;
+		font-size: 1rem;
+	}
+
+	// Ein Container in einem Mega-Dropdown
+	.ptmenu .nav-child .container {
+		@include media-breakpoint-up(xl) {
+			max-width: map-get($container-max-widths, "xl");
+		}
+	}
+
+}
+
+
+//
+// „Servicemenü” Desktop
+//
+@include media-breakpoint-up(lg) {
+	#site-header .servicemenu {
+		padding: 0 1rem 0 2rem;
+		background-color: $secondary;
+	}
+
+	// „we care.” Hintergrund
+	#site-header .servicemenu .sparung {
+		position: absolute;
+		z-index: 200;
+		top: 0;
+		left: -78px;
+		width: 100px;
+		height: 100%;
+
+		background-image: 	radial-gradient(circle at 5px 50%, #fff 0px, #fff 40px, transparent 41px, transparent 43px, #fff 44px, #fff 47px, transparent 48px), 
+							radial-gradient(circle at 0px 50%, transparent 40px, #00953b 44px, #00953b 48px, transparent 49px);
+
+		background-position: 46px center;
+		background-repeat: no-repeat;
+	}
+
+	// „we care.” Text
+	#site-header .servicemenu .slogan {
+		position: absolute;
+		z-index: 201;
+		left: -1rem;
+		top: 50%;
+		transform: translate3d(-75%, -50%, 0);
+		color: $primary;
+		font-weight: 500;
+		font-size: 1.3em;
+		font-style: italic;
+		white-space: nowrap;
+	}
+
+	#site-header .servicemenu .ptmenu{
+		font-size: 0.9rem;
+		margin-left: -15px;
+	}
+	#site-header .servicemenu .ptmenu ul li a.nav-item {
+		color: #ffffff;
+	}
+
+	// Aktive Sprache
+	#site-header .servicemenu .nav-item.current-language {
+		img {
+			height: 1em;
+			vertical-align: baseline;
+			margin: 0 0.05em -0.1em 0;
+		}
+	}
+
+}
+
+
+//
+// Suchleiste
+//
+#site-header .site-searchbar {
+	position: absolute;
+	z-index: -1;
+	left: 0;
+	top: 100%;
+
+	width: 100%;
+	max-width: $app-navgrid-slide-width;
+	@include media-breakpoint-up(lg) {
+		max-width: 100%;
+	}
+
+	transform: translate3d(0,-100%,0);
+	transition: transform 0.3s ease;
+	background-color: #21444b;
+
+	&.in{
+		transform: translate3d(0,0,0);
+		box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+	}
+}
+#site-header .site-searchbar .site-searchbar-inner{
+	@include media-breakpoint-up(lg) {
+		@include make-container();
+		max-width: map-get($container-max-widths, "md");
+	}
+}
+
+
+//
+// Mobile-Navigation
+//
+@include media-breakpoint-down(md) {
+	#site-header .quicknav {
+		@import "protomenu/quicknav";
+	}
+	
+	.navgrid .navgrid-slide {
+		@import "protomenu/mobile";
+	}
+}
+
+
+
+//
+// Footer
+//
+#site-footer {
+	background-color: $secondary;
+}
+
+//
+// Menü im Footer
+//
+// Ja, das ist gruselig, weil unsere Footer nun mal gruselig sind.
+//
+#site-footer .footermenu {
+	display: none;
+}
+@include media-breakpoint-up(md) {
+
+	#site-footer .footermenu {
+		display: block;
+	}
+
+	#site-footer .footermenu ul {
+		margin: 0 -15px;
+		li {
+			padding: 0 15px;
+		}
+	}
+
+	#site-footer .footermenu ul.nav-first {
+		@include clearfix();
+	}
+	#site-footer .footermenu ul.nav-first > li {
+		display: block;
+		width: 20%;
+
+		&.deeper {
+			float: left;
+		}
+		&:not(.deeper) {
+			float: right;
+			clear: right;
+		}
+	}
+	
+	// Produkte 
+	#site-footer .footermenu ul.nav-first > li.produkte {
+		width: 40%;
+		li.deeper {
+			float: left;
+			width: 50%;
+			&:nth-of-type(3n) {
+				clear: left;
+			}
+		}
+	}
+
+	#site-footer .footermenu li {
+		a {
+			@include hyphenate();
+			display: block;
+			padding: 0.35em 0;
+			color: #ffffff;
+			line-height: 1.2em;
+		}
+		&.deeper {
+			margin-bottom: 1em;
+		}
+	}
+	#site-footer .footermenu ul.nav-first > li {
+		> a {
+			color: lighten($primary, 5%);
+			font-weight: 500;
+		}
+		&.deeper .deeper > a {
+			font-weight: 500;
+			color: #b0dec2;
+		}
+	}
+}
+
+
+
+//
+// mod_breadcrumbs Sticky
+//
+.breadcrumbs {
+	display: none;
+}
+@include media-breakpoint-up(md) {
+	.breadcrumbs {
+		display: block;
+		font-size: 0.9rem;
+		line-height: 1;
+
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		z-index: 100;
+		border-top: 1px solid #eeeeee;
+
+		ol {
+			transition: background-color 0.3s ease;
+		}
+
+		&.offset { // kommt von $app.stickyObserver
+			position: relative;
+			z-index: 1;
+			ol {
+				background-color: $secondary;
+				li {
+					color: $gray-200;
+				}
+			}
+		}
+	}
+}
+
+
+//
+// Headings
+//
+
+// -- Sonstige
+body > h1 { // Für Joomla Backen: Beitrag bearbeiten
+	@include heading-one(); 
+}
+
+h1 {
+	color: $primary;
+}
+h2 {
+	color: darken($primary, 2%);
+	font-weight: 300;
+	margin-top: 1.5rem; //  $headings-margin-bottom;
+}
+h3, h4 {
+	color: $secondary;
+	font-weight: 400;
+}
+h5 {
+	font-weight: 400;
+}
+h6 {
+	font-weight: 600;
+}
+
+
+main .modsection header.section,
+.item-page .item-page-sections header.section,
+.page-header 
+{
+	font-size: 1rem;
+	text-align: center;
+
+	h1 {
+		@include heading-one();
+	}
+
+	+ .page-header h1,
+	+ .page-header h2,
+	+ div .page-header h1 {
+		// -- Wenn z.B. Titel von Menü (Seitentitel) und Titel von Kategorie, oder Beitrag, angezeigt wird.
+		@include heading-two();
+		margin-top: -0.6em;
+		&:before{display: none;} // Kein .slashy;
+	}
+
+	+ .page-header, // Seitenüberschrift (Menüeintrag) + Beitrags-/Blog-/Etc.-Titel 
+	+ div > .page-header{ // Der Titel eines Beitrags in einer Kategorie, wenn im Menüeintrag „Seitenüberschift anzeigen” eingeschaltet ist.
+		padding-top: 0;
+	}
+}
+
+main .modsection header.section h2 {
+	@include section-heading-two();
+	margin-top: 0;
+	margin-bottom: 1.25rem;
+}
+
+.mod-intro .mod-intro-introtext,
+.item-page [itemprop="articleBody"],
+.category-desc {
+	> h1,
+	> section h1 {
+		@include heading-one();
+	}
+}
+
+.moduletable > h2:first-of-type {
+	color: $primary;
+	margin: 0 0 1.5rem 0;
+	font-weight: 400;
+}
+
+.mod-intro .item .item-header h4,
+.blog .item .item-header h4,
+.blog .item .page-header h4,
+.blog-featured .item .item-header h4,
+.blog-featured .item .page-header h4 
+{
+	@include make-font-size(1.1rem, 1.2rem, 1.3rem);
+	@include hyphenate();
+
+	font-weight: 400;
+	@include media-breakpoint-up(sm) {
+		font-weight: 300;
+	}
+	color: $primary;
+	margin: 0 0 0.75em 0;
+	text-align: left;
+	line-height: 1.3em;
+
+	a:hover {
+		color: $primary-light;
+		text-decoration: none;
+	}
+}
+
+
+//
+// Sections in <main>
+//
+main .modsection,
+.component > .item-page:not(.empty-body) .component-inner,
+.component > .blog .component-inner,
+.component > .blog-featured .component-inner,
+.component > .search .component-inner,
+#site-footer {
+	position: relative;
+	padding-top: 2rem;
+	padding-bottom: 2rem;
+}
+
+main .modsection:not(.no-container) .section-inner,
+#site-footer .site-footer-inner,
+.component-inner // z.B.: .component .blog .component-inner.blog-inner (oder auch: .item-page .component-inner.item-page-inner)
+{
+	@include make-container();
+}
+
+main .modsection:not(.wide) .section-inner,
+#site-footer .site-footer-inner,
+.component-inner // z.B.: .component .blog .component-inner.blog-inner
+{
+	@include media-breakpoint-up(xl) {
+		max-width: map-get($container-max-widths, "xl");
+	}
+	@include media-breakpoint-up(xxl) {
+		max-width: map-get($container-max-widths, "xxl");
+	}
+}
+
+// -- Schmale Section
+main .modsection.slim .section-inner {
+	@include media-breakpoint-up(xl) {
+		max-width: map-get($container-max-widths, "xl");
+	}
+}
+
+// -- Section mit alternierdender Hintergrundfarbe
+main .modsection.alt {
+	background: $secondary-light linear-gradient(0deg, #436c76, #254850) top left repeat;
+	header.section h1,
+	header.section h2 {
+		&, span{color: $gray-100;}
+	}
+	.section-inner {
+		&, h1, h2, h3, h4, h5, h6 {color: $gray-100;}
+	}
+}
+
+// -- Blog-Sections (section.items-leading & section.items-intro, enthalten: .items-row > .item-column > .item)
+main .blog:not(.ordered) > section:first-of-type:not(.alt) {
+	padding-top: 0;
+}
+
+// -- Item-Page Sections (Custom-Fields...)
+.item-page .fields-container > dd section:not(.alt) {
+	padding-top: 0;
+}
+
+
+//
+// .mod-intro
+//
+.mod-intro .mod-intro-readmore {
+	text-align: center;
+}
+.mod-intro .mod-intro-filters {
+	margin-bottom: 1.5rem;
+}
+.mod-intro .mod-intro-items-list {
+	position: relative;
+	.mod-intro-loading {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate3d(-50%,-50%,0);
+	}
+}
+
+
+//
+// .mod-intro.blog-layout + Blog Komponente (mit Override)
+//
+// Hier fehlt noch .blog-featured
+//
+$blog-item-padding-horizontal: 	1.25rem !default;
+$blog-item-padding-vertical: 	1rem !default;
+
+// -- Einleitungstext
+/*
+.mod-intro.blog-layout .mod-intro-introtext,
+.blog .category-desc {}
+*/
+
+
+// -- Items Grid
+.mod-intro.blog-layout .list-row,
+.blog .items-row {
+	@include make-row();
+}
+.mod-intro.blog-layout .list-row .item-column,
+.blog .items-row .item-column {
+	@include make-col-ready();
+	@include make-col(12);
+	@include media-breakpoint-up(sm) {
+		@include make-col(6);
+	}
+	@include media-breakpoint-up(lg) {
+		@include make-col(4);
+	}
+	margin-bottom: $grid-gutter-width;
+}
+
+// HEAD. Sortierter Blog – Hyperlink: Nur (Kategorie) „XY” anzeigen
+.blog.ordered .blog-section .readmore.show-category {
+	text-align: center;
+	padding-bottom: 2rem;
+}
+// -- Alternierender Hintergrund der Sections
+.blog.ordered .blog-section:nth-of-type(2n+1) {
+	@extend .alt; // = „alternate”
+	.readmore.show-category a { // Nur XY anzeigen...
+		color: #ffffff;
+	}
+}
+
+// -- Sprungnavigation in .blog.ordered
+.blog.ordered .blog-jumpnav {
+	display: block;
+
+	margin-top: -2rem;
+	margin-bottom: 1rem;
+
+	position: -webkit-sticky;
+	position: sticky;
+	z-index: 10;
+	top: $site-header-height-xs - 1px;
+
+	background-color: #ffffff;
+	padding: 0.75em 0;
+	transition: background-color 0.3s linear;
+
+	&.sticked {
+		background-color: $secondary;
+		a {
+			color: #ffffff;
+		}
+	}
+}
+
+.blog.ordered .blog-jumpnav .jumpnav-inner {
+	@include make-container();
+	@include media-breakpoint-up(xl) {
+		max-width: map-get($container-max-widths, "xl");
+	}
+	@include media-breakpoint-up(xxl) {
+		max-width: map-get($container-max-widths, "xxl");
+	}
+}
+
+.blog.ordered .blog-jumpnav .jumpnav-list {
+	display: flex;
+	li {
+		padding-right: 1.25em;
+		&:last-of-type {
+			padding-right: 0;
+		}
+	}
+}
+@include media-breakpoint-up(lg) {
+	.blog.ordered .blog-jumpnav {
+		top: $site-header-height-sm; // - 1px;
+	}
+}
+
+
+// -- Items (siehe auch weiter unten: Items als Hyperlink)
+.mod-intro.blog-layout .item,
+.blog .item {
+	display: block;
+	position: relative;
+	height: 100%;
+	border: 1px solid $primary; //$gray-400;
+	border-bottom-width: 3px;
+	background-color: $white;
+	transition: border-color 0.2s ease;
+}
+
+.mod-intro.blog-layout .item-header,
+.blog .item .item-header,
+.blog .item .page-header {
+	padding: $blog-item-padding-vertical $blog-item-padding-horizontal;
+	background-color: $primary;
+	position: relative;
+	transition: background-color 0.2s ease;
+	h3, h4 {
+		@include hyphenate();
+		padding-right: $blog-item-padding-horizontal * 1.25;
+		margin: 0;
+		min-height: 2.6em;
+		&, a{color: #ffffff;}
+	}
+}
+
+
+.mod-intro.blog-layout .item .item-image-intro,
+.mod-intro.blog-layout .item .ptslider-layout,
+.blog .item .item-image,
+.blog .item .ptslider-layout {
+	position: relative;
+}
+.mod-intro .item .item-image-intro img,
+.blog .item .item-image img {
+	width: 100%;
+}
+
+
+.mod-intro.blog-layout .item .item-infoblock,
+.blog .item .article-info,
+.item-page .article-info {
+	padding: $blog-item-padding-vertical $blog-item-padding-horizontal 0 $blog-item-padding-horizontal;
+	font-size: 0.9em;
+	color: $gray-600;
+	dl, dd {
+		margin: 0;
+	}
+}
+.item-page .article-info {
+	padding: 0;
+}
+
+.mod-intro.blog-layout .item .item-introtext,
+.blog .item .item-introtext {
+	@include hyphenate();
+	padding: $blog-item-padding-vertical $blog-item-padding-horizontal;
+	color: $gray-700;
+
+	p {
+		margin: 0;
+		+ p {
+			margin-top: 1em;
+		}
+	}
+}
+
+
+// Anker-Items (Items als Hyperlinks)
+.mod-intro.blog-layout a.item,
+.blog a.item {
+	&:hover {
+		text-decoration: none;
+	}
+	&:active {
+		text-decoration: none;
+		border-color: $secondary;
+	}
+	@include media-breakpoint-up(md) {
+		&:hover {
+			border-color: $secondary;
+		}
+	}
+
+	.item-header::after,
+	.page-header::after {
+		@extend .fas;
+		content: '#{$fa-var-angle-right}';
+		display: block;
+		position: absolute;
+		top: 0.5em;
+		right: $blog-item-padding-horizontal;
+		color: #53bd7d;
+		font-size: 1.75em;
+		transform: translate3d(0,0,0);
+		transition: transform 0.2s ease-out, background-color 0.2s ease;
+	}
+	&:hover .item-header,
+	&:hover .page-header {
+		background-color: $secondary;
+		&::after {
+			transform: scale3d(1.3, 1.3, 1.3);
+			color: $white;
+		}
+	}
+
+}
+
+// -- Pagination
+.pagination {
+	justify-content: center; // .pagination ist ne Flexbox...
+	li:not(.disabled) a
+	{
+		color: $link-color; // Sind sonst grau, muss irgendwo ein Bug sein.
+	}
+	li.active a{
+		font-weight: 600;
+	}
+}
+
+
+
+//
+// Hero-Artikel (Startseite: Anwendungsbereiche) 
+//
+.mod-intro.intro-heroarticles .item {
+	display: block;
+	position: relative;
+	z-index: 1;
+	padding-top: 100%;
+	background-color: $gray-400;
+	margin-bottom: $grid-gutter-width;
+	color: #ffffff;
+	overflow: hidden;
+}
+
+.mod-intro.intro-heroarticles .item .item-image-intro, 
+.mod-intro.intro-heroarticles .item .ptslider-layout {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+}
+.mod-intro.intro-heroarticles .item .item-image-intro, 
+.mod-intro.intro-heroarticles .item .ptslider-layout {
+	z-index: 1;
+}
+
+.mod-intro.intro-heroarticles .item .ptslider-layout .ptslider {
+	&, .ptslider-wrapper, .ptslider-item {
+		height: 100%;
+	}
+	.ptslider-item {
+		background-position: center;
+	}
+}
+
+.mod-intro.intro-heroarticles .item .item-image-intro img {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+
+	width: auto;
+	height: 100%;
+	min-width: 100%;
+	min-height: 100%;
+
+	transform: translate3d(-50%,-50%,0);
+}
+
+.mod-intro.intro-heroarticles .item header,
+.mod-intro.intro-heroarticles .item .item-introtext {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	right: 0;
+	padding: 0 0.5em;
+	transform: translate3d(0, -50%, 0);
+
+	@include media-breakpoint-up(md) {
+		padding: 0 1.5em;
+	}
+}
+
+.mod-intro.intro-heroarticles .item header {
+	z-index: 9;
+
+	h4 {
+		@include hyphenate();
+		@include make-font-size($xs: 1.1em, $sm: 1.7em, $lg: 2.0em, $xl: 2.2em);
+		text-align: center;
+		font-weight: 500;
+		color: #ffffff;
+		margin: 0;
+		@include media-breakpoint-up(sm) {
+			font-weight: 300;
+		}
+	}
+}
+
+.mod-intro.intro-heroarticles .item .item-introtext {
+	@include make-font-size($xl: 1.2em);
+	z-index: 12;
+	transform: translate3d(0, -40%, 0);
+	opacity: 0;
+}
+
+// -- Die Kreise... 
+.mod-intro.intro-heroarticles .item .circle {
+	position: absolute;
+	z-index: 10;
+	left: 0;
+	width: 100%;
+	height: 50%;
+	overflow: hidden;
+
+	&.circle-top {
+		top: 0;
+	}
+	&.circle-bottom {
+		bottom: 0;
+	}
+}
+
+.mod-intro.intro-heroarticles .item .circle::before {
+	position: absolute;
+	left: 50%;
+	height: 204%;
+	width: 104%;
+
+	display: block;
+	box-sizing: content-box;
+	content: '';
+
+	background-color: transparent;
+	border-width: 500px;
+	border-style: solid;
+	border-radius: 100%;
+
+	transition: border-color 0.3s 0.4s ease, width 0.6s ease, height 0.6s ease;
+}
+.mod-intro.intro-heroarticles .item .circle.circle-top::before {
+	top: 100%;
+	transform: translate3d(-50%, -50%, 0);
+	border-color: transparentize($primary, 40%);
+}
+.mod-intro.intro-heroarticles .item .circle.circle-bottom::before {
+	bottom: 100%;
+	border-color: transparentize($secondary, 40%);
+	transform: translate3d(-50%, 50%, 0);
+}
+
+@include media-breakpoint-down(sm) {
+	.mod-intro.intro-heroarticles .item:hover .circle::before {
+		border-color: transparentize($primary, 20%);
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.mod-intro.intro-heroarticles .item:hover .circle::before {
+		transition: border-color 0.0s ease, width 0.4s ease, height 0.4s ease;
+		width: 0;
+		height: 0;
+		border-color: transparentize($secondary, 10%);
+	}
+
+	.mod-intro.intro-heroarticles .item:hover .item-introtext {
+		@include hyphenate();
+		opacity: 1.0;
+		transform: translate3d(0, -50%, 0);
+		transition: opacity 0.4s 0.3s ease, transform 0.4s 0.3s ease;
+	}
+}
+
+
+
+//
+// Produkte-Section Home
+//
+.modsection.produkte {
+	padding-bottom: 0;
+	img {
+		width: 100%;
+	}
+}
+
+.modsection.produkte .moduletable {
+	position: relative;
+}
+
+.modsection.produkte .section-menu {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+.modsection.produkte .section-menu .nav-wrapper {
+	@include make-container();
+	@include make-container-max-widths();
+}
+
+.modsection.produkte .section-menu ul {
+	text-align: center;
+	li {
+		display: inline;
+	}
+
+	li a {
+		@extend .btn;
+		margin: 0 0.5em;
+		&:after {
+			@extend .fas;
+			content: '#{$fa-var-angle-right}';
+		}
+	}
+	li:not(:first-of-type) a {
+		@extend .btn-primary;
+	}
+	
+	li:first-of-type a {
+		@extend .btn-secondary;
+	}
+}
+
+
+//
+// News-Section Home
+//
+.modsection.infosection .section-row {
+	@include make-row();
+}
+.modsection.infosection .section-row .section-col {
+	@include make-col-ready();
+
+	@include media-breakpoint-up(md) {
+		@include make-col(6);
+	}
+}
+
+//
+// News-Modul
+//
+.moduletable.news {
+	background-color: $secondary;
+	padding: 2rem;
+}
+.moduletable.news > h2 {
+	color: $primary-light;
+}
+
+.mod-intro.news {}
+.mod-intro.news .item,
+.mod-intro.news .mod-intro-readmore {
+	color: #ffffff;
+	border-top: 1px solid #ffffff;
+	padding: 1rem 0;
+}
+
+.mod-intro.news .item .item-header a{
+	color: $primary-light;
+	&:hover,
+	&:active {
+		color: lighten($primary-light, 10%);
+	}
+}
+
+.mod-intro.news .item .item-image-intro,
+.mod-intro.news .item .ptslider-layout {
+	& + .item-introtext {
+		padding-top: 0.75em;
+	}
+}
+.mod-intro.news .item .readmore{
+	text-align: right;
+}
+
+
+//
+// Kontakt-Section
+//
+
+// -- Section mit Grid
+.modsection.contact .section-row {
+	@include make-row();
+}
+.modsection.contact .section-row .section-col {
+	@include make-col-ready();
+	@include media-breakpoint-down(sm) {
+		@include make-col(12);
+	}
+	@include media-breakpoint-up(md) {
+		&.col0 {
+			@include make-col(4);
+		}
+		&.col1 {
+			@include make-col(8);
+		}
+	}
+}
+// -- Adresse
+.modsection.contact .col0 .moduletable { 
+	line-height: 1.75em;
+
+	strong {
+		font-size: 1.2em; 
+		font-weight: 500;
+	}
+}
+
+
+//
+// Anfahrt-Section
+//
+.modsection.directions {
+	padding-bottom: 0;
+}
+
+
+//
+// Gebäude-Section auf Home (Die Revolution des Webdesign)
+//
+.modsection.the-revolution .we-care{
+	bottom: 2rem; 
+}
+
+
+//
+// .item-page
+//
+.item-page .component-inner {
+
+}
+
+.item-page .page-header {
+	display: none !important;
+	visibility: hidden !important;
+}
+
+.item-page [itemprop="articleBody"] {
+	strong, b {
+		font-weight: 500;
+	}
+}
+
+// -- Item-Page mit 2 Columns
+.item-page [itemprop="articleBody"] .item-content-row {
+	@include make-row();
+}
+.item-page [itemprop="articleBody"] .item-content-row .item-content-column {
+	@include make-col-ready();
+	&.left {
+		@include make-col(12);
+		@include media-breakpoint-up(lg) {
+			@include make-col(7);
+		}
+	}
+	&.right {
+		@include make-col(12);
+		margin-top: 2rem;
+		@include media-breakpoint-up(lg) {
+			@include make-col(5);
+			margin-top: 0;
+		}
+	}
+}
+
+.item-page [itemprop="articleBody"] ul,
+.item-page .item-page-section .section-content > ul,
+.category-desc ul {
+	list-style-type: none;
+	padding-left: 2px;
+	margin-bottom: 1em;
+
+	li{
+		position: relative;
+		padding-left: 0.9em;
+
+		&:before{
+			content: '';
+			position: absolute;
+			left: 0em;
+			top: 0.5em;
+			display: block;
+			width: 0.5em;
+			height: 0.5em;
+			background-color: $primary;
+		}
+
+		+ li{
+			margin-top: 0.6em;
+		}
+
+		ul li:before{
+			background-color: lighten($primary, 8%);
+		}
+	}
+	
+	ul {
+		margin-top: 0.75em;
+	}
+
+	&.columns {
+		display: flex;
+		flex-wrap: wrap;
+		margin-bottom: 0.4em;
+		li {
+			flex-basis: 45%;
+			@include media-breakpoint-up(sm) {
+				flex-basis: 30%;
+			}
+			margin: 0 1em 0.6em 0;
+		}
+	}
+
+}
+
+
+
+// Accordion, rechte Spalte (Cards: https://getbootstrap.com/docs/4.1/components/collapse/#accordion-example)
+.item-page .item-page-accordion {
+	border-radius: $card-border-radius;
+	overflow: hidden;
+}
+
+// Accrodion Überschrift
+.item-page .item-page-accordion > h4 {
+	color: lighten($secondary, 10%);
+	margin-bottom: 0.5em;
+}
+
+.item-page .item-page-accordion .card.alt {
+	.card-header {
+		background-color: $secondary;
+	}
+	.card-body {
+		background-color: $gray-400;
+	}
+}
+
+.item-page .item-page-accordion .card {
+
+	.card-header[aria-expanded="false"] {
+		cursor: pointer;
+		&:hover {
+			background-color: $primary-light;
+		}
+	}
+
+	&.alt .card-header[aria-expanded="false"]:hover {
+		background-color: $secondary-light;
+	}
+}
+
+
+.item-page-accordion .accordion + * {
+	margin-top: 2rem;
+}
+
+.item-page .item-page-accordion .card-header {
+	position: relative;
+	> * {
+		color: #ffffff;
+		margin: 0;
+		padding-right: $card-spacer-x * 2;
+		&:after {
+			@extend .fas;
+			content: '#{$fa-var-angle-down}';
+			position: absolute;
+			right: $card-spacer-x;
+		}
+	}
+	&:not([aria-expanded="false"]) > *:after {
+		display: none;
+	}
+}
+
+// -- .item-page Custom Fields Container
+.item-page .fields-container {
+	margin: 0;
+	dd {
+		margin: 0;
+	}
+}
+
+// Komplettes Beitragsbild
+.item-page .item-image {
+	img {
+		max-width: 100%;
+	}
+}
+// Beitragsbild in rechter Spalte
+.item-page .item-content-column.right .item-image{
+	margin-bottom: 2rem;
+}
+
+
+// -- .item-page CWGallery
+.cwgallery {
+	margin: 0 !important;
+}
+.cwgallery .calbum {
+	@include make-row();
+	padding: 0 !important;
+
+	> div {
+		@include make-col-ready();
+		@include make-col(6);
+		margin-bottom: $grid-gutter-width;
+		@include media-breakpoint-up(md) {
+			@include make-col(3);
+		}
+		@include media-breakpoint-up(lg) {
+			//@include make-col(2);
+			flex-basis: 20%;
+			max-width: 20%;
+		}
+	}
+}
+.cwgallery .calbum > div a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+
+	border: 1px solid $secondary-light;
+
+	&::before {
+		@extend .fas;
+		content: '#{$fa-var-search-plus}';
+
+		position: absolute;
+		z-index: 2;
+		
+		top: 50%;
+		left: 50%;
+		transform: translate3d(-50%, -50%, 0);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+
+		font-size: 3rem;
+		color: #ffffff;
+	}
+	&:hover::before {
+		opacity: 0.9;
+	}
+
+	img {
+		width: 100%;
+		transition: transform 0.4s ease;
+	}
+	&:hover img {
+		transform: scale3d(1.06, 1.06, 1.06);
+	}
+}
+
+
+
+//
+// We care.
+//
+.we-care {
+	border-bottom: 3px solid $primary;
+	text-align: right;
+}
+.modsection .we-care {
+	position: absolute;
+	bottom: 0px;
+	right: 50px;
+	left: 0;
+}
+
+.we-care span {
+	@include make-font-size(2rem, $lg: 2.5rem, $xl: 3rem);
+	
+	color: $primary;
+	font-weight: 500;
+	
+	font-style: italic;
+	line-height: 1.25em;
+}
+
+
+/* 
+	Suchmodul
+	mod_search
+*/
+.moduletable.search {
+
+	.search{padding: 0;}
+	line-height: 0;
+	text-align: center;
+	font-size: 1rem;
+	
+	form{
+		@include make-font-size(1.3em, 1.3em, 1.4em, $xl: 1.6em);
+	}
+
+	.input-wrapper{
+		width: 100%;
+		padding: 0;
+		margin: 0;
+		font-size: inherit;
+		position: relative;
+	}
+
+	input, button, a{
+		border: 0;
+		padding: 0.5em;
+		margin: 0;
+		height: 2em; // Das ist wichtig für WebKit Browser
+		font-weight: normal;
+		font-size: inherit;
+		line-height: 1em;
+	}
+	input{
+		margin-right: 4em;
+		width: 100%;
+		box-shadow: none !important;
+		background-color: $gray-100;
+	}
+	.search-buttons{
+		line-height: 0;
+		position: absolute;
+		top: 0;
+		right: 0;
+		height: 100%;
+	}
+	.search-buttons button,
+	.search-buttons a{
+		display: inline-block;
+		cursor: pointer;
+		width: 2em;
+		color: #ffffff;
+		border-radius: 0;
+		background-color: $primary;
+		&:hover, &:active{
+			background-color: lighten($primary, 15%);
+		}
+		+ button,
+		+ a{
+			background-color: $danger;
+		}
+	}
+}
+
+//
+// com_search
+//
+span.highlight{
+	background-color: lighten($primary, 60%);
+}
+
+@include media-breakpoint-down(sm) {
+	.com_search .search-tools .tool-group{
+		text-align: center;
+	}
+	.com_search .search-tools .tool-group + .tool-group{
+		margin-top: 10px;
+	}
+}
+
+@include media-breakpoint-up(md) {
+	.com_search .search-tools{
+		@extend .clearfix;
+	}
+	.com_search .search-tools .tool-group{
+		float: left;
+		& + .tool-group{
+			margin-left: 10px;
+		}
+	}
+}
+.com_search .search-tools .toggle-extended{
+	clear: both;
+	padding-top: 0.5em;
+}
+
+.com_search .search-tools,
+.com_search .extended-search-params,
+.com_search .form-limit,
+.com-search .searchintro{
+	margin-bottom: 2em;
+}
+
+.com_search .fieldsets {
+	@include make-row();
+	fieldset{
+		@include make-col-ready();
+		@include media-breakpoint-down(md) {
+			@include make-col(12);
+		}
+		@include media-breakpoint-up(lg) {
+			@include make-col(6);
+		}
+	}
+
+	@include media-breakpoint-up(lg) {
+		fieldset + fieldset{
+			margin-top: 0;
+		}
+	}
+}
+
+// -- Ergebnisliste
+.com_search dl{
+	padding-bottom: 1em;
+}
+.com_search dl dt{
+	font-size: 1.1em;
+	font-weight: 400;
+}
+.com_search dl dd.result-category,
+.com_search dl dd.result-created{
+	font-size: 0.85em;
+	color: $gray-500;
+}
+.com_search dl dd.result-category{
+	color: darken($success, 10%);
+}
+
+.com_search dl dd.result-text{
+	margin-top: 0.25em;
+	font-size: 0.9em;
+	color: $gray-700;
+}
+.com_search dl dd + dt{
+	margin-top: 1em;
+}

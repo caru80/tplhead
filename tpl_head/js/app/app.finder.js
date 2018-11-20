@@ -38,7 +38,6 @@
 					...
 				})
 	*/
-
 	$app.finder = {
 
 		defaults : {

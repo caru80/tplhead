@@ -16,7 +16,7 @@ $lang = JFactory::getLanguage(); ?>
 	$direction = $lang->isRtl() ? 'right' : 'left'; ?>
 	<li class="previous">
 		<a href="<?php echo $row->prev; ?>" rel="prev">
-			<?php echo '<span class="fa fa-chevron-' . $direction . '"></span> ' . $row->prev_label; ?>
+			<?php echo '<span class="fa fa-angle-' . $direction . '"></span> ' . $row->prev_label; ?>
 		</a>
 	</li>
 <?php endif; ?>
@@ -24,7 +24,7 @@ $lang = JFactory::getLanguage(); ?>
 	$direction = $lang->isRtl() ? 'left' : 'right'; ?>
 	<li class="next">
 		<a href="<?php echo $row->next; ?>" rel="next">
-			<?php echo $row->next_label . ' <span class="fa fa-chevron-' . $direction . '"></span>'; ?>
+			<?php echo $row->next_label . ' <span class="fa fa-angle-' . $direction . '"></span>'; ?>
 		</a>
 	</li>
 <?php endif; ?>

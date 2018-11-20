@@ -1,0 +1,82 @@
+// -- Mixins
+// ------------------------------
+
+// Basis-Style für Ein- und Ausblenden
+@mixin _system-message-base {
+	overflow: hidden;
+	opacity: 0;
+
+	-webkit-transition: opacity 0.3s linear;
+			transition: opacity 0.3s linear;
+
+	&.visible{
+		opacity: 1;
+	}
+}
+
+
+// -- Messages Style
+// ------------------------------
+
+// Container
+#system-message-container-wrapper {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 1000;
+}
+
+// Systemnachricht
+.system-message{
+
+	@include _system-message-base;
+
+	// -- Auf xs-Displays überlagern sich die einzelnen Nachrichten.
+	@include media-breakpoint-only(xs) {
+		.system-message {
+			position: absolute;
+			z-index: 1;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			}
+	}
+
+	// -- Etwas padding ab sm-Displays.
+	@include media-breakpoint-up(sm) {
+		.system-message {
+			padding: 0.4em 0;
+			}
+	}
+
+	text-align: center;
+
+	span{ // jeweils 1 span für Text und Buttons
+		display: inline-block;
+		margin: 0 0.75em;
+		padding: 0.75em 0;
+		}
+
+	span p{ // Nur Joomla! Nachrichten
+		margin: 0;
+		+ p{margin-top: 0.5em;} // Mehrteilige Nachrichten
+	}
+
+	.btn{
+		margin: 0 0.25em;
+		font-size: 0.9em;
+	}
+}
+
+// -- Die verschiedenen Varianten generieren
+// ------------------------------
+@each $type, $theme in $app-system-message-types {
+	.system-message.#{$type} {
+		background-color: map-get($theme, "bg");
+		color: map-get($theme, "text");
+	}
+	.system-message.#{$type} .btn {
+		@include button-variant(lighten(map-get($theme, "bg"), 6%), map-get($theme, "bg"));
+	}
+}

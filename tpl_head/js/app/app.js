@@ -1,5 +1,5 @@
 "use strict";
-/*
+/**
  JavaScript Cookie v2.2.0
  https://github.com/js-cookie/js-cookie
 
@@ -17,8 +17,7 @@ d[l]));return document.cookie=b+"="+c+g}b||(g={});l=document.cookie?document.coo
 Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{toString:null}.propertyIsEnumerable("toString"),c="toString toLocaleString valueOf hasOwnProperty isPrototypeOf propertyIsEnumerable constructor".split(" "),g=c.length;return function(b){if("object"!==typeof b&&("function"!==typeof b||null===b))throw new TypeError("Object.keys called on non-object");let d=[],a;for(a in b)e.call(b,a)&&d.push(a);if(f)for(a=0;a<g;a++)e.call(b,c[a])&&d.push(c[a]);return d}}());
 
 /**
-	$app
-	CRu.: 2018-01-10
+	App
 */
 (function($) {
 
@@ -26,24 +25,21 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 		defaults : {
 			html : {
-				// CSS und HTML siehe: /less/components/app.loading.less
+				// Siehe auch /scss/app/_variables.scss und /scss/app/spinkit
 				loadingIndicator : '<div class="loading-indicator"><div class="loading-inner"><div class="sk-cube-grid"><div class="sk-cube sk-cube1"></div><div class="sk-cube sk-cube2"></div><div class="sk-cube sk-cube3"></div><div class="sk-cube sk-cube4"></div><div class="sk-cube sk-cube5"></div><div class="sk-cube sk-cube6"></div><div class="sk-cube sk-cube7"></div><div class="sk-cube sk-cube8"></div><div class="sk-cube sk-cube9"></div></div></div></div>'
 			}
 		},
 
 		$window  	: $(window),
 		$document 	: $(document),
-		protocol 	: window.location.protocol,	// URL Schema (http:, https:)
-		hostname 	: window.location.hostname,	// Hostname (z.B. www.headmarketing.de)
+		protocol 	: window.location.protocol,
+		hostname 	: window.location.hostname,
 
-		/*
-			ToDo: Abhängigkeiten!
-		*/
 		extensions : {
+			list : {}, // Platzhalter Liste
 
-			list : {}, // Dummy Liste
-
-			init : function() {
+			init : function() 
+			{
 				this.map  		= Object.keys(this.list);
 				this.listIndex 	= 0;
 
@@ -61,16 +57,16 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 						}
 						else
 						{
-							$($app).trigger('extensionsReady');
+							$($app).triggerHandler('extensionsReady');
 						}
-					})
+					});
 
 					this.load();
 				}
 			},
 
-			request : function(ext, name) {
-
+			request : function(ext, name) 
+			{
 				$.ajax({
 					url 		: $app.protocol + '//' + $app.hostname + '/' + $app.pathname + '/' + ext.file,
 					dataType 	: 'script',
@@ -105,13 +101,13 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			},
 
 
-			/*
-				Lädt Alle aus $app.extensions.list, oder nur "extension"
-
-				@param index|extension Name – integer|string
-				@param force – bool – Erweiterung laden, auch wenn extension.enable false ist
-
-				$app.extensions.load('meinScript')
+			/**
+			* Lädt Alle aus $app.extensions.list, oder nur "extension"
+			*
+			* @param   mixed  index   Name (string), oder index (integer) in app.extensions.list, der Erweiterung, die geladen werden soll.
+			* @param   bool  force   Laden erzwingen, auch wenn autoload ausgeschaltet ist.
+			*
+			* $app.extensions.load('meinScript')
 			*/
 			load : function(index, force)
 			{
@@ -132,7 +128,6 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 				ext = this.list[name];
 
-				// Begrifflichkeit „enable” ist verwirrend – zu „autoload” geändert.
 				if (! ext.autoload && ! force)
 				{
 					$(this).triggerHandler('afterLoad');
@@ -148,7 +143,12 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				this.request(ext, name);
 			},
 
-			/** Gibt etwas in der Konsole aus: */
+			/**
+			 *   Schreibt etwas ins Browser-Log
+			 * 
+			 *   @param   string  msg   Die auszugebende Nachricht.
+			 *   @param   string  type   (optional) Die Art der Meldung. Die kann leer sein, oder 'err' für „Error”.
+			 */
 			log : function(msg, type) {
 				msg = '';
 
@@ -164,26 +164,31 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			}
 		},
 
-		/*
-			Stylesheet laden
-			params {
-				url			// String - Pfad
-				media		// String - Wert für Attribut media
-				replace		// String – Ersetze ein anderes Stylesheet, dessen Name diesen String enthält.
-				attribs		// String – Eigene Attribute in den link-Tag einfügen, z.B.: {attribs : 'foo="bar" bar="foo"' ... }
-			}
+		/**
+		* Stylesheet laden
+		*	
+		* @param   object  params   Ein Objekt, das die folgenden Konfigurationsvariablen enthält:
+		*
+		* params {
+		* 	@param   url  string   Die URL zum Stylesheet
+		*	@param   media  string   (optional) Ein Wert für das Attribut media im link-Tag
+		*	@param   replace  string   (optional) Ersetze ein anderes Stylesheet, dessen Pfad diesen String enthält.
+		*	@param   attribs  string   (optional) Eigene Attribute in den link-Tag einfügen, z.B.: {attribs : 'foo="bar" bar="foo"' ... }
+		*	}
 		*/
-		loadStylesheet : function(params) {
+		loadStylesheet : function(params) 
+		{
 			let href 	= params.url,
 				media 	= params.media === undefined ? 'screen' : params.media,
 				attribs = params.attribs ? ' ' + params.attribs : '';
 
-			// !!! Anm.: Es könnte ungünstig sein, dass auch ein Stylesheet von einer anderen Quelle geladen werden kann.
-			if (href.indexOf('http:') == -1 || href.indexOf('https:') == -1) {
+			if (href.indexOf('http:') == -1 || href.indexOf('https:') == -1) 
+			{
 				href = $app.protocol + '//' + $app.hostname + $app.pathname + '/' + params.url;
 			}
 
-			if (params.replace) {
+			if (params.replace) 
+			{
 				let styles = $('link[type="text/css"]');
 				if (styles.length) {
 					for (let i = 0, len = styles.length; i < len; i++) {
@@ -198,28 +203,36 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 		},
 
 		/**
-			Generiert eine zufällige x-Stellige (Standard = 5 Zeichen) Id für den Gebrauch in HTML Elementen etc.
+		* Generiert eine zufällige x-Stellige (Standard = 5 Zeichen) Id für den Gebrauch in HTML Elementen etc.
+		*
+		* @return   string   Eine Zufalls-Id
 		*/
-		getRandomId : function() {
-		    let len 	= arguments[0] && typeof(arguments[0]) === 'integer' ? arguments[0] : 5,
+		getRandomId : function() 
+		{
+			let len 	= arguments[0] && typeof(arguments[0]) === 'integer' ? arguments[0] : 5,
 				id 		= '',
 				chars	= 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-		    for (let i = 0; i < len; i++) {
-		        id += chars.charAt(Math.floor(Math.random() * chars.length));
+			for (let i = 0; i < len; i++) {
+				id += chars.charAt(Math.floor(Math.random() * chars.length));
 			}
-		    return id;
+			return id;
 		},
 
 		/**
-			Zeige Ladeanzeige
-
-			params{
-				t 		: target; dort einhängen, jQuery Selektor,
-				html 	: HTML Ladeanzeige (optional) – Siehe $app.defaults.html ...
-			}
+		* Füge die Ladeanzeige ein.
+		*
+		* @param   object  params   Ein Objekt, das die folgenden Konfigurationsvariablen enthält:
+		*
+		* params{
+		* 	@param   t  string   „target”, Ladeanzeige dort einhängen. jQuery Selektor.
+		* 	@param   html  string   (optional) Egenes HTML für die Ladeanzeige benutzen.
+		*	}
+		*
+		* @return   mixed   Die Id (string) des erzeugten HTML Elements wird zurückgegeben, oder Boolesch false, wenn es nicht geklappt hat.
 		*/
-		showLoadingIndicator : function(params) {
+		showLoadingIndicator : function(params) 
+		{
 			if (params.t) {
 				let	id 	= 'loading-' + $app.getRandomId(),
 					el 	= params.html ? $(params.html) : $(this.defaults.html.loadingIndicator),
@@ -233,12 +246,15 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 		},
 
 		/**
-			Verberge Ladeindikator
+		* Verberge Ladeanzeige
+		*
+		* @param   string  id   Mit showLoadingIndicator erhälst du eine Id, die du an hideLoadingIndicator übergibst, damit die entsprechende Ladeanzeige aus dem DOM entfernt wird.
+		*
+		* @return   boolean   true, wenn es geklappt hat, oder false wenn nicht.
 		*/
-		hideLoadingIndicator : function (id) {
-
-			id = typeof id === 'object' ? id.id : id;
-
+		hideLoadingIndicator : function (id) 
+		{
+			id = typeof id === 'object' ? id.id : id; // Warum?!
 			if (id)	{
 				$((id.indexOf('#') == 0 ? id : '#' + id)).remove();
 				return true;
@@ -246,42 +262,56 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			return false;
 		},
 
-		/*	Viewport-Größe abfragen.
+		/**
+		* Größe des Anzeigebereichs (Viewport) ausgeben
+		*
+		* @return   object   Es wird ein Objekt mit den Eigenschaften „w” (Breite) und „h” (Höhe) zurückgegeben.
 		*/
-		getVps : function() {
+		getVps : function() 
+		{
 			let w = window,
-			    e = document.documentElement,
-			    b = document.getElementsByTagName('body')[0],
-			    x = w.innerWidth || e.clientWidth || b.clientWidth,
-			    y = w.innerHeight|| e.clientHeight|| b.clientHeight;
+				e = document.documentElement,
+				b = document.getElementsByTagName('body')[0],
+				x = w.innerWidth || e.clientWidth || b.clientWidth,
+				y = w.innerHeight|| e.clientHeight|| b.clientHeight;
 
 			return {w : x, h : y};
 		},
 
-		/* Abfragen ob "el" im Viewport zu sehen ist.
-			@param el – String jQuery-Selektor oder jQuery Objekt
+		/**
+		* Abfragen ob "el" im Anzeigebereich (Viewport) zu sehen ist.
+		*	
+		* @param   string  el   String jQuery-Selektor oder jQuery Objekt, oder HTMLElement Objekt (alles was jQuery vearbeiten kann).
+		*
+		* @return   boolean   Ist Boolesch true, wenn das Element zu sehen ist, und false wenn nicht.
 		*/
-		isInViewport : function(el) {
+		isInViewport : function(el) 
+		{
 			el = $(el);
 
 			let scroll 	= $(document).scrollTop(),
 				vIn 	= el.offset().top,
 				vOut 	= el.offset().top + el.outerHeight();
 
-			if( scroll + $app.getVps().h >= vIn && scroll < vOut ) {
+			if( scroll + $app.getVps().h >= vIn && scroll < vOut ) 
+			{
 				return true;
 			}
 			return false;
 		},
 
 
-
-		init : function() {
+		init : function() 
+		{
+			$($app).one('extensionsRead.app', function() 
+			{
+				$($app).triggerHandler('ready');
+			});
 			$app.extensions.init();	// Erweiterungen laden
-			$($app.$window).trigger('appReady');
-			$($app).trigger('ready');
+		//	$($app.$window).trigger('appReady');
+		//	$($app).trigger('ready');
 		}
-	} // $app
+	}
 
 	$(function() {
 		$app.init();
@@ -298,7 +328,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 	*/
 	$app.extensions.list = {
 		/**
-			emptyTemplate : {
+			beispiel : {
 				autoload	: true|false
 				file		: 'templates/head/js/...',
 				options		: {},
@@ -314,7 +344,6 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 		messages : {
 			autoload	: true
 			,file		: 'templates/head/js/app/app.messages.js'
-			,options	: {}
 			,error		: function() { $app.extensions.log('err', this.file); }
 			,success	: function() {
 				$app.messages.init();
@@ -329,6 +358,10 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			,file 		: 'templates/head/js/app/app.scroll.js'
 			,error		: function() { $app.extensions.log('err', this.file); }
 			,success 	: function() {
+				$app.scroll.defaults.smallDevice = 1;
+				$app.scroll.defaults.force = true;
+				$app.scroll.defaults.offsetElement = '#site-header, .blog-jumpnav';
+
 				$app.scroll.init();
 			}
 		},
@@ -349,14 +382,235 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 			Protoslider + HTML5 Video Plugin
 		*/
 		protoslider : {
-			autoload	: false
-			,file 		: 'templates/head/js/protoslider.js'
-			,condition 	: function(){
+			autoload	: true
+			,file 		: 'templates/head/js/protoslider.min.js'
+			,condition 	: function() {
 				if($('.ptslider').length) return true;
 				return true;
 			}
 			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				$.Protoslider.defaults.pauseonhover = false;	// Schalte „Pause bei Berührung” (mit dem Mauszeiger) aus.
+				$.Protoslider.defaults.navigation = false;		// Verberge die Vor- und Zurück-Buttons
+				//$.Protoslider.defaults.autoplay = false; 		// Deaktiviere autoplay zum testen.
+				//$.Protoslider.defaults.preloader.demo = true; // Schalte den PreLoader in den Demo-Modus zum testen und stylen.
+
+				$.Protoslider.prototype.initSprites = function()
+				{
+					this.spritesReset( this.$node.find('.sprite') );
+				};
+			
+				$.Protoslider.prototype.getSprites = function( slide )
+				{
+					var sprites = slide.find('.sprite');
+			
+					if( sprites.length )
+					{
+						return sprites;
+					}
+					return false;
+				};
+				$.Protoslider.prototype.spritesIn = function( sprites )
+				{
+					for( var i = 0, len = sprites.length; i < len; i++ )
+					{
+						var sprite = sprites.eq(i);
+						sprite.css(sprite.data('end'));
+					}
+				};
+				$.Protoslider.prototype.spritesReset = function( sprites )
+				{
+					for( var i = 0, len = sprites.length; i < len; i++ )
+					{
+						var sprite = sprites.eq(i);
+						sprite.css(sprite.data('start'));
+					}
+				};
+			}
+		},
+		
+
+		//
+		// Navigation-Grid (navgrid)
+		// Ist im Template integriert: <a data-navgrid-toggle> Menü </a>
+		//
+		// Siehe: index.php
+		// Siehe auch: /scss/app/_navgrid.scss
+		//
+		navgrid : {
+			autoload	: true
+			,file 		: 'templates/head/js/app/app.navgrid.js'
+			,condition 	: function() {
+				if( $('.navgrid').length ) return true; // Nur laden, wenn ein „.navgrid” existiert.
+				return false;
+			}
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				/* Optionen:
+					selector 		: '',				// CSS Selektor des navgrid = #navgrid wenn leer
+					useCookieState 	: true,				// Benutze einen Cookie zum speichern des Zustands (offen oder zu)
+					autoCollapse 	: true,				// Navgrid nach dem laden einer Seite automatisch ausblenden
+					triggerActive 	: 'active',			// CSS Klasse für die Auslöser, wenn navgrid geöffnet ist/wird
+					cookiename 		: 'navgrid'			// Cookie Name
+				*/
+	 
+				$('#navgrid').on('open', function() {
+					$('#site-header').addClass('active');
+				})
+				.on('close', function() {
+					$('#site-header').removeClass('active');
+					$app.searchbar.close();
+				});
+
+				// Instanz
+				$app.navgrid.defaults.useCookieState = false;
+				let ngrid = new $app.navgrid();
+
+				// 2. Protomenü im „Slide-Header”: Ein Klick auf dessen Links soll NavGrid schließen.
+				$('.quicknav [data-ptm-child] a').on('click', function() {
+					ngrid.toggleClosed();
+				});
+			}
+		},
+
+
+		//
+		// Featherlight Lightbox
+		// Ist im Template integriert. Siehe Featherlight Doku: https://github.com/noelboss/featherlight/#usage
+		//
+		// Siehe /scss/app/_featherlight.scss
+		//
+		// z.B.:
+		// Eine Seite öffnen: <a href="index.php?option=..." data-featherlight="ajax"></a>
+		// Ein Bild: <a href="#" data-featherlight="/images/meinbild.png"></a>
+		//
+		// Spezial:
+		// AJAX, mit Template „ajax_loadcomponent.php”: <a href="..." data-featherlight="ajax" data-joomla-tmpl="ajax_loadcomponent">...</a> 
+		// Dieser Link kann dann auch in einem neuen Tab/Fenster geöffnet werden, und wird dann mit dem Standardtemplate angezeigt.
+		//
+		featherlight : {
+			autoload	: true
+			,file 		: 'templates/head/js/featherlight.min.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() {
+				$.featherlight.defaults.loading 	= $app.defaults.html.loadingIndicator; // Bei AJAX die Ladeanzeige von $app benutzen
+				$.featherlight.defaults.openSpeed 	= 450;
+			   
+				// Prüfen, ob der href Eigenschaft der Parameter „tmpl” angehängt werden soll:
+				$.featherlight.defaults.beforeOpen = function(ev) 
+				{
+					if(this.$currentTarget && this.$currentTarget.data('joomla-tmpl')) 
+					{
+						var href    = this.$currentTarget.attr('href'),
+							trunc   = href.indexOf('?') > -1 ? '&' : '?',
+							tmpl    = trunc + 'tmpl=' + this.$currentTarget.data('joomla-tmpl');
+
+						if(href.indexOf(tmpl) === -1) 
+						{
+							this.$currentTarget.attr('href', href + tmpl); 	// href überschreiben, dann featherlight öffnen
+							this.afterOpen = function() 
+							{
+								this.$currentTarget.attr('href', href); 	// href zurücksetzen
+							}
+						}
+					}
+				}
+			}
+		},
+
+		//
+		// Lightbox Video (lädt auch app.extensions.list.featherlight falls erforderlich)
+		// Öffnet ein Video in Featherlight.js.
+		// <xyz data-fullvideo="images/videos/meinvideo.mp4"> Irgendetwas </xyz>
+		//
+		// Siehe auch: /scss/app/_videos.scss
+		//
+		lightboxvideo : {
+			autoload    : true
+			,file       : 'templates/head/js/app/app.videolightbox.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() 
+			{
+				$app.lightboxVideo.init();
+			}
+		},
+
+
+		// 
+		// Google Maps API Wrapper
+		// Ist im Template integriert. 
+		//
+		// Siehe Beispiel-Template: /html/googlemap.php
+		// Siehe auch: /scss/app/_googlemaps.scss
+		//
+        googlemap : {
+			autoload    : false
+			,file       : 'templates/head/js/app/app.googlemap.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
 			,success	: function() {}
 		},
-	}/*********** Ende Liste */
+
+
+		//
+		// Sticky Observer 
+		// (Der Name spiegelt nicht wirklich die eigentliche Funktion wider)
+		//
+		// Ein Intersection Observer der Elementen eine CSS Klasse zuweisen kann, wenn:
+		//
+		// 1. das Element die Oberkannte des Viewports (+/- manuellem Offset) erreicht. D.h. das Element ist dabei aus dem Viewport zu verschwinden.
+		// 2. das Element die Unterkannte des Viewports erreicht. D.h. das Element dabei ist in den Viewport zu gelangen.
+		//
+		// Zusätzlich zur Zuweisung von Klassen emittiert der Observer das Ereignis „sticky-change” an das Zielelement, welcher z.B. mit jQuery oder addEventListener abgefangen werden kann:
+		//
+		// $('#site-header').on('sticky-change', function(object Event, object „details”) {
+		// 		let istSticky = details.stuck;
+		// }
+		// 
+		// let siteHeader = document.getElementById('#site-header');
+		// meinElement.addEventListener('sticky-change', function(ev, details)) { ... });
+		//
+		stickyObserver : {
+			autoload    : true
+			,file       : 'templates/head/js/app/app.stickyobserver.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() 
+			{
+				// Überwacht alle Elemente mit der CSS Klasse „observe-sticky”:
+				let soDefaultOffset = -(Math.round(document.getElementById('site-header').offsetHeight)); // Höhe von #site-header berücksichtigen
+				new $app.stickyObserver({debug: false, offset : soDefaultOffset});
+			
+				// Den Header überwachen:
+				let headerSentinelOffset  = Math.round(document.querySelector('main').getBoundingClientRect().top) - document.getElementById('site-header').offsetHeight; // Position relativ zum Viewport.
+					headerSentinelOffset += window.pageYOffset ? window.pageYOffset : window.scrollY; // Position absolut im Dokument. pageYOffset für Explorer.
+				
+				new $app.stickyObserver({debug: false, elements : '#site-header', offset : headerSentinelOffset, className : 'offset'}); 
+				
+				// Die Breadcrumbs überwachen:
+				new $app.stickyObserver({debug: false, elements : '.breadcrumbs', threshold : 1, className : 'offset'}); // Mit threshold : 1 sagen wir dem Observer das className eingefügt werden soll, sobald das Element in den Viewport gelangt.
+			}
+		},
+
+
+		//
+		// Suchleiste
+		// Eine ausfahrbare Leiste, die ein Suchmodul enthält (oder irgendwas Anderes).
+		// <xyz data-toggle-search> Suchleiste öffnen </xyz>
+		//
+		searchbar : {
+			autoload    : true
+			,file       : 'templates/head/js/app/app.searchbar.js'
+			,error		: function() { $app.extensions.log('err', this.file); }
+			,success	: function() 
+			{
+				$app.searchbar.init();
+			}
+		}
+	}
+})(jQuery);
+
+// Bootstrap
+(function($){
+	$(function () {
+		$('[data-toggle="tooltip"]').tooltip();
+	});
 })(jQuery);

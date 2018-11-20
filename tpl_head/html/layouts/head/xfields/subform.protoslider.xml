@@ -8,6 +8,17 @@
 			label="Bild"
 			description="Ein Bild anzeigen. Oder ein Posterbild für ein Video anzeigen."
 		/>
+        <field 
+            name="image_background"
+            type="radio"
+            class="btn-group"
+            label="Hintergrundbild"
+            description="Das Bild wird als Hintergrundbild in den Slide eingefügt. Autoheight funktioniert dann nicht."
+            default="1"
+        >
+            <option value="0">JNO</option>
+            <option value="1">JYES</option>
+        </field>
 		<field
 			name="video_url"
 			type="filelist"
@@ -16,44 +27,12 @@
 			default=""
 			filter="(.\.mp4)"
 			label="Video"
-			description="Wenn gewählt, wird diese Video abgespielt."
+			description="Zeigt einen Video-Player im Slider. Autoplay und Cover wurden entfernt, weil moderne Browser das automatische Abspielen von Videos unterbinden."
 		/>
-		<field
-			name="video_cover"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="Cover"
-			description="Video als Cover – wie background-size: cover"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field
-			name="video_autoplay"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="Autoplay"
-			description="Autoplay wird automatisch mit Cover kombiniert."
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
-		<field
-			name="video_controls"
-			type="radio"
-			class="btn-group"
-			default="0"
-			label="Steuerelemente"
-			description="Videoplayer Steuerelemente anzeigen?"
-		>
-			<option value="0">JNO</option>
-			<option value="1">JYES</option>
-		</field>
 		<field
 			name="video_loop"
 			type="radio"
+			showon="video_url!:,-1"
 			class="btn-group"
 			default="0"
 			label="Schleife"
@@ -65,19 +44,95 @@
 		<field
 			name="video_mute"
 			type="radio"
+			showon="video_url!:,-1"
 			class="btn-group"
-			default="0"
+			default="1"
 			label="Stumm"
-			description="Video in Schleife laufen lassen."
+			description="Audio stumm schalten."
 		>
 			<option value="0">JNO</option>
 			<option value="1">JYES</option>
 		</field>
+		
+		<field
+			name="lightbox_video_url"
+			type="filelist"
+			directory="images/videos"
+			hide_default="true"
+			default=""
+			filter="(.\.mp4)"
+			label="Lightbox Video"
+			description="Wenn gewählt, wird ein Play-Button angezeigt, und beim Klick wird dieses Video in einer Lightbox abgespielt."
+		/>
+		<field
+			name="show_item_caption"
+			type="radio"
+			class="btn-group"
+			default="0"
+			label="Inhalt anzeigen"
+			description="Zeige einen Text im Slider-Item."
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		<field
+			name="readmore"
+			type="list"
+			showon="show_item_caption:1"
+			default=""
+			label="Weiterlesen einfügen"
+			description="Einen URL generieren und im Inhalt an dem Platzhalter {readmore_url} einfügen."
+		>
+			<option value="">JNONE</option>
+			<option value="menuitem">Menüeintrag</option>
+			<option value="article">Beitrag</option>
+		</field>
+		
+		<field
+			name="readmore_menuitem"
+			type="menuitem"
+			published="true"
+			showon="show_item_caption:1[AND]readmore:menuitem"
+			label="Menüeintrag verlinken"
+			description="Einen URL zu diesem Menüeintrag erzeugen."
+		>
+			<option	value="">JNONE</option>
+		</field>
+		<field
+			name="readmore_article"
+			type="modal_article"
+			showon="show_item_caption:1[AND]readmore:article"
+			edit="true"
+			clear="true"
+			label="Beitrag verlinken"
+			description="Einen URL zu eine Beitrag erzeugen."
+		/>
+		<field
+			name="readmore_label"
+			type="text"
+			class="input-lg"
+			showon="readmore!:"
+			label="Beschriftung Weiterlesen"
+			description="Beschriftung für den Weiterlesen-Link"
+		/>
+
         <field
 			name="image_caption"
-			type="textarea"
-			label="Bildunterschrift"
-			description="Einen Text über dem Bild oder Video anzeigen. &lt;b&gt;HTML ist erlaubt&lt;/b&gt;."
+			type="editor"
+			editor="codemirror"
+			showon="show_item_caption:1"
+			label="Caption Inhalt"
+			description=""
+			cols="40"
+			rows="8"
+			filter="raw"
+		/>
+		<field
+			name="slide_html"
+			type="editor"
+			editor="codemirror"
+			label="Slide Inhalt"
+			description=""
 			cols="40"
 			rows="8"
 			filter="raw"

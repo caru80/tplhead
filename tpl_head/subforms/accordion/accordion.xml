@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form>
+	<fieldset>
+		<field
+			name="separator"
+			type="radio"
+			class="btn-group"
+			label="Trennzeichen"
+			description="Schließt ein Accordion, und öffnet ein Neues."
+			default="0"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+		
+		<field 
+			name="panel_heading"
+			type="text"
+			showon="separator:0"
+			class="input-lg"
+			label="Titel"
+			description="Accordion Titel"
+		/>
+
+		<field 
+			name="enhanced_settings"
+			type="radio"
+			showon="separator:0"
+			class="btn-group"
+			label="Erweitert"
+			description="Erweiterterte Einstellungen"
+			default="0"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field 
+			name="accordion_heading"
+			type="text"
+			showon="separator:1[OR]enhanced_settings:1"
+			class="input-lg"
+			label="Accordion Überschrift"
+			description=""
+		/>
+		<field 
+			name="enhanced_closed"
+			type="radio"
+			showon="separator:0[AND]enhanced_settings:1"
+			class="btn-group"
+			label="Geschlossen"
+			description="Dieses Panel schließen."
+			default="0"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field 
+			name="enhanced_classlist"
+			type="text"
+			showon="separator:0[AND]enhanced_settings:1"
+			class="input-xlarge"
+			label="CSS-Klassen"
+			description="CSS Klassen für dieses Panel."
+			default=""
+		/>
+
+		<field 
+			name="backend_hide-editor"
+			type="radio"
+			showon="separator:0"
+			class="btn-group"
+			label="Editor ausblenden"
+			description="Zeige/Vertecke den Texteditor"
+			default="1"
+		>
+			<option value="0">JNO</option>
+			<option value="1">JYES</option>
+		</field>
+
+		<field
+			name="panel_content"
+			type="editor"
+			showon="separator:0[AND]backend_hide-editor:0"
+			label="Inhalt"
+			description="Der Inhalt."
+			filter="raw"
+		/>
+
+	</fieldset>
+</form>

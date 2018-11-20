@@ -1,0 +1,142 @@
+/**
+	.btn-AWesomeShape (.btn-aws)
+
+	CRu. 2018-04-06
+	
+	Bootstrap Buttons mit Font-Awesome Icon am linken Rand mit dem schrägen Hintergrund.
+
+	In allen größen und Farben wie in Bootstrap definiert.
+
+	z.B.: <a|button|etc. class="btn btn-aws btn-primary"><i class="fa fa-envelope"></i>Text</...
+
+*/
+
+
+// -- Animierte Doppel-Icons
+// --------------------------------------------------
+
+.btn.btn-aws:not([disabled]){
+	i:first-of-type i{
+		transition: opacity 0.2s linear;
+	}
+	i:first-of-type i:first-of-type{
+		opacity: 1;
+	}
+	i:first-of-type i:last-of-type{
+		opacity: 0;
+	}
+	&:hover:not([data-toggle="button"]),
+	&.active {
+		i:first-of-type i:first-of-type {
+			opacity: 0;
+		}
+		i:first-of-type i:last-of-type {
+			opacity: 1;
+		}
+	}
+}
+.btn.btn-aws[disabled]{
+	i:first-of-type i:last-of-type{
+		display: none;
+	}
+}
+
+/*
+.btn.btn-aws{
+	i:first-of-type i{
+		transition: transform 0.25s ease-in-out;
+	}
+	i:first-of-type i:first-of-type{
+		transform: translate3d(0,0,0);
+	}
+	i:first-of-type i:last-of-type{
+		transform: translate3d(0,100%,0);
+	}
+	&:hover{
+		i:first-of-type i:first-of-type{
+			transform: translate3d(0,-100%,0);
+		}
+		i:first-of-type i:last-of-type{
+			transform: translate3d(0,0,0);
+		}
+	}
+}
+*/
+
+
+// -- .btn-aws Base
+// --------------------------------------------------
+.btn.btn-aws {
+
+	$icon-size: 1.25em !default;
+	$icon-gap: 	0.35em !default;
+
+	position: relative;
+	z-index: 2;
+	overflow: hidden;
+	
+	padding-left: $icon-size + $icon-gap + $input-btn-padding-x;
+	&.btn-sm {
+		padding-left: $icon-size + $icon-gap + $input-btn-padding-x-sm;
+		> i:first-of-type {
+			left: $input-btn-padding-x-lg;
+		}
+	}
+	&.btn-lg {
+		padding-left: $icon-size + $icon-gap + $input-btn-padding-x-lg;
+		> i:first-of-type {
+			left: $input-btn-padding-x-lg;
+		}
+	}
+
+	> i:first-of-type,
+	> i:first-of-type i {
+		display: block;
+		color: #ffffff;
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: $input-btn-padding-x;
+		width: $icon-size;
+	}
+	> i:first-of-type i {
+		left: 0;
+	}
+
+	> i:first-of-type:before,
+	> i:first-of-type i:before {
+		font-size: $icon-size;
+		position: absolute;
+		top: 50%;
+		left: 0;
+		margin-top: -0.5em;
+	}
+	
+	// -- Reset für Block-Buttons
+	&.btn-block{
+		i:first-of-type{
+			position: relative;
+			display: inline-block;
+			margin-right: 0.5em;
+			padding: 0;
+		}
+
+	}
+}
+
+@each $type, $color in $theme-colors {
+	.btn-outline-#{$type}.btn-aws {
+		> i:first-of-type,
+		> i:first-of-type i {
+			color: $color;
+		}
+		&.active,
+		&:hover,
+		&:active {
+			> i:first-of-type,
+			> i:first-of-type i {
+				color: $white;
+			}	
+		}
+	}
+}

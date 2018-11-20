@@ -43,7 +43,6 @@
 	<title><?php echo $this->error->getCode(); ?></title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<meta name="robots" content="noindex" />
-	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseurl . '/templates/' . $this->template; ?>/css/main.css" />
 	<link rel="stylesheet" type="text/css" media="screen" href="<?php echo $this->baseurl . '/templates/' . $this->template; ?>/css/error.css" />
 </head>
 <body class="error-page">

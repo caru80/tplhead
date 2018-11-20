@@ -1,0 +1,49 @@
+
+/*
+	Vorschau-Videos mit Play-Button und Hover: Film abspielen
+*/
+[data-fullvideo]{
+	@include make-font-size(1rem, 1rem, 1.5rem, 2rem);
+	position: relative;
+
+	&::before,
+	&::after{
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		z-index: 2;
+		color: #ffffff;
+	}
+	&::before {
+		@extend .far;
+		cursor: pointer;
+		content: '#{$fa-var-play-circle}';
+		font-size: 6em;
+		transform: translate3d(-50%,-50%,0);
+		text-shadow: 1px 1px 2px rgba(0,0,0,0.4);
+	}
+	&:hover::before {
+		color: $primary;
+	}
+
+	&::after {
+		content: attr(title);
+		white-space: nowrap;
+		font-weight: 500;
+		margin-top: 3.5em;
+		font-size: 1.2em;
+		transform: translate3d(-50%,-50%,0);
+		text-shadow: 2px 2px 0px rgba(0,0,0,0.6);
+	}
+}
+@include media-breakpoint-up(lg) {
+	[data-fullvideo]{
+		&::after {
+			opacity: 0;
+			transition: opacity 0.5s ease;
+		}
+		&:hover::after {
+			opacity: 1;
+		}
+	}
+}
