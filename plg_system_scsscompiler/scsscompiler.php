@@ -125,10 +125,7 @@ class plgSystemScsscompiler extends Plugin\CMSPlugin {
 		}
 		catch(\Exception $e)
 		{   
-			if($this->verbose) 
-			{
-				$this->app->enqueueMessage('plg_system_scsscompiler: ' . Language\Text::sprintf('PLG_SYS_SCSSCOMP_OUT_COMPILATION_FAILED', $this->input->path) . ' <br>' . $e->getMessage(), 'error');
-			}
+			$this->app->enqueueMessage('plg_system_scsscompiler: ' . Language\Text::sprintf('PLG_SYS_SCSSCOMP_OUT_COMPILATION_FAILED', $this->input->path) . ' <br>' . $e->getMessage(), 'error');
 			syslog(LOG_ERR, 'plg_system_scsscompiler: ' . Language\Text::sprintf('PLG_SYS_SCSSCOMP_OUT_COMPILATION_FAILED', $this->input->path));
 		}
 	}
