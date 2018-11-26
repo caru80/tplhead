@@ -93,8 +93,6 @@ if(isset($params))
 		"items" 		=> $params->get($field_prefix . 'protoslider', array()),
 		"url_prefix"	=> JUri::root(true)
 	);
-	
-	//print_r($config);
 
 	if(count($config->items)):
 ?>
@@ -104,7 +102,7 @@ if(isset($params))
 		class="ptslider <?php echo implode(' ', $config->class_list); ?>"
 		<?php 
 			// JSON Optionen
-			echo $slideroptions != '' ? ' data-ptoptions=\''.$slideroptions.'\'' : '';
+			echo $config->options != '' ? ' data-ptoptions=\''.$config->options.'\'' : '';
 		?>
 	>
 
@@ -167,37 +165,13 @@ HTML;
 					$item->image_caption = preg_replace("#" . preg_quote("{readmore_url}", "/") . "#", $readmore_url, $item->image_caption);
 				}
 
-				/* 
-					STANDARD-CAPTION:
 				$caption = <<<HTML
 	<div class="item-caption">
 		<div class="item-caption-inner">
 			$item->image_caption
 		</div>
 	</div>
-HTML;*/
-				/* Sensoplast Caption */
-				ob_start();
-				?>
-					<div class="item-caption-bg"></div>
-					<div class="item-caption">
-						<div class="item-caption-inner">
-							<?php echo $item->image_caption; ?>
-						</div>
-						<div class="item-caption-custom">
-							<div class="we-care">
-								<span><?php echo JText::_(TPL_HEAD_SLOGAN_WECARE);?></span>
-							</div>
-							<?php if(isset($item->readmore) && $item->readmore != '' && $item->readmore_label != ''): ?>
-								<div class="readmore">
-									<a href="<?php echo HeadProtosliderLayoutHelper::getReadmoreUrl($item);?>"><?php echo $item->readmore_label;?> <i class="fas fa-angle-right"></i></a>
-								</div>
-							<?php endif; ?>
-						</div>
-					</div>
-				<?php
-				$caption = ob_get_contents();
-				ob_end_clean();
+HTML;
 			}
 
 

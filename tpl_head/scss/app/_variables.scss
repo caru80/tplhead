@@ -109,3 +109,79 @@ $app-faforms-jsva-max-width:	300px !default;	// Maximalbreite
 $app-googlemap-height: 		450px !default;
 $app-googlemap-height-sm: 	350px !default;
 $app-googlemap-height-lg: 	550px !default;
+
+// ----- 1.4 --------------------------------------------------------
+
+//
+// Lightbox Video
+//
+$app-lbvideo-font-color: 	#ffffff !default; // Textfarbe (auch von play-icon)
+$app-lbvideo-hover-color: 	$primary; // Nur für Play-Icon
+$app-lbvideo-font-weight: 	500 !default; // Nur „Video abspielen”
+$app-lbvideo-text-shadow: 	1px 1px 2px rgba(0,0,0,0.4) !default;	// Textschatten Play-Icon & „Video Abspielen”
+$app-lbvideo-playicon-content: $fa-var-play-circle !default; // Play-Icon – Du kannst in dein HTML auch z.B. ein title Attribut einfügen, und schreibst dann hier: attr(title)
+
+
+//
+// Protoslider
+//
+$app-ptslider-bgcolor: $secondary !default;
+
+// Heroslider Höhe nach Breakpoints...
+$app-ptslider-hero-height: (
+	"home" : ( 	// ...auf der Homepage
+		"xs" 	: 400px,
+		"sm" 	: 400px,
+		"md" 	: 400px,
+		"lg" 	: 450px,
+		"xl" 	: 700px,
+		"xxl"	: 700px
+	),
+	"deeper" : ( // ...auf den „Unterseiten”
+		"xs" 	: 300px,
+		"sm" 	: 300px,
+		"md" 	: 300px,
+		"lg" 	: 450px,
+		"xl" 	: 600px,
+		"xxl"	: 600px
+	)
+) !default;
+
+// Pagination
+$app-ptslider-pagination-pos: (
+	"left" 		: 15px, 
+	"right" 	: 15px, 
+	"top" 		: auto, 
+	"bottom" 	: 10px
+) !default;
+
+// Pagination Items
+$app-ptslider-page-items: (
+	"align" 	: left, // Ausrichtung innerhalb der Paginierung (left | right | center)
+	"width" 	: 16px,
+	"height" 	: 16px,
+	"gutter" 	: 7px,	// Abstand zwischen Page-Items
+	"bgcolor" 	: transparentize(lighten($primary, 30%), 50%),
+	"bghover" 	: lighten($primary, 20%),
+	"bgactive" 	: lighten($primary, 30%),
+	"border-radius" : 100%
+) !default;
+
+// Vor- und Zurück-Schalter
+$ptslider-navigation: (
+	"bgcolor" 			: rgba(255, 255, 255, 0),
+	"bghover" 			: rgba(255, 255, 255, 0.15),
+	"arrow-color" 		: $primary,
+	"arrow-color-hover" : lighten($primary, 15%),
+	"position-left"		: 0px, // Position vom „Zurück”-Schalter an der linken Kante
+	"position-right"	: 0px  // Position vom „Vor”-Schalter an der rechten Kante
+) !default;
+
+// Ladeanzeige
+$app-ptslider-loading: (
+	"bgcolor" 		: $secondary,
+	"spinner-color" : $primary,
+	"spinner-size" 	: 60px,
+	"font-color" 	: #ffffff,
+	"font-size" 	: 1.4rem
+) !default;

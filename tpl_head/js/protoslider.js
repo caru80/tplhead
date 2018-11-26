@@ -1,6 +1,10 @@
 /*
-	Protoslider 1.0.8
+	Protoslider 1.0.9
 	Carsten Ruppert
+
+	1.0.9 – 2018-11-22
+	+ Protoslider CSS Klasse „autoheight” wird nun vor dem Preloader eingefügt, wenn autoHeight eingeschaltet ist.
+	+ AutoHeight berechnet die Höhe nun genauer.
 
 	1.0.8 – 2018-11-17
 	+ Ein- und Ausblendeanimationen können nun für jeden Navigationstyp ein- und ausgeschaltet werden.
@@ -243,14 +247,14 @@
 				pagerLabel: '<span class="ptslider-pager-label">%s</span>',
 				// Die Ladeanzeige:
 				loading: '<div class="ptslider-preload">' +
-					'<div class="ptslider-indicator">' +
-					'<div class="spinner">' +
-					'<div class="dot1"></div>' +
-					'<div class="dot2"></div>' +
-					'</div>' +
-					'<span class="percent-loaded"></span>' +
-					'</div>' +
-					'</div>'
+							'<div class="ptslider-indicator">' +
+								'<div class="spinner">' +
+									'<div class="dot1"></div>' +
+									'<div class="dot2"></div>' +
+								'</div>' +
+								'<span class="percent-loaded"></span>' +
+							'</div>' +
+						'</div>'
 			},
 
 			// CSS Klassen und Regeln
@@ -382,6 +386,11 @@
 					this.options.onAfterInitPlugins.apply(this);
 				}
 			} // ende Plugins
+
+			if(this.options.autoheight)
+			{
+				this.$node.addClass('autoheight');
+			}
 
 			if (this.options.preloader.on) {
 				this._preload();
@@ -912,7 +921,6 @@
 				// Automatische Höhe
 				if (this.options.autoheight) {
 					this.autoHeight();
-					this.$node.addClass('autoheight');
 				}
 
 				this.State.isIdle = false;
@@ -956,20 +964,24 @@
 
 			for (var i = 0; i < this.map[r].length; i++) {
 				$slide = this.map[r][i];
-
-				if (h === 0) {
+				if (h === 0 || h < $slide.outerHeight()) {
 					h = $slide.outerHeight();
 				}
-				else if (h < $slide.outerHeight()) {
-					h = $slide.outerHeight();
+
+				let childs = $slide.children();
+				for(let i = 0; i < childs.length; i++)
+				{
+					if(childs.eq(i).outerHeight() != h)
+					{
+						h = childs.eq(i).outerHeight();
+					}
 				}
 
 				if (this.$wrap.height() != h && h > 0) {
-					this.$wrap.height(Math.round(h));
+					this.$wrap.height(Math.floor(h));
 				}
 			}
 		},
-
 
 		// -- Entfernt alle Animationen
 		clearSlideAnimations: function () {
@@ -1661,7 +1673,7 @@
 
 	$.Protoslider.defaults.html5video = {
 		pauseOnPlay: true,		// Protoslider beim Abspielen eines Videos anhalten, wenn autoplay an ist. Nach dem Ende des Videos läuft Protoslider weiter.
-		autoplay: false,	// Videos automatisch abspielen (erzwungen, ansonsten mit: <video data-ptoptions='{"autoplay":true}'  ... >) – !!! <video autoplay ...> würde das Video starten, selbst wenn es noch gar nicht zu sehen ist !!!
+		autoplay: false,		// Videos automatisch abspielen (erzwungen, ansonsten mit: <video data-ptoptions='{"autoplay":true}'  ... >) – !!! <video autoplay ...> würde das Video starten, selbst wenn es noch gar nicht zu sehen ist !!!
 		timeoutAfterPlayback: 100
 	};
 
@@ -1714,6 +1726,7 @@
 				// Update: Prüfen, ob das Video überhaupt angezeigt wird
 				if(video.css('display') !== 'none' && video.css('visibility') !== 'hidden')
 				{
+					console.log(video);
 					return video.get(0);
 				}
 			}
