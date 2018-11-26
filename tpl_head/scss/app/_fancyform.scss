@@ -389,6 +389,7 @@ form.chronoform .loading-indicator {
 		border-width: 0;
 		box-shadow: none;
 		font-weight: 500;
+		width: 100%;
 		&, &[readonly]{
 			/** "readonly"-Felder werden genauso dargestellt wie andere Felder. Der Sinn dahinter ist, dass auf Mobilgeräten die Tastatur nicht angezeigt wird, z.B. bei Datepicker-Feldern. */
 			background-color: transparent;
