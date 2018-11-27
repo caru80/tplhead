@@ -2,7 +2,7 @@
 // 
 // Erzeuge dynamische Schriftgrößen (je nach Breakpoint)
 //
-@mixin make-font-size($xs: 1rem, $sm: $xs, $md: $sm, $lg: $md, $xl: $lg) {
+@mixin make-font-size($xs: 1rem, $sm: $xs, $md: $sm, $lg: $md, $xl: $lg, $xxl: $xl) {
 	@include media-breakpoint-up(xs) {
 		font-size: $xs;
 	}
@@ -16,6 +16,9 @@
 		font-size: $lg;
 	}
 	@include media-breakpoint-up(xl) {
+		font-size: $xl;
+	}
+	@include media-breakpoint-up(xxl) {
 		font-size: $xl;
 	}
 }
