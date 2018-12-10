@@ -403,6 +403,14 @@ form.chronoform .loading-indicator {
 	textarea {
 		width: 100%;
 	}
+
+	// Chromiums idiotische gelbe Hintergrundfarbe für Felder mit autocomplete überdecken.
+	input:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0 100px $input-bg inset;
+	}
+	&.focus input:-webkit-autofill {
+		-webkit-box-shadow: 0 0 0 100px $input-focus-bg inset;
+	}
 }
 
 @include media-breakpoint-up(lg) {
