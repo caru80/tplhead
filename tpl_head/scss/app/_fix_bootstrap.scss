@@ -1,0 +1,10 @@
+//
+// Repariert Bugs in Bootstrap
+//
+
+// Bootstrap lässt Button Groups nicht umbrechen, das ist auf kleine Auflösungen schlecht.
+.btn-group,
+.btn-group-vertical {
+	flex-wrap: wrap;
+}
+

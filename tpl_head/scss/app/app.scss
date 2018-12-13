@@ -1,6 +1,8 @@
 @import "variables";
 @import "mixins";
 // ---
+@import "fix_bootstrap";		// Repariert Bootstrap Bugs
+// ---
 @import "buttons_app";          // Menü-, Suchen- und Schließen-Buttons
 @import "buttons_awesome";      // Erweitert Bootstrap Buttons um Font Awesome Icons
 @import "fancyform";            // Erweitert Bootstrap Formularkomponenten
