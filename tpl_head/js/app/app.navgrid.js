@@ -68,6 +68,13 @@
 				}
 			}
 
+			window.addEventListener('resize', function() {
+				if(!this.grid.classList.contains('collapsed'))
+				{
+					this.toggleClosed();
+				}
+			}.bind(this));
+
 			if(this.opt.autoCollapse) 
 			{
 				window.setTimeout(function(){
