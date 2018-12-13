@@ -460,6 +460,8 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				.on('close', function() {
 					$('#site-header').removeClass('active');
 					$app.searchbar.close();
+					// Schließe alle Protomenüs in navgrid-slide, wenn navgrid-slide geschlossen wird:
+					$(this).find('.ptmenu').protomenu().closeRootLevel();
 				});
 
 				// Instanz
