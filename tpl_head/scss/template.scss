@@ -742,6 +742,9 @@ main .blog:not(.ordered) > section:first-of-type:not(.alt) {
 		transform: translate3d(-50%,-50%,0);
 	}
 }
+.mod-intro .mod-intro-pagination ul {
+	margin: 0;
+}
 
 
 //
