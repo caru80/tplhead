@@ -303,7 +303,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 
 		init : function() 
 		{
-			$($app).one('extensionsRead.app', function() 
+			$($app).one('extensionsReady.app', function() 
 			{
 				$($app).triggerHandler('ready');
 			});
