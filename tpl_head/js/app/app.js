@@ -308,8 +308,6 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				$($app).triggerHandler('ready');
 			});
 			$app.extensions.init();	// Erweiterungen laden
-		//	$($app.$window).trigger('appReady');
-		//	$($app).trigger('ready');
 		}
 	}
 
