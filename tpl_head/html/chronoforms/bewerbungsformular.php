@@ -81,11 +81,11 @@
 		</div>
 		<div class="form-group inline">
 			<label for="kontakt_telefon">[FIELD_LABEL_KONTAKT_TELEFON]</label>
-			<input name="kontakt_telefon" id="kontakt_telefon" type="text" value="<?php echo $form->data['kontakt_telefon']; ?>" />
+			<input name="kontakt_telefon" id="kontakt_telefon" type="tel" value="<?php echo $form->data['kontakt_telefon']; ?>" />
 		</div>
 		<div class="form-group inline">
 			<label for="kontakt_email">[FIELD_LABEL_KONTAKT_EMAIL]</label>
-			<input name="kontakt_email" id="kontakt_email" type="text" value="<?php echo $form->data['kontakt_email']; ?>" />
+			<input name="kontakt_email" id="kontakt_email" type="email" value="<?php echo $form->data['kontakt_email']; ?>" />
 		</div>
 		<div class="form-group">
 			<label for="kontakt_nachricht">[FIELD_LABEL_KONTAKT_NACHRICHT]</label>
@@ -170,7 +170,7 @@
 			addRemoveLinks 			: true,
 			maxFilesize 			: 8,
 			maxFiles 				: 4,
-			acceptedFiles 			: 'application/pdf,application/x-compressed,application/x-zip-compressed,application/zip,,application/x-zip,application/x-rar-compressed',
+			acceptedFiles 			: 'application/pdf,application/x-compressed,application/x-zip-compressed,application/zip,application/x-zip,application/x-rar-compressed',
 			parallelUploads 		: 1,
 			// Lokalisierung:
 			'dictDefaultMessage'	: '[DROPZONE_DROP_FILES_HERE]',

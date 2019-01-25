@@ -103,7 +103,7 @@
 
 			<div class="form-group inline">
 				<label for="kontakt_telefon">[FIELD_LABEL_KONTAKT_TELEFON]</label>
-				<input name="kontakt_telefon" id="kontakt_telefon" type="text" value="" />
+				<input name="kontakt_telefon" id="kontakt_telefon" type="tel" value="" />
 				<div class="checkbox">
 					<label for="kontakt_callback" class="small">
 						<input name="kontakt_callback" id="kontakt_callback" value="<?php echo JText::_("JYES");?>" type="checkbox">
@@ -118,7 +118,7 @@
 			
 			<div class="form-group inline">
 				<label for="kontakt_email">[FIELD_LABEL_KONTAKT_EMAIL]</label>
-				<input name="kontakt_email" id="kontakt_email" type="text" value="" />
+				<input name="kontakt_email" id="kontakt_email" type="email" value="" />
 			</div>
 
 		</div>
