@@ -22,6 +22,41 @@
 			description="Accordion Titel"
 		/>
 
+		<field
+			name="panel_introimage"
+			type="media"
+			label="Titelbild"
+			description="Teigt ein Titelbild"
+		/>
+
+		<field
+			name="panel_introimage_alt"
+			type="text"
+			showon="panel_introimage!:"
+			class="input-xlarge"
+			label="Titelbild Alt-Text"
+			description="Der Alternativtext für das Titelbild."
+		/>
+
+		<field
+			name="panel_video_yt"
+			type="text"
+			class="input-xlarge"
+			label="Youtube Video"
+			description="Bitte nur die Id des Videos einfügen, z.B. (fett markiert): &lt;br&gt;https://youtu.be/&lt;b&gt;VLw7s4pYGJE&lt;/b&gt;"
+		/>
+
+		<field
+			name="panel_video_local"
+			type="filelist"
+			directory="images/videos"
+			hide_default="true"
+			default=""
+			filter="(.\.mp4)"
+			label="Video lokal"
+			description="Ein Video in dem Containerformat mp4 aus dem Ordner /images/videos anzeigen."
+		/>
+
 		<field 
 			name="enhanced_settings"
 			type="radio"
