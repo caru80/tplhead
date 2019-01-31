@@ -162,7 +162,6 @@ p.chrono_credits{
 //
 // Dropzone
 //
-// @import '../css/dropzone.css';
 .fancy-form .dropzone 
 {
 	background: white;
@@ -367,6 +366,13 @@ form.chronoform .loading-indicator {
 	padding: $input-padding-y $input-padding-x;
 	font-weight: 600;
 }
+.fancy-form .form-group > label i.fa,
+.fancy-form .form-group > label i.fas,
+.fancy-form .form-group > label i.fab {
+	margin-right: 0.25em;
+	color: $app-faform-label-icon-color;
+}
+
 .fancy-form .form-group .radio > label, 
 .fancy-form .form-group .checkbox > label {
 	color: $body-color;
