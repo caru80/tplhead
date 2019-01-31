@@ -160,16 +160,19 @@
 
 </div>
 <?php 
-	$lang = \Joomla\CMS\Factory::getLanguage()->getTag();
+	$fform_doc = CMS\Factory::getApplication()->getDocument();
+
+	// JS Validierung in Anzeigesprache (Chronoforms5 Bug):
+	$lang = CMS\Factory::getLanguage()->getTag();
 	$lang = substr($lang, 0, strpos($lang, '-'));
+
+	// Client-Validierung Sprachdatei:
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'libraries/cegcore/assets/gplugins/gvalidation/lang/' . $lang . '.js');
+	// Felder (bzw. <div class="form-group">) bei :focus hervorheben:
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/highlighter.js');
+	// Formular „Controller”
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/formcontroller.js');
 ?>
-<script src="<?php echo JUri::root(); ?>libraries/cegcore/assets/gplugins/gvalidation/lang/<?php echo $lang;?>.js"></script>
-
-<?php // Felder (.form-group) bei Fokus highlighten: ?>
-<script src="<?php echo JUri::root(); ?>templates/<?php echo \Joomla\CMS\Factory::getApplication()->getTemplate(); ?>/html/chronoforms/js/highlighter.js"></script>
-
-<?php // Formular initialisieren ?>
-<script src="<?php echo JUri::root();?>templates/head/html/chronoforms/js/formcontroller.js"></script>
 <script>
 'use strict';
 (function($) {

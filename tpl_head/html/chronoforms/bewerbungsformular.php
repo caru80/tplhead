@@ -135,24 +135,30 @@
 
 
 <?php 
+	$fform_doc = CMS\Factory::getApplication()->getDocument();
+
 	// JS Validierung in Anzeigesprache (Chronoforms5 Bug):
 	$lang = CMS\Factory::getLanguage()->getTag();
 	$lang = substr($lang, 0, strpos($lang, '-'));
+
+	// Client-Validierung Sprachdatei:
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'libraries/cegcore/assets/gplugins/gvalidation/lang/' . $lang . '.js');
+	// Felder (bzw. <div class="form-group">) bei :focus hervorheben:
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/highlighter.js');
+	// Dropzone
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/js/dropzone.js');
+	$fform_doc->addStylesheet(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/css/dropzone.css');
+	// Formular „Controller”
+	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/formcontroller.js');
 ?>
-<script src="<?php echo CMS\Uri\Uri::root(); ?>libraries/cegcore/assets/gplugins/gvalidation/lang/<?php echo $lang;?>.js"></script>
-
-<?php // Felder (bzw. <div class="form-group">) bei :focus hervorheben ?>
-<script src="<?php echo CMS\Uri\Uri::root(); ?>templates/<?php echo CMS\Factory::getApplication()->getTemplate(); ?>/html/chronoforms/js/highlighter.js"></script>
-
-<?php // Dropzone.js ?>
-<script src="<?php echo CMS\Uri\Uri::root(); ?>templates/<?php echo CMS\Factory::getApplication()->getTemplate(); ?>/js/dropzone.js"></script>
 <script>
-	<?php // Dropzone.js würde ohne die folgende Anweisung nach allen .dropzone schauen, und sich automatisch starten, allerdings ohne unsere Konfiguration (unten) zu berücksichtigen. ?>
+<?php 
+	// Dropzone.js würde ohne die folgende Anweisung nach allen .dropzone schauen, und sich automatisch starten, allerdings ohne unsere Konfiguration (unten) zu berücksichtigen.
+?>
 	Dropzone.autoDiscover = false;
 </script>
 
 <?php // Formular initialisieren ?>
-<script src="<?php echo CMS\Uri\Uri::root(); ?>templates/<?php echo CMS\Factory::getApplication()->getTemplate(); ?>/html/chronoforms/js/formcontroller.js"></script>
 <script>
 'use strict';
 (function($) {
