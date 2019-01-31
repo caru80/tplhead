@@ -32,7 +32,8 @@
 		autoCollapse 	: true,				// Navgrid nach dem laden einer Seite automatisch ausblenden, wenn Cookie benutzt wird
 		triggerActive 	: 'active',			// CSS Klasse für die Auslöser, wenn navgrid geöffnet ist
 		cookiename 		: 'navgrid',		// Cookie Name
-		disableScroll 	: true
+		disableScroll 	: true,
+		closeOnWindowResize : false
 	}
 
 	NavGrid.prototype = {
@@ -68,12 +69,15 @@
 				}
 			}
 
-			window.addEventListener('resize', function() {
-				if(!this.grid.classList.contains('collapsed'))
-				{
-					this.toggleClosed();
-				}
-			}.bind(this));
+			if(this.opt.closeOnWindowResize)
+			{
+				window.addEventListener('resize', function() {
+					if(!this.grid.classList.contains('collapsed'))
+					{
+						this.toggleClosed();
+					}
+				}.bind(this));
+			}
 
 			if(this.opt.autoCollapse) 
 			{
