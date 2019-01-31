@@ -91,7 +91,7 @@
 		line-height: $app-buttons-size;
 		transition: opacity 0.2s ease;
 		span{
-			color: map-get($app-buttons-color, "menu");
+			color: $app-buttons-label-color;
 			font-size: 1.1em; 
 			font-weight: 600;
 			line-height: inherit;

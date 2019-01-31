@@ -69,6 +69,7 @@ $app-navgrid-quicknav-bg: 		$gray-900 !default;
 //
 // App Buttons
 //
+$app-buttons-label-color: 	$body-color !default; // Farbe für die (optionale) Beschriftung der Buttons
 $app-buttons-color: ( 		// Farben:
 	"menu" 		: $white, 	// Burgemenü-Knopf
 	"search" 	: $white,	// Lupe
