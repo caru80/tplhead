@@ -450,6 +450,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 					autoCollapse 	: true,				// Navgrid nach dem laden einer Seite automatisch ausblenden
 					triggerActive 	: 'active',			// CSS Klasse für die Auslöser, wenn navgrid geöffnet ist/wird
 					cookiename 		: 'navgrid'			// Cookie Name
+					closeOnWindowResize : false 		// Navgrid Schließen, wenn die Größe des Viewport verändert wird.
 				*/
 	 
 				$('#navgrid').on('open', function() {
