@@ -137,12 +137,6 @@
 <?php 
 	$fform_doc = CMS\Factory::getApplication()->getDocument();
 
-	// JS Validierung in Anzeigesprache (Chronoforms5 Bug):
-	$lang = CMS\Factory::getLanguage()->getTag();
-	$lang = substr($lang, 0, strpos($lang, '-'));
-
-	// Client-Validierung Sprachdatei:
-	$fform_doc->addScript(CMS\Uri\Uri::root() . 'libraries/cegcore/assets/gplugins/gvalidation/lang/' . $lang . '.js');
 	// Felder (bzw. <div class="form-group">) bei :focus hervorheben:
 	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/highlighter.js');
 	// Dropzone
@@ -150,7 +144,14 @@
 	$fform_doc->addStylesheet(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/css/dropzone.css');
 	// Formular „Controller”
 	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/formcontroller.js');
+
+	// JS Validierung in Anzeigesprache (Chronoforms5 Bug):
+	$lang = CMS\Factory::getLanguage()->getTag();
+	$lang = substr($lang, 0, strpos($lang, '-'));
+		
+	// Die Sprachdatei muss an folgender Stelle geladen werden, weil Chronoforms seine Scripts nach unseren einfügt, und die Sprache dabei wieder überschreiben würde.
 ?>
+<script src="<?php echo CMS\Uri\Uri::root();?>libraries/cegcore/assets/gplugins/gvalidation/lang/<?php echo $lang;?>.js"></script>
 <script>
 <?php 
 	// Dropzone.js würde ohne die folgende Anweisung nach allen .dropzone schauen, und sich automatisch starten, allerdings ohne unsere Konfiguration (unten) zu berücksichtigen.

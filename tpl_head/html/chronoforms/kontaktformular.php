@@ -76,7 +76,7 @@
 		<div class="col-sm-12 col-md-6">
 			
 			<div class="form-group inline">
-				<label for="kontakt_vorname">[FIELD_LABEL_KONTAKT_VORNAME]</label>
+				<label for="kontakt_vorname"><i class="fas fa-user"></i> [FIELD_LABEL_KONTAKT_VORNAME]</label>
 				<input name="kontakt_vorname" id="kontakt_vorname" type="text" value="" />
 			</div>
 
@@ -84,7 +84,7 @@
 		<div class="col-sm-12 col-md-6">
 			
 			<div class="form-group inline">
-				<label for="kontakt_nachname">[FIELD_LABEL_KONTAKT_NACHNAME]</label>
+				<label for="kontakt_nachname"><i class="fas fa-users"></i> [FIELD_LABEL_KONTAKT_NACHNAME]</label>
 				<input name="kontakt_nachname" id="kontakt_nachname" type="text" value="" />
 			</div>
 
@@ -95,7 +95,7 @@
 		<div class="col-sm-12 col-md-6">
 			
 			<div class="form-group inline">
-				<label for="kontakt_firma">[FIELD_LABEL_KONTAKT_FIRMA]</label>
+				<label for="kontakt_firma"><i class="fas fa-industry"></i> [FIELD_LABEL_KONTAKT_FIRMA]</label>
 				<input name="kontakt_firma" id="kontakt_firma" type="text" value="" />
 			</div>
 
@@ -106,7 +106,7 @@
 		<div class="col-sm-12 col-md-6">
 
 			<div class="form-group inline">
-				<label for="kontakt_telefon">[FIELD_LABEL_KONTAKT_TELEFON]</label>
+				<label for="kontakt_telefon"><i class="fas fa-phone"></i> [FIELD_LABEL_KONTAKT_TELEFON]</label>
 				<input name="kontakt_telefon" id="kontakt_telefon" type="tel" value="" />
 				<div class="checkbox">
 					<label for="kontakt_callback" class="small">
@@ -121,7 +121,7 @@
 		<div class="col-sm-12 col-md-6">
 			
 			<div class="form-group inline">
-				<label for="kontakt_email">[FIELD_LABEL_KONTAKT_EMAIL]</label>
+				<label for="kontakt_email"><i class="fas fa-envelope"></i> [FIELD_LABEL_KONTAKT_EMAIL]</label>
 				<input name="kontakt_email" id="kontakt_email" type="email" value="" />
 			</div>
 
@@ -129,7 +129,7 @@
 	</div>
 	
 	<div class="form-group">
-		<label for="kontakt_nachricht">[FIELD_LABEL_KONTAKT_NACHRICHT]</label>
+		<label for="kontakt_nachricht"><i class="fas fa-comment"></i> [FIELD_LABEL_KONTAKT_NACHRICHT]</label>
 		<textarea name="kontakt_nachricht" id="kontakt_nachricht" rows="3" cols="40"></textarea>
 	</div>
 
@@ -165,18 +165,18 @@
 </div>
 <?php 
 	$fform_doc = CMS\Factory::getApplication()->getDocument();
-
-	// JS Validierung in Anzeigesprache (Chronoforms5 Bug):
-	$lang = CMS\Factory::getLanguage()->getTag();
-	$lang = substr($lang, 0, strpos($lang, '-'));
-
-	// Client-Validierung Sprachdatei:
-	$fform_doc->addScript(CMS\Uri\Uri::root() . 'libraries/cegcore/assets/gplugins/gvalidation/lang/' . $lang . '.js');
 	// Felder (bzw. <div class="form-group">) bei :focus hervorheben:
 	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/highlighter.js');
 	// Formular „Controller”
 	$fform_doc->addScript(CMS\Uri\Uri::root() . 'templates/' . CMS\Factory::getApplication()->getTemplate() . '/html/chronoforms/js/formcontroller.js');
+
+	// JS Validierung in Anzeigesprache (Chronoforms5 Bug):
+	$lang = CMS\Factory::getLanguage()->getTag();
+	$lang = substr($lang, 0, strpos($lang, '-'));
+	
+	// Die Sprachdatei muss an folgender Stelle geladen werden, weil Chronoforms seine Scripts nach unseren einfügt, und die Sprache dabei wieder überschreiben würde.
 ?>
+<script src="<?php echo CMS\Uri\Uri::root();?>libraries/cegcore/assets/gplugins/gvalidation/lang/<?php echo $lang;?>.js"></script>
 <script>
 'use strict';
 (function($) {
