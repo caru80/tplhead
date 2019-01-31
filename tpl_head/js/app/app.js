@@ -457,15 +457,18 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 				})
 				.on('close', function() {
 					$('#site-header').removeClass('active');
-					$app.searchbar.close();
-					// Schließe alle Protomenüs in navgrid-slide, wenn navgrid-slide geschlossen wird:
-					$(this).find('.ptmenu').protomenu().closeRootLevel();
+					
+					// Bsp.: Die Suchleiste schließen, wenn navgrid-slide geschlossen wird:
+					// $app.searchbar.close();
+
+					// Bsp.: Schließe alle Protomenüs in navgrid-slide, wenn navgrid-slide geschlossen wird:
+					// $(this).find('.ptmenu').protomenu().closeRootLevel();
 				});
 
 				// Instanz
-				$app.navgrid.defaults.useCookieState = false;
+				//$app.navgrid.defaults.useCookieState = false;
 				let ngrid = new $app.navgrid();
-
+				
 				// 2. Protomenü im „Slide-Header”: Ein Klick auf dessen Links soll NavGrid schließen.
 				$('.quicknav [data-ptm-child] a').on('click', function() {
 					ngrid.toggleClosed();
@@ -567,7 +570,7 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 		// }
 		// 
 		// let siteHeader = document.getElementById('#site-header');
-		// meinElement.addEventListener('sticky-change', function(ev, details)) { ... });
+		// siteHeader.addEventListener('sticky-change', function(ev, details)) { ... });
 		//
 		stickyObserver : {
 			autoload    : true
