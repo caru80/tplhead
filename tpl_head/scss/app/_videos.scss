@@ -1,8 +1,8 @@
 
 /*
-	Vorschau-Videos mit Play-Button und Hover: Film abspielen
+	Vorschau-Videos mit Play-Button und Hover: „Film abspielen”
 */
-[data-fullvideo]{
+[data-fullvideo] {
 	@include make-font-size(1rem, 1rem, 1.5rem, 2rem);
 	position: relative;
 
