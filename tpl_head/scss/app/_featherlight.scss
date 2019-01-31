@@ -122,7 +122,7 @@ html.with-featherlight {
 
 	&:before {
 		@extend .fas;
-		content: '#{$fa-var-times}';
+		content: fa-content($fa-var-times);
 		color: $white;
 		font-size: 2rem;
 	}
