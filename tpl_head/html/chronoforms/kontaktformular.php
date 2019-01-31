@@ -9,6 +9,10 @@
 		?>
 	*/
 
+	use \Joomla\CMS;
+	use \Joomla\CMS\Language;
+	use \Joomla\CMS\MVC\Model;
+
 	// Die Id dieses Formulars. ACHTUNG: $form_id wird von Chronoforms als Id des <form> eingefügt!
 	$formid = $form->form["Form"]["id"];
 ?>
