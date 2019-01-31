@@ -62,11 +62,11 @@
 	// Aktiver Menüeintrag
 	&.active > a.nav-item {
 		background-color: transparent;
-		color: lighten($primary, 10%);
+		color: lighten($primary, 0.1);
 
 		.item-label::before {
 			@extend .fas;
-			content: '#{$fa-var-angle-right}';
+			content: fa-content($fa-var-angle-right);
 			padding-right: 0.1em;
 		}
 	}
@@ -154,7 +154,7 @@
 	background-color: darken(#1f3c42, 3%);
 
 	&::before {
-		content: '#{$fa-var-ellipsis-h}';
+		content: fa-content($fa-var-ellipsis-h);
 		position: absolute;
 		top: 50%;
 		left: 50%;
@@ -213,7 +213,7 @@
 
 		&:before {
 			@extend .fas;
-			content: '#{$fa-var-ellipsis-h}';
+			content: fa-content($fa-var-ellipsis-h);
 		}
 	}
 }

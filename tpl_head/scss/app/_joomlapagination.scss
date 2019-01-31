@@ -3,6 +3,6 @@
 @each $key, $icon in $app-pagination-icons {
     .pagination i.#{$key}:before {
         @extend .fa;
-        content: '#{$icon}';
+        content: fa-content($icon);
 	}
 }

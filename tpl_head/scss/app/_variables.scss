@@ -26,9 +26,8 @@ $app-system-message-types: (
 // Loading Spinner / Ladeanzeige
 // Demos: http://tobiasahlin.com/spinkit/
 //
-// Wird die Ladeanzeige hier geändert, muss das Template in $app (/js/app/app.js), in den „defaults”, geändert werden.
+// Wird die Ladeanzeige in _spinkit.scss geändert, muss das Template in $app (/js/app/app.js), in den „defaults”, geändert werden.
 //
-$app-loading-spinner: 		"9-cube-grid" !default; // Siehe Dateinamen in /scss/app/spinkit
 $spinkit-spinner-margin: 	2.5rem auto !default;
 $spinkit-size: 				4rem !default;
 $spinkit-spinner-color: 	theme-color("primary") !default;
@@ -60,6 +59,7 @@ $app-breadcrumbs-separator: $fa-var-angle-right !default; // Trennzeichen in Bre
 //
 // NavGrid
 //
+$app-navgrid-use-on-desktop: 	false !default;
 $app-navgrid-slide-width: 		480px !default;
 $app-navgrid-slide-bg:			#25464d !default;
 $app-navgrid-quicknav-width: 	66px !default;
@@ -72,7 +72,7 @@ $app-navgrid-quicknav-bg: 		$gray-900 !default;
 $app-buttons-color: ( 		// Farben:
 	"menu" 		: $white, 	// Burgemenü-Knopf
 	"search" 	: $white,	// Lupe
-	"close" 	: $white	// Schließen „X”
+	"close" 	: $white	// Schließen X
 ) !default;
 
 $app-buttons-size: 		    2.5rem !default;
@@ -90,14 +90,14 @@ $app-faform-legend-size: 		$h5-font-size !default;		// Legenden Textgröße
 $app-faform-label-color: 		$body-color !default;		// Labels Textfarbe
 $app-faform-asterisk-color: 	$primary !default; // *		// Asterisk Textfarbe
 // -- Ladeanzeige; Formular wird gesendet:
-$app-faforms-loading-bg: 		transparentize(#ced4da, 60%) !default;  	// Hintergrundfarbe der Überlagerung
+$app-faforms-loading-bg: 		transparentize(#ced4da, 0.6) !default;  	// Hintergrundfarbe der Überlagerung
 $app-faforms-loading-textbg: 	rgba(255,255,255,0.7) !default;				// Hintergrundfarbe Statustext (wenn vorhanden)
 $app-faforms-loading-text: 		$body-color !default; 						// Textfarbe Statustext
 // -- Erfolgsmeldung; Formular wurde gesendet:
 $app-faforms-sent-icolor: 		$success !default; 			// Symbol Textfarbe
 $app-faforms-sent-textcolor: 	$body-color !default;		// Textfarbe
 // -- Client-Validierung (Tooltips)
-$app-faforms-jsva-bgcolor: 		transparentize($danger, 10%) !default; // Tooltip Hintergrundfarbe
+$app-faforms-jsva-bgcolor: 		transparentize($danger, 0.1) !default; // Tooltip Hintergrundfarbe
 $app-faforms-jsva-min-width: 	240px !default;	// Mindestbreite
 $app-faforms-jsva-max-width:	300px !default;	// Maximalbreite
 
@@ -109,6 +109,10 @@ $app-faforms-jsva-max-width:	300px !default;	// Maximalbreite
 $app-googlemap-height: 		450px !default;
 $app-googlemap-height-sm: 	350px !default;
 $app-googlemap-height-lg: 	550px !default;
+
+
+
+
 
 // ----- 1.4 --------------------------------------------------------
 
@@ -134,7 +138,7 @@ $app-ptslider-hero-height: (
 		"sm" 	: 400px,
 		"md" 	: 400px,
 		"lg" 	: 450px,
-		"xl" 	: 700px,
+		"xl" 	: 650px,
 		"xxl"	: 700px
 	),
 	"deeper" : ( // ...auf den „Unterseiten”
@@ -161,7 +165,7 @@ $app-ptslider-page-items: (
 	"width" 	: 16px,
 	"height" 	: 16px,
 	"gutter" 	: 7px,	// Abstand zwischen Page-Items
-	"bgcolor" 	: transparentize(lighten($primary, 30%), 50%),
+	"bgcolor" 	: transparentize(lighten($primary, 30%), 0.5),
 	"bghover" 	: lighten($primary, 20%),
 	"bgactive" 	: lighten($primary, 30%),
 	"border-radius" : 100%

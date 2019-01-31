@@ -44,6 +44,8 @@
 	&:after{
 		top: 50%;
 		border-width: 0;
+		bottom: auto;
+		left: 0;
 
 		@if $reverse == 1 {
 			-webkit-transform: rotate3d(0,0,1,-45deg);
@@ -83,15 +85,15 @@
 	}
 	> span{
 		display: inline-block;
-		margin-left: $app-buttons-size;
+		margin-left: 11px; // $app-buttons-size / 2;
 		padding-left: 0.5em;
 		height: $app-buttons-size;
 		line-height: $app-buttons-size;
 		transition: opacity 0.2s ease;
 		span{
 			color: map-get($app-buttons-color, "menu");
-			font-size: 1.2em; 
-			font-weight: 500;
+			font-size: 1.1em; 
+			font-weight: 600;
 			line-height: inherit;
 			font-family: $app-buttons-font;
 		}
@@ -133,40 +135,42 @@
 //
 .app-btn.btn-menu {
 
-	@include btn-menu-colourize();
+	@include btn-menu-colourize($primary, lighten($primary, 10%));
 	
 	i, &:before, &:after {
 		display: inline-block;
 		content: '';
 		position: absolute;
-		left: 0;
+		left: 0; // $app-buttons-size / 2;
 		
-		height: $app-buttons-thickness;
-		width: $app-buttons-size;
-		border-radius: $app-buttons-curve;
-		transform: translate3d(0,0,0);
+		height: $app-buttons-thickness * 2;
+		//width: $app-buttons-size;
+		width: $app-buttons-thickness * 2;
+		//border-radius: $app-buttons-curve;
+		border-radius: 100%;
+		transform: translate3d(0%,0,0);
 		
 		transition: all 0.3s ease;
 	}
 
 	i {
-        top: $app-buttons-size / 2;
-		-webkit-transform: translate3d(0, -50%, 0);
-                transform: translate3d(0, -50%, 0);
+        top: 50%;
+		-webkit-transform: translate3d(0%, -50%, 0);
+                transform: translate3d(0%, -50%, 0);
 	}
 	
 	&:before {
-		top: 0.4em;
+		top: 0;
 	}
 	&:after {
-		top: $app-buttons-size - 0.4em;
-		margin-top: -$app-buttons-thickness;
+		bottom: 0; // $app-buttons-size - $app-buttons-thickness * 2;
+		// margin-top: -$app-buttons-thickness;
 	}
 	
 	&.active,
 	&.close {
 		i {
-			width: 0;
+			//width: 0;
 			opacity: 0;
 		}
 		@include app-btn-close(1);

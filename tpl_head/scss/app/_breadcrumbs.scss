@@ -4,6 +4,6 @@
 .breadcrumbs ol.breadcrumb li.breadcrumb-item:not(.intro) {
 	&::before {
 		@extend .fas;
-		content: '#{$app-breadcrumbs-separator}';
+		content: fa-content($app-breadcrumbs-separator);
 	}
 }

@@ -162,7 +162,7 @@ p.chrono_credits{
 //
 // Dropzone
 //
-@import '../css/dropzone.css';
+// @import '../css/dropzone.css';
 .fancy-form .dropzone 
 {
 	background: white;
@@ -440,11 +440,6 @@ form.chronoform .loading-indicator {
 	}
 }
 
-/** Ausgewähles Feld: */
-.fancy-form .form-group.focus {
-	background-color: #d6ebde; // lighten($secondary, 65%);
-}
-
 
 
 /**
@@ -564,7 +559,7 @@ form.chronoform .loading-indicator {
 			}
 			&:after {
 				@extend .fas;
-				content: '#{$fa-var-check}';
+				content: fa-content($fa-var-check);
 				font-size: 1.2em;
 				bottom: -2px;
 				left: 0px;
@@ -596,12 +591,12 @@ form.chronoform .loading-indicator {
 			border: none;
 
 			&:checked + i {
-				background-color: transparentize($gray-100, 80%);
+				background-color: transparentize($gray-100, 0.8);
 			}
 
 			&:checked + span + i:before,
 			&:checked + i:before{
-				background-color: transparentize($white, 80%);
+				background-color: transparentize($white, 0.8);
 			}
 			&:checked + span + i:after,
 			&:checked + i:after{

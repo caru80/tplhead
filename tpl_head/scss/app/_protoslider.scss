@@ -42,7 +42,8 @@
 // Höhe von Heroslider auf der Homepage
 $ptslider-heights: map-get($app-ptslider-hero-height, "home");
 @each $breakpoint, $height in $ptslider-heights {
-	@include media-breakpoint-up(map-keys($breakpoint)) 
+	//@include media-breakpoint-up(map-keys($breakpoint)) 
+	@include media-breakpoint-up($breakpoint) 
 	{
 		.ptslider.heroslider:not(.autoheight)
 		{
@@ -54,7 +55,7 @@ $ptslider-heights: map-get($app-ptslider-hero-height, "home");
 // Höhe von Heroslider auf „Unterseiten”
 $ptslider-heights: map-get($app-ptslider-hero-height, "deeper");
 @each $breakpoint, $height in $ptslider-heights {
-	@include media-breakpoint-up(map-keys($breakpoint)) 
+	@include media-breakpoint-up($breakpoint) 
 	{
 		.deeper .ptslider.heroslider:not(.autoheight)
 		{
@@ -104,20 +105,18 @@ $ptslider-heights: map-get($app-ptslider-hero-height, "deeper");
 //
 .ptslider .ptslider-pager {
 	display: inline-block;
-	width: 	map-get($app-ptslider-page-items, "width");
-	height: map-get($app-ptslider-page-items, "height");
-	
+	width: 				map-get($app-ptslider-page-items, "width");
+	height: 			map-get($app-ptslider-page-items, "height");
 	background-color: 	map-get($app-ptslider-page-items, "bgcolor");
 	border-radius:		map-get($app-ptslider-page-items, "border-radius");
 	
+	transition: background-color 0.15s ease-in-out;
+
 	cursor: pointer;
 
 	& + .ptslider-pager {
 		margin-left: map-get($app-ptslider-page-items, "gutter");
 	}
-	
-	-webkit-transition: background-color 0.15s ease-in-out;
-			transition: background-color 0.15s ease-in-out;
 
 	&:hover {
 		background-color: map-get($app-ptslider-page-items, "bghover");
@@ -179,7 +178,7 @@ $ptslider-heights: map-get($app-ptslider-hero-height, "deeper");
 			height: 6px; 
 			margin-top: -3px;
 			width: 70%;
-			border-radius: 6px;
+			//border-radius: 6px;
 			background-color: map-get($ptslider-navigation, "arrow-color");
 			-webkit-transition: background-color 0.2s ease;	
 					transition: background-color 0.2s ease;	
