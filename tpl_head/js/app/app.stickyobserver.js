@@ -1,12 +1,12 @@
 (function() {
-
-
 	/**
-		CRu. 2018-10-23
-		v0.1
+		CRu. 2019-03-05
+		v0.1.1
 	*/
 	function StickyObserver(options)
 	{
+		if(!window.IntersectionObserver) return null;
+		
 		options = options || {};
 
 		this.opt 		= this.deepExtend({}, StickyObserver.defaults, options);
