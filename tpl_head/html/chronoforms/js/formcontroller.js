@@ -106,10 +106,17 @@
 				let fnameContainer  = $('#dropzone_files'),
 					filenames 		= new Array();
 
+					/*
 				for (let file of self.dropzone.files)
 				{
 					filenames.push(file.name);
+				}*/
+
+				for(let i = 0; i < self.dropzone.files.length; i++) 
+				{
+					filenames.push(self.dropzone.files[i].name);
 				}
+
 				fnameContainer.get(0).value = filenames.join(',');
 			});
 
@@ -118,10 +125,16 @@
 				let fnameContainer  = $('#dropzone_files'),
 					filenames 		= new Array();
 
+				for(let i = 0; i < self.dropzone.files.length; i++) 
+				{
+					filenames.push(self.dropzone.files[i].name);
+				}
+				/*
 				for (let file of self.dropzone.files)
 				{
 					filenames.push(file.name);
 				}
+				*/
 				fnameContainer.get(0).value = filenames.join(',');
 			});
 		},
