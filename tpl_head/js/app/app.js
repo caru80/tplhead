@@ -15,6 +15,11 @@ d[l]));return document.cookie=b+"="+c+g}b||(g={});l=document.cookie?document.coo
 	From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
 */
 Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{toString:null}.propertyIsEnumerable("toString"),c="toString toLocaleString valueOf hasOwnProperty isPrototypeOf propertyIsEnumerable constructor".split(" "),g=c.length;return function(b){if("object"!==typeof b&&("function"!==typeof b||null===b))throw new TypeError("Object.keys called on non-object");let d=[],a;for(a in b)e.call(b,a)&&d.push(a);if(f)for(a=0;a<g;a++)e.call(b,c[a])&&d.push(c[a]);return d}}());
+/**
+	Polyfill für window.Event (für Internet Explorer 11)
+	From https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent
+ */
+(function(){function a(a,b){b=b||{bubbles:!1,cancelable:!1,detail:null};var c=document.createEvent("CustomEvent");c.initCustomEvent(a,b.bubbles,b.cancelable,b.detail);return c}if("function"===typeof window.CustomEvent)return!1;a.prototype=window.Event.prototype;window.CustomEvent=a;window.Event=a})();
 
 /**
 	App
