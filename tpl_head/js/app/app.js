@@ -581,6 +581,10 @@ Object.keys||(Object.keys=function(){let e=Object.prototype.hasOwnProperty,f=!{t
 		stickyObserver : {
 			autoload    : true
 			,file       : 'templates/head/js/app/app.stickyobserver.js'
+			,condition  : function() {
+				if(!window.IntersectionObserver) return false;
+				return true;
+			}
 			,error		: function() { $app.extensions.log('err', this.file); }
 			,success	: function() 
 			{
