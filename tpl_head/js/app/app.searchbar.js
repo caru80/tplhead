@@ -5,10 +5,16 @@
 		{
 			this.bar 		= document.getElementById('site-searchbar');
 			this.triggers 	= document.querySelectorAll('[data-toggle-search]');
-
+			
+			for(let i = 0; i < this.triggers.length; i++)
+			{
+				this.addListener(this.triggers[i]);
+			}
+			/*
 			this.triggers.forEach(function(el){
 				this.addListener(el);
 			}, this);
+			*/
 		},
 
 		addListener : function(trigger) 
