@@ -33,7 +33,7 @@
 		triggerActive 	: 'active',			// CSS Klasse für die Auslöser, wenn navgrid geöffnet ist
 		cookiename 		: 'navgrid',		// Cookie Name
 		disableScroll 	: true,
-		closeOnWindowResize : false
+		closeOnWindowResize : true
 	}
 
 	NavGrid.prototype = {
@@ -72,7 +72,11 @@
 			if(this.opt.closeOnWindowResize)
 			{
 				window.addEventListener('resize', function() {
-					if(!this.grid.classList.contains('collapsed'))
+
+					let winWidth = document.documentElement.getBoundingClientRect().width;
+
+					if(!this.grid.classList.contains('collapsed') 
+						&& this.grid._winwidth != winWidth)
 					{
 						this.toggleClosed();
 					}
@@ -90,19 +94,22 @@
 			{
 				let events 	= ['open','close'];
 				this.events = {};
+				
 				events.forEach(function(name) {
 					this.events[name] = new Event(name);
-				}, this);
+				}, this);				
 			}
 		},
 
 		setupTriggers : function () 
 		{
-			this.triggers.forEach(function(t) {
+			for(let i = 0, len = this.triggers.length; i < len; i++) 
+			{
+				let t = this.triggers[i];
 				t.addEventListener('click', function() {
 					this.toggle();
 				}.bind(this));
-			}, this);
+			}
 		},
 
 		setTriggerState : function (active) 
@@ -124,6 +131,8 @@
 
 		toggleOpen : function () 
 		{
+			this.grid._winwidth = document.documentElement.getBoundingClientRect().width;
+
 			this.grid.classList.remove('collapsed');
 			this.setTriggerState(true);
 
