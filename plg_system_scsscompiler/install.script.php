@@ -54,7 +54,7 @@ class plgsystemscsscompilerInstallerScript
      */
     public function postflight($type, $parent)
     {
-		$query = "UPDATE `#__extensions` SET `enabled`=1 WHERE `element` = 'scsscompiler' AND `folder` = 'system' ";
+		$query = "UPDATE `#__extensions` SET `enabled`=0 WHERE `element` = 'scsscompiler' AND `folder` = 'system' ";
         return JFactory::getDbo()->setQuery($query)->query();
 	}
 
