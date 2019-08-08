@@ -1,11 +1,11 @@
 <?php
 /**
  * @package        SCSS Compiler
- * @version        0.2
+ * @version        0.4
  *  
  * @author         Carsten Ruppert <webmaster@headmarketing.de>
  * @link           https://www.headmarketing.de
- * @copyright      Copyright © 2018 HEAD. MARKETING GmbH All Rights Reserved
+ * @copyright      Copyright © 2018 - 2019 HEAD. MARKETING GmbH All Rights Reserved
  * @license        http://www.gnu.org/licenses/gpl-2.0.html GNU/GPL
  */
 
@@ -21,6 +21,7 @@ jimport( 'joomla.filesystem.folder' );
 use \Joomla\CMS\Plugin;
 use \Joomla\CMS\Language;
 use \Leafo\ScssPhp;
+use \Padaliyajay\PHPAutoprefixer\Autoprefixer;
 
 class plgSystemScsscompiler extends Plugin\CMSPlugin {
 
@@ -96,6 +97,94 @@ class plgSystemScsscompiler extends Plugin\CMSPlugin {
 		return false;
 	}
 
+	private function autoPrefix()
+	{
+		$sabberwormLib = array(
+			'Renderable.php',
+			'Settings.php',
+			'OutputFormat.php',
+			'Parser.php',
+			'Value/Value.php',
+			'Value/PrimitiveValue.php',
+			'Value/URL.php',
+			'Value/ValueList.php',
+			'Value/CSSFunction.php',
+			'Value/CalcFunction.php',
+			'Value/RuleValueList.php',
+			'Value/CalcRuleValueList.php',
+			'Value/CSSString.php',
+			'Value/LineName.php',
+			'Value/Color.php',
+			'Value/Size.php',
+			'Comment/Commentable.php',
+			'Comment/Comment.php',
+			'Rule/Rule.php',
+			'Property/Selector.php',
+			'Property/AtRule.php',
+			'Property/Charset.php',
+			'Property/CSSNamespace.php',
+			'Property/Import.php',
+			'RuleSet/RuleSet.php',
+			'RuleSet/AtRuleSet.php',
+			'RuleSet/DeclarationBlock.php',
+			'CSSList/CSSList.php',
+			'CSSList/KeyFrame.php',
+			'CSSList/CSSBlockList.php',
+			'CSSList/AtRuleBlockList.php',
+			'CSSList/Document.php',
+			'Parsing/SourceException.php',
+			'Parsing/OutputException.php',
+			'Parsing/UnexpectedTokenException.php',
+			'Parsing/ParserState.php'
+		);
+
+		$sabberwormPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'sabberworm' . DIRECTORY_SEPARATOR . 'CSS' . DIRECTORY_SEPARATOR;
+
+		foreach($sabberwormLib as $file)
+		{
+			require_once $sabberwormPath . $file;
+		}
+
+		$prefixerLib = array(
+			'Autoprefixer.php',
+			'Vendor.php',
+			'Vendor/Vendor.php',
+			'Vendor/IE.php',
+			'Vendor/Mozilla.php',
+			'Vendor/Webkit.php',
+			'Parse/Property.php',
+			'Parse/Rule.php',
+			'Parse/Selector.php',
+			'Compile/AtRule.php',
+			'Compile/RuleSet.php',
+			'Compile/DeclarationBlock.php'
+		);
+
+		$prefixerPath = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'php-autoprefixer' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR;
+
+		foreach($prefixerLib as $file)
+		{
+			require_once $prefixerPath . $file;
+		}
+
+		$unprefixed_css = file_get_contents($this->output->path); // CSS code
+
+		$autoprefixer = new Autoprefixer($unprefixed_css);
+		$prefixed_css = $autoprefixer->compile();
+
+		$written = file_put_contents($this->output->path, $prefixed_css);
+
+		if($written && $this->verbose) 
+		{
+			$this->app->enqueueMessage('plg_system_scsscompiler: ' . Language\Text::sprintf('PLG_SYS_SCSSCOMP_OUT_PREFIXER_SUCCEEDED', $written), 'notice');
+		}
+		else 
+		{
+			$this->app->enqueueMessage('plg_system_scsscompiler: ' . Language\Text::sprintf('PLG_SYS_SCSSCOMP_OUT_PREFIXER_FAILED', $written), 'error');
+		}
+
+	}
+
 	private function compileScss()
 	{
 		require_once dirname(__FILE__) . DIRECTORY_SEPARATOR . 'vendor' . DIRECTORY_SEPARATOR . 'scssphp' . DIRECTORY_SEPARATOR . 'scss.inc.php';
@@ -122,6 +211,10 @@ class plgSystemScsscompiler extends Plugin\CMSPlugin {
 				$this->app->enqueueMessage('plg_system_scsscompiler: ' . Language\Text::sprintf('PLG_SYS_SCSSCOMP_OUT_COMPILATION_SUCCEEDED', $written), 'notice');
 			}
 
+			if ($this->params->get('css_auto_prefix',1))
+			{
+				$this->autoPrefix();
+			}
 		}
 		catch(\Exception $e)
 		{   
