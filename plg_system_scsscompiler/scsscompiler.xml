@@ -21,7 +21,7 @@
 		<language tag="de-DE">language/de-DE/de-DE.plg_system_scsscompiler.sys.ini</language>
 	</languages>
 	<updateservers>
-		<server type="extension" priority="0" name="HEAD. SCSS Compiler Updates">https://raw.githubusercontent.com/caru80/tpl_head/master/plg_system_scsscompiler/updates/updates.xml</server>
+		<server type="extension" priority="0" name="HEAD. SCSS Compiler Updates">https://raw.githubusercontent.com/caru80/tplhead/master/plg_system_scsscompiler/updates/updates.xml</server>
  	</updateservers>
 	<config>
 		<fields name="params">
