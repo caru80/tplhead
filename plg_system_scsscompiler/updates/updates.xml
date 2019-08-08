@@ -9,7 +9,7 @@
 		<client>0</client>
 		<folder/>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/caru80/tpl_head/raw/master/dist/plg_system_scsscompiler_0.4.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/caru80/tplhead/raw/master/dist/plg_system_scsscompiler_0.4.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>
@@ -29,7 +29,7 @@
 		<client>0</client>
 		<folder/>
 		<downloads>
-			<downloadurl type="full" format="zip">https://github.com/caru80/tpl_head/raw/master/dist/plg_system_scsscompiler_0.3.1.zip</downloadurl>
+			<downloadurl type="full" format="zip">https://github.com/caru80/tplhead/raw/master/dist/plg_system_scsscompiler_0.3.1.zip</downloadurl>
 		</downloads>
 		<tags>
 			<tag>stable</tag>
